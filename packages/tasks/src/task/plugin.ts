@@ -54,6 +54,10 @@ export class TaskDefinitionPlugin<
         return this.task.fields;
     }
 
+    public get createInputValidation() {
+        return this.task.createInputValidation;
+    }
+
     public get run() {
         return this.task.run;
     }

@@ -3,6 +3,7 @@ import { Context } from "../types";
 import { ITaskDefinition, ITaskDefinitionField, ITaskRunParams } from "~/types";
 import { createTaskDefinition, createTaskDefinitionField } from "~/task/plugin";
 import { createMockTaskDefinition } from "~tests/mocks/definition";
+import zod from "zod";
 
 const taskField: ITaskDefinitionField = {
     fieldId: "url",
@@ -157,5 +158,50 @@ describe("task plugin", () => {
         expect(error?.message).toEqual(
             `Task ID "id-whichIsNotValid" is invalid. It must be in camelCase format, for example: "myCustomTask".`
         );
+    });
+
+    it("should properly create a task input validation", async () => {
+        const definition = createTaskDefinition({
+            id: "myCustomTask",
+            title: "A custom task defined via method",
+            run: async ({ response, isCloseToTimeout, input }) => {
+                try {
+                    if (isCloseToTimeout()) {
+                        return response.continue({
+                            ...input
+                        });
+                    }
+                    return response.done();
+                } catch (ex) {
+                    return response.error(ex);
+                }
+            },
+            createInputValidation: ({ validator }) => {
+                return {
+                    test: validator.boolean(),
+                    file: validator.string(),
+                    page: validator.number()
+                };
+            }
+        });
+
+        expect(definition.createInputValidation).toBeFunction();
+
+        const params = {
+            context: {} as Context,
+            validator: zod
+        };
+
+        const validation = definition.createInputValidation
+            ? definition.createInputValidation(params)
+            : null;
+
+        // @ts-expect-error
+        const result = await zod.object(validation).safeParseAsync({
+            test: true,
+            file: "file",
+            page: 1
+        });
+        expect(result.success).toBeTrue();
     });
 });

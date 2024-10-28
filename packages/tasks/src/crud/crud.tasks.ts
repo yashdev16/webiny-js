@@ -6,6 +6,7 @@ import {
     ITask,
     ITaskCreateData,
     ITaskDataInput,
+    ITaskDefinition,
     ITaskLog,
     ITaskLogCreateInput,
     ITaskLogUpdateInput,
@@ -25,7 +26,8 @@ import { CmsEntry, CmsModel } from "@webiny/api-headless-cms/types";
 import { NotFoundError } from "@webiny/handler-graphql";
 import { createTopic } from "@webiny/pubsub";
 import { remapWhere } from "./where";
-import { parseIdentifier } from "@webiny/utils";
+import { createZodError, parseIdentifier } from "@webiny/utils";
+import zod from "zod";
 
 const createRevisionId = (id: string) => {
     const { id: entryId } = parseIdentifier(id);
@@ -67,6 +69,29 @@ const convertToLog = (entry: CmsEntry<ITaskLog>): ITaskLog => {
         iteration: entry.values.iteration,
         items: entry.values.items || []
     };
+};
+
+interface IValidateParams {
+    definition: Pick<ITaskDefinition, "createInputValidation">;
+    data: Pick<ITaskCreateData, "input">;
+    context: Context;
+}
+
+const validateTaskInput = async (params: IValidateParams) => {
+    const { definition, data, context } = params;
+    if (!definition.createInputValidation) {
+        return;
+    }
+    const schema = definition.createInputValidation({
+        context,
+        validator: zod
+    });
+    const validate = zod.object(schema);
+    const result = await validate.safeParseAsync(data.input);
+    if (result.success) {
+        return;
+    }
+    throw createZodError(result.error);
 };
 
 export const createTaskCrud = (context: Context): ITasksContextCrudObject => {
@@ -150,6 +175,12 @@ export const createTaskCrud = (context: Context): ITasksContextCrudObject => {
                 id: data.definitionId
             });
         }
+
+        await validateTaskInput({
+            context,
+            definition,
+            data
+        });
 
         const entry = await context.security.withoutAuthorization(async () => {
             const model = await getTaskModel();

@@ -18,6 +18,8 @@ import { SecurityPermission } from "@webiny/api-security/types";
 import { GenericRecord } from "@webiny/api/types";
 import { IStepFunctionServiceFetchResult } from "~/service/StepFunctionServicePlugin";
 
+import type zod from "zod";
+
 export * from "./handler/types";
 export * from "./response/abstractions";
 export * from "./runner/abstractions";
@@ -393,6 +395,11 @@ export interface ITaskBeforeTriggerParams<C extends Context = Context, I = ITask
     data: ITaskCreateData<I>;
 }
 
+export interface ITaskCreateInputValidationParams<C extends Context = Context> {
+    validator: typeof zod;
+    context: C;
+}
+
 export interface ITaskDefinition<
     C extends Context = Context,
     I = ITaskDataInput,
@@ -451,6 +458,13 @@ export interface ITaskDefinition<
      * This will be called during the run time of the task.
      */
     onMaxIterations?(params: ITaskOnMaxIterationsParams<C>): Promise<void>;
+    /**
+     * Create a validation schema for the task input.
+     * This will be used to validate the input before the task is triggered.
+     */
+    createInputValidation?: (
+        params: ITaskCreateInputValidationParams<C>
+    ) => GenericRecord<keyof I, zod.Schema>;
     /**
      * Custom input fields and layout for the task input.
      */
