@@ -1,29 +1,31 @@
 import React from "react";
 import { createRenderer } from "~/createRenderer";
 import { useRenderer } from "~/hooks/useRenderer";
+import { ElementInput } from "~/inputs/ElementInput";
 
-export type IconRenderer = ReturnType<typeof createIcon>;
-
-export interface Props {
-    svg?: string;
+export interface IconElementData {
+    icon: {
+        markup: string;
+        width?: number;
+    };
 }
 
-export const createIcon = () => {
-    return createRenderer((props: Props) => {
-        const { getElement, theme } = useRenderer();
-
-        const element = getElement();
-
-        let color = element.data.icon.color;
-        if (theme.styles.colors?.[color]) {
-            color = theme.styles.colors?.[color];
+const elementInputs = {
+    markup: ElementInput.create<string, IconElementData>({
+        name: "markup",
+        type: "html",
+        getDefaultValue: ({ element }) => {
+            return element.data.icon?.markup;
         }
-
-        return (
-            <div
-                style={{ color }}
-                dangerouslySetInnerHTML={{ __html: props?.svg || element.data.icon.svg }}
-            />
-        );
-    });
+    })
 };
+
+export const IconRenderer = createRenderer<unknown, typeof elementInputs>(
+    () => {
+        const { getInputValues } = useRenderer();
+        const inputs = getInputValues<typeof elementInputs>();
+
+        return <div dangerouslySetInnerHTML={{ __html: inputs.markup ?? "" }} />;
+    },
+    { inputs: elementInputs }
+);

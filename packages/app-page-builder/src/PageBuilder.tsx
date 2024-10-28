@@ -16,6 +16,8 @@ import { AddButtonClickHandlers } from "~/elementDecorators/AddButtonClickHandle
 import { InjectElementVariables } from "~/render/variables/InjectElementVariables";
 import { LexicalParagraphRenderer } from "~/render/plugins/elements/paragraph/LexicalParagraph";
 import { LexicalHeadingRenderer } from "~/render/plugins/elements/heading/LexicalHeading";
+import { ConvertIconSettings as EditorConvertIconSettings } from "~/editor/prepareEditorContent/ConvertIconSettings";
+import { ConvertIconSettings as RendererConvertIconSettings } from "~/render/plugins/elementSettings/icon";
 
 export type { EditorProps };
 export { EditorRenderer };
@@ -142,6 +144,12 @@ export const PageBuilder = () => {
             <AddButtonLinkComponent />
             <AddButtonClickHandlers />
             <InjectElementVariables />
+            {/* Ensure data is in the correct shape when editor is mounting. */}
+            {/* This works only within the block/template/page editor. */}
+            <EditorConvertIconSettings />
+            {/* Ensure each element renderer is receiving data in the correct shape.  */}
+            {/* This works for page previews, block previews, etc. */}
+            <RendererConvertIconSettings />
         </Fragment>
     );
 };

@@ -2,7 +2,6 @@ import React, { useMemo } from "react";
 import styled, { CSSObject } from "@emotion/styled";
 import { ClassNames } from "@emotion/react";
 import isEqual from "lodash/isEqual";
-import { usePageElements } from "~/hooks/usePageElements";
 import { LinkComponent } from "~/types";
 import { DefaultLinkComponent } from "~/renderers/components";
 import { createRenderer } from "~/createRenderer";
@@ -80,7 +79,11 @@ export interface ButtonElementData {
         newTab: boolean;
         href: string;
     };
-    icon: { position: string; color: string; svg: string; width: string };
+    icon: {
+        markup: string;
+        width?: number;
+        position?: string;
+    };
     action: {
         actionType: "link" | "scrollToElement" | "onClickHandler";
         newTab: boolean;
@@ -112,25 +115,11 @@ export const elementInputs = {
             return element.data.icon?.position;
         }
     }),
-    iconColor: ElementInput.create<string, ButtonElementData>({
-        name: "iconColor",
-        type: "color",
+    iconMarkup: ElementInput.create<string, ButtonElementData>({
+        name: "iconMarkup",
+        type: "html",
         getDefaultValue: ({ element }) => {
-            return element.data.icon?.color;
-        }
-    }),
-    iconSvg: ElementInput.create<string, ButtonElementData>({
-        name: "iconSvg",
-        type: "svgIcon",
-        getDefaultValue: ({ element }) => {
-            return element.data.icon?.svg;
-        }
-    }),
-    iconWidth: ElementInput.create<string, ButtonElementData>({
-        name: "iconWidth",
-        type: "number",
-        getDefaultValue: ({ element }) => {
-            return element.data.icon?.width;
+            return element.data.icon?.markup;
         }
     }),
     actionType: ElementInput.create<ButtonElementData["action"]["actionType"]>({
@@ -160,7 +149,6 @@ export const elementInputs = {
 export const ButtonRenderer = createRenderer<Props, typeof elementInputs>(
     props => {
         const LinkComponent = props.linkComponent || DefaultLinkComponent;
-        const { getStyles } = usePageElements();
         const { getElement, getInputValues } = useRenderer();
         const element = getElement<ButtonElementData>();
         const inputs = getInputValues<typeof elementInputs>();
@@ -175,34 +163,25 @@ export const ButtonRenderer = createRenderer<Props, typeof elementInputs>(
             actionType: inputs.actionType || "link"
         };
 
-        let StyledButtonBody = ButtonBody,
-            StyledButtonIcon;
+        let StyledButtonBody = ButtonBody;
+        let StyledButtonIcon = null;
 
-        if (inputs.iconSvg) {
+        if (inputs.iconMarkup) {
             const position = inputs.iconPosition || "left";
-            const color = inputs.iconColor || "#000";
 
             StyledButtonBody = styled(StyledButtonBody)({
                 display: "flex",
                 ...ICON_POSITION_FLEX_DIRECTION[position]
             }) as (props: ButtonBodyProps) => JSX.Element;
 
-            StyledButtonIcon = styled(ButtonIcon)(
-                {
-                    width: inputs.iconWidth,
-                    ...ICON_POSITION_MARGIN[position]
-                },
-                getStyles(theme => {
-                    const themeColor = theme.styles.colors?.[color];
-                    return {
-                        color: themeColor || color
-                    };
-                })
-            );
+            StyledButtonIcon = styled(ButtonIcon)(ICON_POSITION_MARGIN[position]);
 
             buttonInnerContent = (
                 <>
-                    <StyledButtonIcon svg={inputs.iconSvg} className={`button-icon-${position}`} />
+                    <StyledButtonIcon
+                        svg={inputs.iconMarkup}
+                        className={`button-icon-${position}`}
+                    />
                     {buttonInnerContent}
                 </>
             );

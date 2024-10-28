@@ -1,20 +1,19 @@
 import React, { useCallback } from "react";
-import { useRecoilValue } from "recoil";
 import { css } from "emotion";
-import { activeElementAtom, elementWithChildrenByIdSelector } from "../../../recoil/modules";
-import { PbEditorElement, PbEditorPageElementSettingsRenderComponentProps, PbIcon } from "~/types";
+import startCase from "lodash/startCase";
+import { usePageElements } from "@webiny/app-page-builder-elements/hooks/usePageElements";
+import { IconPicker } from "@webiny/app-admin/components/IconPicker";
+import { PbEditorElement, PbEditorPageElementSettingsRenderComponentProps } from "~/types";
 // Components
-import IconPickerComponent from "../../../components/IconPicker";
+import { ICON_PICKER_SIZE } from "@webiny/app-admin/components/IconPicker/types";
 import Accordion from "../../elementSettings/components/Accordion";
-import { BaseColorPicker } from "../../elementSettings/components/ColorPicker";
 import { ContentWrapper } from "../../elementSettings/components/StyledComponents";
 import Wrapper from "../../elementSettings/components/Wrapper";
 import InputField from "../../elementSettings/components/InputField";
 import SelectField from "../../elementSettings/components/SelectField";
-import { updateButtonElementIcon } from "../utils/iconUtils";
 import useUpdateHandlers from "../../elementSettings/useUpdateHandlers";
-import { usePageElements } from "@webiny/app-page-builder-elements/hooks/usePageElements";
-import startCase from "lodash/startCase";
+import { useActiveElement } from "~/editor";
+import { useUpdateIconSettings } from "~/editor/plugins/elementSettings/hooks/useUpdateIconSettings";
 
 const classes = {
     gridClass: css({
@@ -46,60 +45,43 @@ const classes = {
                 width: "100%"
             }
         }
+    }),
+    rightCellStyle: css({
+        justifySelf: "end"
     })
 };
 
 const ButtonSettings = ({
     defaultAccordionValue
 }: PbEditorPageElementSettingsRenderComponentProps) => {
-    const activeElementId = useRecoilValue(activeElementAtom);
-    const element = useRecoilValue(
-        elementWithChildrenByIdSelector(activeElementId)
-    ) as PbEditorElement;
-
-    let typesOptions: Array<{ value: string; label: string }> = [];
+    const [element] = useActiveElement<PbEditorElement>();
+    const { iconWidth, iconValue, onIconChange, onIconWidthChange, HiddenIconMarkup } =
+        useUpdateIconSettings(element);
 
     const { theme } = usePageElements();
     const types = Object.keys(theme.styles?.button || {});
-    typesOptions = types.map(item => ({
+    const typesOptions = types.map(item => ({
         value: item,
         label: startCase(item)
     }));
 
     const defaultType = typesOptions[0].value;
-    const { type = defaultType, icon = { width: 36 } } = element.data || {};
+    const { type = defaultType, icon } = element.data || {};
 
-    const { getUpdateValue, getUpdatePreview } = useUpdateHandlers({
+    const { getUpdateValue } = useUpdateHandlers({
         element,
-        dataNamespace: "data",
-        postModifyElement: updateButtonElementIcon
+        dataNamespace: "data"
     });
 
     const updateType = useCallback(
         (value: string) => getUpdateValue("type")(value),
         [getUpdateValue]
     );
-    const updateIcon = useCallback(
-        (value: PbIcon) => getUpdateValue("icon.id")(value.id),
-        [getUpdateValue]
-    );
-    const updateIconColor = useCallback(
-        (value: string) => getUpdateValue("icon.color")(value),
-        [getUpdateValue]
-    );
-    const updateIconColorPreview = useCallback(
-        (value: string) => getUpdatePreview("icon.color")(value),
-        [getUpdatePreview]
-    );
-    const updateIconWidth = useCallback(
-        (value: string) => getUpdateValue("icon.width")(value),
-        [getUpdateValue]
-    );
+
     const updateIconPosition = useCallback(
         (value: string) => getUpdateValue("icon.position")(value),
         [getUpdateValue]
     );
-    const removeIcon = useCallback(() => getUpdateValue("icon")({ id: null }), [getUpdateValue]);
 
     return (
         <Accordion title={"Button"} defaultValue={defaultAccordionValue}>
@@ -114,20 +96,11 @@ const ButtonSettings = ({
                     </SelectField>
                 </Wrapper>
                 <Wrapper label={"Icon"} containerClassName={classes.gridClass}>
-                    <IconPickerComponent
-                        handlerClassName={"icon-picker-handler"}
-                        value={icon?.id}
-                        onChange={updateIcon}
-                        removeIcon={removeIcon}
-                        useInSidebar={true}
-                    />
-                </Wrapper>
-                <Wrapper label={"Icon color"} containerClassName={classes.gridClass}>
-                    <BaseColorPicker
-                        handlerClassName={"color-picker-handler"}
-                        value={icon?.color}
-                        updateValue={updateIconColor}
-                        updatePreview={updateIconColorPreview}
+                    <IconPicker
+                        size={ICON_PICKER_SIZE.SMALL}
+                        value={iconValue}
+                        onChange={onIconChange}
+                        removable
                     />
                 </Wrapper>
                 <Wrapper
@@ -138,8 +111,8 @@ const ButtonSettings = ({
                 >
                     <InputField
                         placeholder={"Width"}
-                        value={icon?.width}
-                        onChange={updateIconWidth}
+                        value={iconWidth}
+                        onChange={onIconWidthChange}
                     />
                 </Wrapper>
                 <Wrapper
@@ -155,6 +128,8 @@ const ButtonSettings = ({
                         <option value={"bottom"}>Bottom</option>
                     </SelectField>
                 </Wrapper>
+                {/* Renders IconPicker.Icon for accessing its HTML without displaying it. */}
+                <HiddenIconMarkup />
             </ContentWrapper>
         </Accordion>
     );

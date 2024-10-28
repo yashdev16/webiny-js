@@ -1,4 +1,3 @@
-// TODO: find a way to avoid copying and registering icons twice (Headless CMS has an identical plugin)
 import React from "react";
 import { IconName, library } from "@fortawesome/fontawesome-svg-core";
 import { fab } from "@fortawesome/free-brands-svg-icons";
