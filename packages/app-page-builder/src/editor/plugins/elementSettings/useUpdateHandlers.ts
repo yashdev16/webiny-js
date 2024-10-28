@@ -18,10 +18,9 @@ type UpdateHandlersPropsType = Omit<UpdateElementActionArgsType, "history"> & {
     dataNamespace: string;
     postModifyElement?: (args: PostModifyElementArgs) => void;
 };
-type HandlerUpdateCallableType = (name: string) => (value: any) => void;
 type UseUpdateHandlersType = (props: UpdateHandlersPropsType) => {
-    getUpdateValue: HandlerUpdateCallableType;
-    getUpdatePreview: HandlerUpdateCallableType;
+    getUpdateValue: <T = any>(name: string) => (value: T) => void;
+    getUpdatePreview: <T = any>(name: string) => (value: T) => void;
 };
 const useUpdateHandlers: UseUpdateHandlersType = props => {
     const updateElement = useUpdateElement();
@@ -56,10 +55,10 @@ const useUpdateHandlers: UseUpdateHandlersType = props => {
     });
 
     const getUpdateValue = useMemo(() => {
-        const handlers: Record<string, HandlerUpdateCallableType> = {};
+        const handlers: Record<string, any> = {};
         return (name: string) => {
             if (!handlers[name]) {
-                handlers[name] = value => updateSettings(name, value, true);
+                handlers[name] = (value: any) => updateSettings(name, value, true);
             }
 
             return handlers[name];
@@ -67,10 +66,10 @@ const useUpdateHandlers: UseUpdateHandlersType = props => {
     }, [updateSettings]);
 
     const getUpdatePreview = useMemo(() => {
-        const handlers: Record<string, HandlerUpdateCallableType> = {};
+        const handlers: Record<string, any> = {};
         return (name: string) => {
             if (!handlers[name]) {
-                handlers[name] = value => updateSettings(name, value, false);
+                handlers[name] = (value: any) => updateSettings(name, value, false);
             }
 
             return handlers[name];

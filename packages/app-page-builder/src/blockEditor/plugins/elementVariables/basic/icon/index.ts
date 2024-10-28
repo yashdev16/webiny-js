@@ -10,11 +10,19 @@ export default {
                 id: element.id,
                 type: "icon",
                 label: "Icon",
-                value: { id: element.data?.icon?.id, svg: element.data?.icon?.svg }
+                value: {
+                    icon: element?.data.icon?.icon,
+                    markup: element?.data.icon?.markup,
+                    width: element?.data.icon?.width
+                }
             }
         ];
     },
     getVariableValue({ element }) {
-        return { id: element.data?.icon?.id, svg: element.data?.icon?.svg };
+        return {
+            icon: element?.data.icon?.icon,
+            markup: element?.data.icon?.markup,
+            width: element?.data.icon?.width
+        };
     }
 } as PbBlockEditorCreateVariablePlugin;

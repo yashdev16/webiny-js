@@ -3,6 +3,7 @@ import { AddButtonClickHandlers } from "~/elementDecorators/AddButtonClickHandle
 import { InjectElementVariables } from "~/render/variables/InjectElementVariables";
 import { LexicalParagraphRenderer } from "~/render/plugins/elements/paragraph/LexicalParagraph";
 import { LexicalHeadingRenderer } from "~/render/plugins/elements/heading/LexicalHeading";
+import { ConvertIconSettings } from "~/render/plugins/elementSettings/icon";
 
 export const PageBuilder = () => {
     return (
@@ -11,6 +12,7 @@ export const PageBuilder = () => {
             <InjectElementVariables />
             <LexicalParagraphRenderer />
             <LexicalHeadingRenderer />
+            <ConvertIconSettings />
         </>
     );
 };

@@ -4,7 +4,8 @@ import { BaseEventAction, EventAction } from "./editor/recoil/eventActions";
 import { PbState } from "./editor/recoil/modules/types";
 import { Plugin } from "@webiny/app/types";
 import { BindComponent } from "@webiny/form";
-import { IconName, IconPrefix, IconProp } from "@fortawesome/fontawesome-svg-core";
+import { IconName, IconPrefix } from "@fortawesome/fontawesome-svg-core";
+import { Icon } from "@webiny/app-admin/components/IconPicker/types";
 import { FormAPI, FormOnSubmit, FormSetValue, GenericFormData } from "@webiny/form/types";
 import { CoreOptions } from "medium-editor";
 import { MenuTreeItem } from "~/admin/views/Menus/types";
@@ -126,13 +127,22 @@ export interface PbElementDataImageType {
     htmlTag?: string;
 }
 
-export interface PbElementDataIconType {
-    id?: IconProp;
-    width?: number;
-    color?: string;
-    svg?: string;
+export interface PbElementDataIconV1 {
+    id: string[];
+    svg: string;
+    color: string;
+    width: string;
     position?: string;
 }
+
+export interface PbElementDataIconV2 {
+    icon: Icon;
+    markup: string;
+    width?: number;
+    position?: string;
+}
+
+export type PbElementDataIconType = PbElementDataIconV1 | PbElementDataIconV2;
 
 export interface PbElementDataSettingsFormType {
     parent?: string;
@@ -212,7 +222,7 @@ export type PbElementDataType = {
         url?: string;
     };
     type?: string;
-    icon?: PbElementDataIconType;
+    icon?: PbElementDataIconV2;
     source?: PbElementDataTypeSource;
     oembed?: {
         source?: {
@@ -895,7 +905,7 @@ export interface PbMenu {
 export interface PbBlockCategory {
     name: string;
     slug: string;
-    icon: string;
+    icon: Icon;
     description: string;
     createdOn: string;
     createdBy: PbIdentity;

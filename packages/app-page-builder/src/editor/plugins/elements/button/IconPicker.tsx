@@ -1,14 +1,12 @@
 import React from "react";
-import IconPickerComponent from "~/editor/components/IconPicker";
-import { PbIcon } from "~/types";
+import { IconPicker as IconPickerComponent, Icon } from "@webiny/app-admin/components/IconPicker";
 import { Typography } from "@webiny/ui/Typography";
 import { Cell } from "@webiny/ui/Grid";
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 interface IconPickerProps {
     label: string;
-    value: IconProp;
-    updateValue: (item: PbIcon) => void;
+    value: Icon | undefined;
+    updateValue: (item: Icon | undefined) => void;
 }
 
 const IconPicker = ({ label, value, updateValue }: IconPickerProps) => {
