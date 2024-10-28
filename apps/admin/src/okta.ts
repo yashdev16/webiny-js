@@ -3,8 +3,8 @@ import OktaSignIn from "@okta/okta-signin-widget";
 import { OktaAuth } from "@okta/okta-auth-js";
 import "@okta/okta-signin-widget/dist/css/okta-sign-in.min.css";
 
-const oktaDomain = `https://dev-844500.oktapreview.com`;
-export const rootAppClientId = "0oa1149zslypdjy5B0h8";
+const oktaDomain = String(process.env.WEBINY_ADMIN_OKTA_DOMAIN);
+export const rootAppClientId = String(process.env.WEBINY_ADMIN_OKTA_APP_CLIENT_ID);
 
 const redirectUri = window.location.origin + "/";
 
