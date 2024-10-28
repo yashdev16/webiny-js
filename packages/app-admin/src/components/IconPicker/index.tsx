@@ -4,3 +4,4 @@ export { useIcon } from "./IconRenderer";
 export { useIconPicker } from "./IconPickerPresenterProvider";
 export { useIconType } from "./config/IconType";
 export { defaultIcon } from "./defaultIcon";
+export type { Icon } from "./types";

@@ -38,10 +38,16 @@ export class IconPickerPresenter implements IconPickerPresenterInterface {
         makeAutoObservable(this);
     }
 
-    async load(value: Icon | null = null) {
-        this.selectedIcon = value;
+    async load(icon: Icon | null = null) {
+        if (icon?.value) {
+            this.selectedIcon = icon;
+        }
 
         await this.repository.loadIcons();
+
+        if (icon && !icon?.value) {
+            this.detectSelectedIcon(icon);
+        }
     }
 
     get vm() {
@@ -104,5 +110,15 @@ export class IconPickerPresenter implements IconPickerPresenterInterface {
 
     private resetActiveTab() {
         this.setActiveTab(this.selectedIcon ? this.getActiveTabByType(this.selectedIcon.type) : 0);
+    }
+
+    private detectSelectedIcon(icon: Icon) {
+        const iconByName = this.repository
+            .getIcons()
+            .find(x => x.name === icon.name && icon.type === x.type);
+
+        if (iconByName) {
+            this.selectedIcon = iconByName;
+        }
     }
 }

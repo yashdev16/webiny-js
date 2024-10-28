@@ -96,7 +96,6 @@ const CustomIconTab = observer(() => {
     };
 
     const onIconFileUpload = (file: FileManagerFileItem) => {
-        console.log("onIconFileUpload", file);
         const name = getNameOrId(file);
 
         const icon = {

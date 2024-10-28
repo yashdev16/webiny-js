@@ -92,6 +92,8 @@
     "ignore": {
       "dependencies": [
         "@svgr/webpack",
+        "@iconify/json",
+        "unicode-emoji-json",
         "@emotion/react",
         "@types/mime",
         "reset-css"

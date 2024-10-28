@@ -24,9 +24,9 @@ import {
 import { IconPickerTabRenderer } from "./IconPickerTab";
 import { IconPickerPresenterProvider } from "./IconPickerPresenterProvider";
 import { IconTypeProvider } from "./config/IconType";
-import { ICON_PICKER_SIZE } from "./types";
+import { Icon, ICON_PICKER_SIZE } from "./types";
 
-export interface IconPickerProps extends FormComponentProps {
+export interface IconPickerProps extends FormComponentProps<Icon | undefined> {
     label?: string;
     description?: string;
     size?: ICON_PICKER_SIZE;
@@ -57,7 +57,7 @@ export const IconPickerComponent = observer(
         const removeIcon = useCallback(() => {
             if (onChange) {
                 presenter.setIcon(null);
-                onChange(null);
+                onChange(undefined);
             }
         }, [onChange]);
 

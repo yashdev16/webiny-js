@@ -41,7 +41,7 @@ const IconSvg = () => {
             height={size}
             viewBox={`0 0 ${icon.width || 512} 512`}
             color={icon?.color || "inherit"}
-            dangerouslySetInnerHTML={{ __html: icon.value }}
+            dangerouslySetInnerHTML={{ __html: icon.value || "" }}
             style={{
                 verticalAlign: "middle"
             }}

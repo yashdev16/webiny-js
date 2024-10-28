@@ -5,7 +5,7 @@ export type Icon = {
     // eslint-disable-next-line @typescript-eslint/ban-types
     type: "icon" | "emoji" | "custom" | (string & {});
     name: string;
-    value: string;
+    value?: string;
     [key: string]: any;
 };
 
