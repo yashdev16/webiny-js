@@ -1,10 +1,12 @@
-import { Context, ITaskDefinition } from "~/types";
+import { Context, ITaskDataInput, ITaskDefinition } from "~/types";
 import { createTaskDefinition } from "~/task";
 
 export const MOCK_TASK_DEFINITION_ID = "myCustomTaskDefinition";
 
-export const createMockTaskDefinition = (definition?: Partial<ITaskDefinition>) => {
-    return createTaskDefinition<Context, any>({
+export const createMockTaskDefinition = <I extends ITaskDataInput = ITaskDataInput>(
+    definition?: Partial<ITaskDefinition>
+) => {
+    return createTaskDefinition<Context, I>({
         id: MOCK_TASK_DEFINITION_ID,
         title: "A custom task defined via method",
         run: async ({ response, isCloseToTimeout, input }) => {
