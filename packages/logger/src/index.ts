@@ -32,7 +32,7 @@ export const getLogLevel = (input?: string, defaultLevel: LevelWithSilent = "inf
 
 let logger: Logger;
 
-export const createPinoLogger = (input?: LoggerOptions, stream?: DestinationStream) => {
+export const createPinoLogger = (input?: LoggerOptions, stream?: DestinationStream): Logger => {
     const options = {
         ...(input || {}),
         level: getLogLevel(input?.level)

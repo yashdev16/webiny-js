@@ -15,7 +15,7 @@
     "@webiny/error": "0.0.0",
     "@webiny/handler-graphql": "0.0.0",
     "@webiny/wcp": "0.0.0",
-    "node-fetch": "^2.6.13"
+    "node-fetch": "2.6.7"
   },
   "devDependencies": {
     "@webiny/cli": "0.0.0",
