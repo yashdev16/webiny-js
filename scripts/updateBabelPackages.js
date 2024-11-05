@@ -3,6 +3,7 @@ const path = require("path");
 const semver = require("semver");
 const execa = require("execa");
 const loadJsonFile = require("load-json-file");
+const writeJsonFile = require("write-json-file");
 const { allWorkspaces } = require("../packages/project-utils/workspaces");
 
 const types = ["dependencies", "devDependencies", "peerDependencies"];
@@ -72,6 +73,25 @@ const updateBabelPackages = async () => {
         }
     }
 
+    /**
+     * Is the babel package in root package.json devDependencies?
+     */
+    const rootPackageJsonPath = path.resolve(process.cwd(), "package.json");
+    const rootPackageJson = loadJsonFile.sync(rootPackageJsonPath);
+    const addedToResolutions = [];
+    for (const pkg in babelPackages) {
+        if (!rootPackageJson.resolutions[pkg]) {
+            rootPackageJson.resolutions[pkg] = `^${babelPackages[pkg].latest.raw}`;
+            addedToResolutions.push(pkg);
+        }
+        if (rootPackageJson.devDependencies[pkg]) {
+            continue;
+        }
+        rootPackageJson.devDependencies[pkg] = `^${babelPackages[pkg].latest.raw}`;
+    }
+    writeJsonFile.sync(rootPackageJsonPath, rootPackageJson);
+    await execa("yarn");
+
     for (const pkg in babelPackages) {
         const target = babelPackages[pkg];
         if (!target.updateToLatest) {
@@ -81,6 +101,14 @@ const updateBabelPackages = async () => {
         await execa("yarn", ["up", `${pkg}@^${target.latest.raw}`]);
         console.log(`"${pkg}" updated from "${target.version.raw}" to ${target.latest.raw}.`);
     }
+    /**
+     * Remove from resolutions.
+     */
+    const rootPackageJsonUp = loadJsonFile.sync(rootPackageJsonPath);
+    for (const pkg of addedToResolutions) {
+        delete rootPackageJsonUp.resolutions[pkg];
+    }
+    writeJsonFile.sync(rootPackageJsonPath, rootPackageJsonUp);
 };
 
 updateBabelPackages();
