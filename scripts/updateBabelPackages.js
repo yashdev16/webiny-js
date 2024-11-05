@@ -104,6 +104,9 @@ const updateBabelPackages = async () => {
     /**
      * Remove from resolutions.
      */
+    if (addedToResolutions.length === 0) {
+        return;
+    }
     const rootPackageJsonUp = loadJsonFile.sync(rootPackageJsonPath);
     for (const pkg of addedToResolutions) {
         delete rootPackageJsonUp.resolutions[pkg];
