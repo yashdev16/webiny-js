@@ -69,17 +69,10 @@ jobs:
           filters: |-
             packages:
               - 'packages/*/**'
-      - name: Get list of changed packages
-        id: list-changes
-        run: >-
-          CHANGED_PACKAGES=$(echo "${{
-          steps.changes.outputs.detect-changed-packages }}" | jq -r '.[] |
-          select(. != null)' | xargs -n 1 dirname | sort -u)
-                  echo "Changed packages:"
-                  echo "$CHANGED_PACKAGES"
-                  echo "changed_packages=$CHANGED_PACKAGES" >> $GITHUB_ENV
-      - name: Output changed packages
-        run: 'echo "Changed packages: ${{ env.changed_packages }}"'
+      - name: Extract changed package names
+        run: |
+          echo "Changed packages:"
+          echo "${{ steps.filter.outputs.detect-changed-packages }}"
     runs-on: ubuntu-latest
     env:
       NODE_OPTIONS: '--max_old_space_size=4096'

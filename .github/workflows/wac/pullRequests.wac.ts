@@ -141,13 +141,8 @@ export const pullRequests = createWorkflow({
                     }
                 },
                 {
-                    name: "Get list of changed packages",
-                    id: "list-changes",
-                    run: 'CHANGED_PACKAGES=$(echo "${{ steps.changes.outputs.detect-changed-packages }}" | jq -r \'.[] | select(. != null)\' | xargs -n 1 dirname | sort -u)\n        echo "Changed packages:"\n        echo "$CHANGED_PACKAGES"\n        echo "changed_packages=$CHANGED_PACKAGES" >> $GITHUB_ENV'
-                },
-                {
-                    name: "Output changed packages",
-                    run: 'echo "Changed packages: ${{ env.changed_packages }}"'
+                    "name": "Extract changed package names",
+                    "run": "echo \"Changed packages:\"\necho \"${{ steps.filter.outputs.detect-changed-packages }}\"\n"
                 }
             ]
         }),
