@@ -113,7 +113,8 @@ export const pullRequests = createWorkflow({
             outputs: {
                 "global-cache-key": "${{ steps.global-cache-key.outputs.global-cache-key }}",
                 "run-cache-key": "${{ steps.run-cache-key.outputs.run-cache-key }}",
-                "is-fork-pr": "${{ steps.is-fork-pr.outputs.is-fork-pr }}"
+                "is-fork-pr": "${{ steps.is-fork-pr.outputs.is-fork-pr }}",
+                "changed-packages": "${{ steps.detect-changed-packages.outputs.changed-packages }}"
             },
             checkout: false,
             steps: [
@@ -133,17 +134,22 @@ export const pullRequests = createWorkflow({
                     run: 'echo "is-fork-pr=${{ github.event.pull_request.head.repo.fork }}" >> $GITHUB_OUTPUT'
                 },
                 {
-                    name: "Detect changed packages",
-                    id: "detect-changed-packages",
+                    name: "Detect changed files",
+                    id: "detect-changed-files",
                     uses: "dorny/paths-filter@v3",
                     with: {
-                        filters: "changed-packages:\n  - 'packages/**/*'\n",
+                        filters: "changed:\n  - 'packages/**/*'\n",
                         "list-files": "json"
                     }
                 },
                 {
-                    name: "Extract changed package names",
-                    run: 'echo "Changed packages:"\necho "${{ steps.detect-changed-packages.outputs.changed-packages_files }}"\n'
+                    "name": "Detect changed packages",
+                    id: "detect-changed-packages",
+                    "run": "# Get the array from the previous step's output\nFILES=$(echo \"${{ steps.set-array.outputs.files }}\" | jq -r '.[]')\n\n# Extract package names (the first part of each file path before /src)\nPACKAGES=$(echo \"$FILES\" | sed -E 's|/src/.*||' | sort | uniq)\n\n# Set the distinct packages as a job output\necho \"::set-output name=changed-packages::$(echo $PACKAGES | tr '\\n' ',')\"\n"
+                },
+                {
+                    "name": "Use distinct packages output",
+                    "run": "echo \"Distinct packages: ${{ steps.distinct-packages.outputs.changed-packages }}\"\n"
                 }
             ]
         }),

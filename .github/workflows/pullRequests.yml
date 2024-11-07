@@ -42,6 +42,7 @@ jobs:
       global-cache-key: ${{ steps.global-cache-key.outputs.global-cache-key }}
       run-cache-key: ${{ steps.run-cache-key.outputs.run-cache-key }}
       is-fork-pr: ${{ steps.is-fork-pr.outputs.is-fork-pr }}
+      changed-packages: ${{ steps.detect-changed-packages.outputs.changed-packages }}
     steps:
       - uses: actions/setup-node@v4
         with:
@@ -62,20 +63,35 @@ jobs:
         run: >-
           echo "is-fork-pr=${{ github.event.pull_request.head.repo.fork }}" >>
           $GITHUB_OUTPUT
-      - name: Detect changed packages
-        id: detect-changed-packages
+      - name: Detect changed files
+        id: detect-changed-files
         uses: dorny/paths-filter@v3
         with:
           filters: |
-            changed-packages:
+            changed:
               - 'packages/**/*'
           list-files: json
-      - name: Extract changed package names
+      - name: Detect changed packages
+        id: detect-changed-packages
         run: >
-          echo "Changed packages:"
+          # Get the array from the previous step's output
 
-          echo "${{ steps.detect-changed-packages.outputs.changed-packages_files
-          }}"
+          FILES=$(echo "${{ steps.set-array.outputs.files }}" | jq -r '.[]')
+
+
+          # Extract package names (the first part of each file path before /src)
+
+          PACKAGES=$(echo "$FILES" | sed -E 's|/src/.*||' | sort | uniq)
+
+
+          # Set the distinct packages as a job output
+
+          echo "::set-output name=changed-packages::$(echo $PACKAGES | tr '\n'
+          ',')"
+      - name: Use distinct packages output
+        run: >
+          echo "Distinct packages: ${{
+          steps.distinct-packages.outputs.changed-packages }}"
     runs-on: ubuntu-latest
     env:
       NODE_OPTIONS: '--max_old_space_size=4096'
