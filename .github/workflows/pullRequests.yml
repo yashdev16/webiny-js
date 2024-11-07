@@ -69,6 +69,7 @@ jobs:
           filters: |
             changed-packages:
               - 'packages/**/*'
+          list-files: json
       - name: Extract changed package names
         run: |
           echo "Changed packages:"
