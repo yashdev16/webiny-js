@@ -74,13 +74,13 @@ jobs:
       - name: Detect changed packages
         id: detect-changed-packages
         run: >-
-          node -e "const detectedChangedFilesStepOutputPath = JSON.parse(\n   
-          "${{ steps.detect-changed-files.outputs.changed_files }}"\n);\nconst
+          node -e "const detectedChangedFilesStepOutputPath =\n    "${{
+          steps.detect-changed-files.outputs.changed_files }}";\n\nconst
           detectedChangedFiles =
           JSON.parse(detectedChangedFilesStepOutputPath);\n\nconst
           changedPackages = detectedChangedFiles\n    .filter(path =>
           path.startsWith("packages/"))\n    .reduce((acc, item) => {\n       
-          const [,packageName] = item.split("/");1\n       
+          const [, packageName] = item.split("/");\n        1;\n       
           acc.add(packageName);\n        return acc;\n    }, new
           Set());\n\nconsole.log(JSON.stringify(Array.from(changedPackages)));\n"
       - name: Use distinct packages output
