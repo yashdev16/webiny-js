@@ -1,13 +1,11 @@
-const detectedChangedFilesStepOutputPath =
-    "${{ steps.detect-changed-files.outputs.changed_files }}";
-
-const detectedChangedFiles = JSON.parse(detectedChangedFilesStepOutputPath);
+const args = process.argv.slice(2); // Removes the first two elements
+const [detectedChangedFilesString] = args;
+const detectedChangedFiles = JSON.parse(detectedChangedFilesString);
 
 const changedPackages = detectedChangedFiles
     .filter(path => path.startsWith("packages/"))
     .reduce((acc, item) => {
         const [, packageName] = item.split("/");
-        1;
         acc.add(packageName);
         return acc;
     }, new Set());

@@ -147,7 +147,7 @@ export const pullRequests = createWorkflow({
                 {
                     "name": "Detect changed packages",
                     id: "detect-changed-packages",
-                    "run": runNodeScript("listChangedPackages")
+                    "run": runNodeScript("listChangedPackages", "${{ steps.detect-changed-files.outputs.changed_files }}")
                 },
                 {
                     "name": "Use distinct packages output",
