@@ -75,12 +75,10 @@ jobs:
       - name: Detect changed packages
         id: detect-changed-packages
         run: >-
-          node .github/workflows/wac/utils/runNodeScripts/listChangedPackages.js
-          '${{ steps.detect-changed-files.outputs.changed_files }}'
-      - name: Use distinct packages output
-        run: >
-          echo "Distinct packages: ${{
-          steps.distinct-packages.outputs.changed-packages }}"
+          echo "changed-packages=$(node
+          .github/workflows/wac/utils/runNodeScripts/listChangedPackages.js '${{
+          steps.detect-changed-files.outputs.changed_files }}') >>
+          $GITHUB_OUTPUT
     runs-on: ubuntu-latest
     env:
       NODE_OPTIONS: '--max_old_space_size=4096'

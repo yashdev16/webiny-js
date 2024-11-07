@@ -1,12 +1,12 @@
-import fs from "fs";
-import jsesc from "jsesc";
 import { createWorkflow, NormalJob } from "github-actions-wac";
 import { createJob } from "./jobs";
 import {
     NODE_VERSION,
     BUILD_PACKAGES_RUNNER,
     listPackagesWithJestTests,
-    AWS_REGION, runNodeScript
+    AWS_REGION,
+    runNodeScript,
+    addToOutputs
 } from "./utils";
 import {
     createGlobalBuildCacheSteps,
@@ -144,13 +144,15 @@ export const pullRequests = createWorkflow({
                     }
                 },
                 {
-                    "name": "Detect changed packages",
+                    name: "Detect changed packages",
                     id: "detect-changed-packages",
-                    "run": runNodeScript("listChangedPackages", "${{ steps.detect-changed-files.outputs.changed_files }}")
-                },
-                {
-                    "name": "Use distinct packages output",
-                    "run": "echo \"Distinct packages: ${{ steps.distinct-packages.outputs.changed-packages }}\"\n"
+                    run: addToOutputs(
+                        "changed-packages",
+                        `$(${runNodeScript(
+                            "listChangedPackages",
+                            "${{ steps.detect-changed-files.outputs.changed_files }}"
+                        )})`
+                    )
                 }
             ]
         }),
