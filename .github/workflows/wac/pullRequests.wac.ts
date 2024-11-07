@@ -145,7 +145,7 @@ export const pullRequests = createWorkflow({
                 {
                     "name": "Detect changed packages",
                     id: "detect-changed-packages",
-                    "run": "# Get the array from the previous step's output\nFILES=$(echo \"${{ steps.set-array.outputs.files }}\" | jq -r '.[]')\n\n# Extract package names (the first part of each file path before /src)\nPACKAGES=$(echo \"$FILES\" | sed -E 's|/src/.*||' | sort | uniq)\n\n# Set the distinct packages as a job output\necho \"::set-output name=changed-packages::$(echo $PACKAGES | tr '\\n' ',')\"\n"
+                    "run": "# Get the array from the previous step's output\nFILES=$(echo \"${{ steps.detect-changed-files.outputs.changed_files }}\" | jq -r '.[]')\n\n# Extract package names (the first part of each file path before /src)\nPACKAGES=$(echo \"$FILES\" | sed -E 's|/src/.*||' | sort | uniq)\n\n# Set the distinct packages as a job output\necho \"::set-output name=changed-packages::$(echo $PACKAGES | tr '\\n' ',')\"\n"
                 },
                 {
                     "name": "Use distinct packages output",
