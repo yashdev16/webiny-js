@@ -71,9 +71,11 @@ jobs:
               - 'packages/**/*'
           list-files: json
       - name: Extract changed package names
-        run: |
+        run: >
           echo "Changed packages:"
-          echo "${{ steps.detect-changed-packages.outputs.changed-packages }}"
+
+          echo "${{ steps.detect-changed-packages.outputs.changed-packages_files
+          }}"
     runs-on: ubuntu-latest
     env:
       NODE_OPTIONS: '--max_old_space_size=4096'

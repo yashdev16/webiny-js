@@ -143,7 +143,7 @@ export const pullRequests = createWorkflow({
                 },
                 {
                     name: "Extract changed package names",
-                    run: 'echo "Changed packages:"\necho "${{ steps.detect-changed-packages.outputs.changed-packages }}"\n'
+                    run: 'echo "Changed packages:"\necho "${{ steps.detect-changed-packages.outputs.changed-packages_files }}"\n'
                 }
             ]
         }),
