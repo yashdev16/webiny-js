@@ -162,6 +162,10 @@ export const pullRequests = createWorkflow({
             "runs-on": BUILD_PACKAGES_RUNNER,
             checkout: { path: DIR_WEBINY_JS },
             steps: [
+                {
+                    name: "test",
+                    run: `echo "\${{ needs.constants.outputs.changed-packages }}"`
+                },
                 ...yarnCacheSteps,
                 ...globalBuildCacheSteps,
                 ...installBuildSteps,
