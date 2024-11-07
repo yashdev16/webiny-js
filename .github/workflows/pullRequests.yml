@@ -66,9 +66,9 @@ jobs:
         id: detect-changed-packages
         uses: dorny/paths-filter@v2
         with:
-          filters: |-
-            packages:
-              - 'packages/*/**'
+          filters: |
+            packages/*:
+              - 'packages/*'
       - name: Extract changed package names
         run: |
           echo "Changed packages:"
