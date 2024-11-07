@@ -74,20 +74,23 @@ jobs:
       - name: Detect changed packages
         id: detect-changed-packages
         run: >
-          # Get the array from the previous step's output
+          const detectedChangedFilesStepOutputPath = JSON.parse(
+              "${{ steps.detect-changed-files.outputs.changed_files }}"
+          );
 
-          FILES=$(echo "${{ steps.set-array.outputs.files }}" | jq -r '.[]')
-
-
-          # Extract package names (the first part of each file path before /src)
-
-          PACKAGES=$(echo "$FILES" | sed -E 's|/src/.*||' | sort | uniq)
+          const detectedChangedFiles =
+          JSON.parse(detectedChangedFilesStepOutputPath);
 
 
-          # Set the distinct packages as a job output
+          const changedPackages = detectedChangedFiles
+              .filter(path => path.startsWith("packages/"))
+              .reduce((acc, item) => {
+                  const [,packageName] = item.split("/");
+                  acc.add(packageName);
+                  return acc;
+              }, new Set());
 
-          echo "::set-output name=changed-packages::$(echo $PACKAGES | tr '\n'
-          ',')"
+          console.log(JSON.stringify(changedPackages));
       - name: Use distinct packages output
         run: >
           echo "Distinct packages: ${{

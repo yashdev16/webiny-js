@@ -1,3 +1,4 @@
+import fs from "fs";
 import { createWorkflow, NormalJob } from "github-actions-wac";
 import { createJob } from "./jobs";
 import {
@@ -145,7 +146,7 @@ export const pullRequests = createWorkflow({
                 {
                     "name": "Detect changed packages",
                     id: "detect-changed-packages",
-                    "run": "# Get the array from the previous step's output\nFILES=$(echo \"${{ steps.detect-changed-files.outputs.changed_files }}\" | jq -r '.[]')\n\n# Extract package names (the first part of each file path before /src)\nPACKAGES=$(echo \"$FILES\" | sed -E 's|/src/.*||' | sort | uniq)\n\n# Set the distinct packages as a job output\necho \"::set-output name=changed-packages::$(echo $PACKAGES | tr '\\n' ',')\"\n"
+                    "run": fs.readFileSync(__dirname + '/utils/listChangedPackages.js', "utf-8")
                 },
                 {
                     "name": "Use distinct packages output",
