@@ -74,9 +74,8 @@ jobs:
       - name: Detect changed packages
         id: detect-changed-packages
         run: >-
-          node ${{ github.workspace
-          }}/.github/workflows/wac/utils/runNodeScripts/listChangedPackages.js
-          ${{ steps.detect-changed-files.outputs.changed_files }}
+          node .github/workflows/wac/utils/runNodeScripts/listChangedPackages.js
+          '${{ steps.detect-changed-files.outputs.changed_files }}'
       - name: Use distinct packages output
         run: >
           echo "Distinct packages: ${{
