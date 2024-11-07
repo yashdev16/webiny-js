@@ -118,7 +118,6 @@ export const pullRequests = createWorkflow({
                 "is-fork-pr": "${{ steps.is-fork-pr.outputs.is-fork-pr }}",
                 "changed-packages": "${{ steps.detect-changed-packages.outputs.changed-packages }}"
             },
-            checkout: false,
             steps: [
                 {
                     name: "Create global cache key",
