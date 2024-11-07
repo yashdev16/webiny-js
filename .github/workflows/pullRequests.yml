@@ -67,12 +67,12 @@ jobs:
         uses: dorny/paths-filter@v3
         with:
           filters: |
-            packages/**/*:
+            changed-packages:
               - 'packages/**/*'
       - name: Extract changed package names
         run: |
           echo "Changed packages:"
-          echo "${{ steps.detect-changed-packages.outputs.packages }}"
+          echo "${{ steps.detect-changed-packages.outputs.changed-packages }}"
     runs-on: ubuntu-latest
     env:
       NODE_OPTIONS: '--max_old_space_size=4096'
