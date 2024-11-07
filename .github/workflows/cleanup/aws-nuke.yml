@@ -20,10 +20,12 @@ accounts:
         - "DeployWebinyProjectGroup1Policy"
         - "DeployWebinyProjectGroup2Policy"
         - "DeployWebinyProjectGroup3Policy"
+        - "DeployWebinyProjectExtra"
       IAMRolePolicyAttachment:
         - "GitHubActionsWebinyJs -> DeployWebinyProjectGroup1Policy"
         - "GitHubActionsWebinyJs -> DeployWebinyProjectGroup2Policy"
         - "GitHubActionsWebinyJs -> DeployWebinyProjectGroup3Policy"
+        - "GitHubActionsWebinyJs -> DeployWebinyProjectExtra"
 
 resource-types:
   # These resource types will be destroyed.
