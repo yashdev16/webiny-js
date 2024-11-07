@@ -131,6 +131,23 @@ export const pullRequests = createWorkflow({
                     name: "Is a PR from a fork",
                     id: "is-fork-pr",
                     run: 'echo "is-fork-pr=${{ github.event.pull_request.head.repo.fork }}" >> $GITHUB_OUTPUT'
+                },
+                {
+                    name: "Detect changed packages",
+                    id: "detect-changed-packages",
+                    uses: "dorny/paths-filter@v2",
+                    with: {
+                        filters: "packages:\n  - 'packages/*/**'"
+                    }
+                },
+                {
+                    name: "Get list of changed packages",
+                    id: "list-changes",
+                    run: 'CHANGED_PACKAGES=$(echo "${{ steps.changes.outputs.detect-changed-packages }}" | jq -r \'.[] | select(. != null)\' | xargs -n 1 dirname | sort -u)\n        echo "Changed packages:"\n        echo "$CHANGED_PACKAGES"\n        echo "changed_packages=$CHANGED_PACKAGES" >> $GITHUB_ENV'
+                },
+                {
+                    name: "Output changed packages",
+                    run: 'echo "Changed packages: ${{ env.changed_packages }}"'
                 }
             ]
         }),
