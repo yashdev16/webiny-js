@@ -1,11 +1,12 @@
 import fs from "fs";
+import jsesc from "jsesc";
 import { createWorkflow, NormalJob } from "github-actions-wac";
 import { createJob } from "./jobs";
 import {
     NODE_VERSION,
     BUILD_PACKAGES_RUNNER,
     listPackagesWithJestTests,
-    AWS_REGION
+    AWS_REGION, runNodeScript
 } from "./utils";
 import {
     createGlobalBuildCacheSteps,
@@ -146,7 +147,7 @@ export const pullRequests = createWorkflow({
                 {
                     "name": "Detect changed packages",
                     id: "detect-changed-packages",
-                    "run": fs.readFileSync(__dirname + '/utils/listChangedPackages.js', "utf-8")
+                    "run": runNodeScript("listChangedPackages")
                 },
                 {
                     "name": "Use distinct packages output",

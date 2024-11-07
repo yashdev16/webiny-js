@@ -12243,6 +12243,13 @@ __metadata:
   languageName: node
   linkType: soft
 
+"@types/jsesc@npm:^3.0.3":
+  version: 3.0.3
+  resolution: "@types/jsesc@npm:3.0.3"
+  checksum: e148757848d77f90d04f193f96b39439d04f1ef61baf8e4f040c06f37a05dd7dcf1dd5eaac1152b840152134e1294771d018255aef52324ddb2b940d63b68302
+  languageName: node
+  linkType: hard
+
 "@types/json-schema@npm:*, @types/json-schema@npm:^7.0.4, @types/json-schema@npm:^7.0.5, @types/json-schema@npm:^7.0.8, @types/json-schema@npm:^7.0.9":
   version: 7.0.11
   resolution: "@types/json-schema@npm:7.0.11"
@@ -36866,6 +36873,7 @@ __metadata:
     "@types/fs-extra": ^11.0.4
     "@types/hoist-non-react-statics": ^3.3.5
     "@types/jest": ^29.5.11
+    "@types/jsesc": ^3.0.3
     "@types/node": ^20.0.0
     "@types/prettier": ^2.7.3
     "@types/react": 18.2.79
@@ -36909,6 +36917,7 @@ __metadata:
     jest: ^29.7.0
     jest-environment-jsdom: ^29.7.0
     jest-extended: 4.0.2
+    jsesc: ^3.0.2
     lerna: 8.1.2
     lint-staged: ^15.2.2
     listr: ^0.14.3
