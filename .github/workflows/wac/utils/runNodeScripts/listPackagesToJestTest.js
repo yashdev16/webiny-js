@@ -7,4 +7,4 @@ const packagesToJestTest = packagesWithJestTestsList.filter(pkg => {
     return changedPackages.includes(pkg.packageName);
 });
 
-console.log(JSON.stringify(Array.from(packagesToJestTest)));
+console.log(JSON.stringify(packagesToJestTest));
