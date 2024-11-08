@@ -184,7 +184,7 @@ jobs:
     needs:
       - constants
       - build
-    name: constants-jest
+    name: Create Jest tests constants
     runs-on: ubuntu-latest
     outputs:
       packages-to-jest-test: ${{ steps.list-packages-to-jest.outputs.packages-to-jest-test }}
@@ -207,7 +207,7 @@ jobs:
     needs:
       - constants
       - build
-      - constants-jest
+      - jestTestsNoStorageConstants
     name: ${{ matrix.package.cmd }}
     strategy:
       fail-fast: false
@@ -216,7 +216,10 @@ jobs:
           - ubuntu-latest
         node:
           - 20
-        package: ${{ fromJson(needs.constants-jest.outputs.packages-to-jest-test) }}
+        package: >-
+          ${{
+          fromJson(needs.jestTestsNoStorageConstants.outputs.packages-to-jest-test)
+          }}
     runs-on: ${{ matrix.os }}
     env:
       NODE_OPTIONS: '--max_old_space_size=4096'
@@ -250,7 +253,7 @@ jobs:
     needs:
       - constants
       - build
-    name: constants-jest
+    name: Create Jest tests constants
     runs-on: ubuntu-latest
     outputs:
       packages-to-jest-test: ${{ steps.list-packages-to-jest.outputs.packages-to-jest-test }}
@@ -316,7 +319,7 @@ jobs:
     needs:
       - constants
       - build
-      - constants-jest
+      - jestTestsddbConstants
     name: ${{ matrix.package.cmd }}
     strategy:
       fail-fast: false
@@ -325,7 +328,9 @@ jobs:
           - ubuntu-latest
         node:
           - 20
-        package: ${{ fromJson(needs.constants-jest.outputs.packages-to-jest-test) }}
+        package: >-
+          ${{
+          fromJson(needs.jestTestsddbConstants.outputs.packages-to-jest-test) }}
     runs-on: ${{ matrix.os }}
     env:
       NODE_OPTIONS: '--max_old_space_size=4096'
@@ -359,7 +364,7 @@ jobs:
     needs:
       - constants
       - build
-    name: constants-jest
+    name: Create Jest tests constants
     runs-on: ubuntu-latest
     outputs:
       packages-to-jest-test: ${{ steps.list-packages-to-jest.outputs.packages-to-jest-test }}
@@ -423,7 +428,7 @@ jobs:
     needs:
       - constants
       - build
-      - constants-jest
+      - jestTestsddb-esConstants
     name: ${{ matrix.package.cmd }}
     strategy:
       fail-fast: false
@@ -432,7 +437,10 @@ jobs:
           - ubuntu-latest
         node:
           - 20
-        package: ${{ fromJson(needs.constants-jest.outputs.packages-to-jest-test) }}
+        package: >-
+          ${{
+          fromJson(needs.jestTestsddb-esConstants.outputs.packages-to-jest-test)
+          }}
     runs-on: ${{ matrix.os }}
     env:
       NODE_OPTIONS: '--max_old_space_size=4096'
@@ -477,7 +485,7 @@ jobs:
     needs:
       - constants
       - build
-    name: constants-jest
+    name: Create Jest tests constants
     runs-on: ubuntu-latest
     outputs:
       packages-to-jest-test: ${{ steps.list-packages-to-jest.outputs.packages-to-jest-test }}
@@ -541,7 +549,7 @@ jobs:
     needs:
       - constants
       - build
-      - constants-jest
+      - jestTestsddb-osConstants
     name: ${{ matrix.package.cmd }}
     strategy:
       fail-fast: false
@@ -550,7 +558,10 @@ jobs:
           - ubuntu-latest
         node:
           - 20
-        package: ${{ fromJson(needs.constants-jest.outputs.packages-to-jest-test) }}
+        package: >-
+          ${{
+          fromJson(needs.jestTestsddb-osConstants.outputs.packages-to-jest-test)
+          }}
     runs-on: ${{ matrix.os }}
     env:
       NODE_OPTIONS: '--max_old_space_size=4096'

@@ -25,6 +25,11 @@ const globalBuildCacheSteps = createGlobalBuildCacheSteps({ workingDirectory: DI
 const runBuildCacheSteps = createRunBuildCacheSteps({ workingDirectory: DIR_WEBINY_JS });
 
 const createJestTestsJobs = (storage: string | null) => {
+    const constantsJobName = storage
+        ? `jestTests${storage}Constants`
+        : "jestTestsNoStorageConstants";
+    const runJobName = storage ? `jestTests${storage}Run` : "jestTestsNoStorageRun";
+
     const env: Record<string, string> = { AWS_REGION };
 
     if (storage) {
@@ -47,7 +52,7 @@ const createJestTestsJobs = (storage: string | null) => {
 
     const constantsJob: NormalJob = createJob({
         needs: ["constants", "build"],
-        name: "constants-jest",
+        name: "Create Jest tests constants",
         "runs-on": "ubuntu-latest",
         outputs: {
             "packages-to-jest-test": "${{ steps.list-packages-to-jest.outputs.packages-to-jest-test }}"
@@ -69,14 +74,14 @@ const createJestTestsJobs = (storage: string | null) => {
     });
 
     const runJob: NormalJob = createJob({
-        needs: ["constants", "build", "constants-jest"],
+        needs: ["constants", "build", constantsJobName],
         name: "${{ matrix.package.cmd }}",
         strategy: {
             "fail-fast": false,
             matrix: {
                 os: ["ubuntu-latest"],
                 node: [NODE_VERSION],
-                package: "${{ fromJson(needs.constants-jest.outputs.packages-to-jest-test) }}"
+                package: `$\{{ fromJson(needs.${constantsJobName}.outputs.packages-to-jest-test) }}`
             }
         },
         "runs-on": "${{ matrix.os }}",
@@ -101,10 +106,7 @@ const createJestTestsJobs = (storage: string | null) => {
         runJob.if = "needs.constants.outputs.is-fork-pr != 'true'";
     }
 
-    const constantsJobName = storage
-        ? `jestTests${storage}Constants`
-        : "jestTestsNoStorageConstants";
-    const runJobName = storage ? `jestTests${storage}Run` : "jestTestsNoStorageRun";
+
     return {
         [constantsJobName]: constantsJob,
         [runJobName]: runJob
