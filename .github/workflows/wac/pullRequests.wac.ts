@@ -91,6 +91,7 @@ const createJestTestsJobs = (storage: string | null) => {
         },
         "runs-on": "${{ matrix.os }}",
         env,
+        if: `\${{ fromJson(needs.${constantsJobName}.outputs.packages-to-jest-test) != '[]' }}`,
         awsAuth: storage === "ddb-es" || storage === "ddb-os",
         checkout: { path: DIR_WEBINY_JS },
         steps: [
@@ -108,7 +109,7 @@ const createJestTestsJobs = (storage: string | null) => {
     // We prevent running of Jest tests if a PR was created from a fork.
     // This is because we don't want to expose our AWS credentials to forks.
     if (storage === "ddb-es" || storage === "ddb-os") {
-        runJob.if = "needs.constants.outputs.is-fork-pr != 'true'";
+        runJob.if += " && needs.constants.outputs.is-fork-pr != 'true'";
     }
 
     return {

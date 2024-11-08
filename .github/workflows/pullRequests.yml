@@ -230,6 +230,10 @@ jobs:
       NODE_OPTIONS: '--max_old_space_size=4096'
       YARN_ENABLE_IMMUTABLE_INSTALLS: false
       AWS_REGION: eu-central-1
+    if: >-
+      ${{
+      fromJson(needs.jestTestsNoStorageConstants.outputs.packages-to-jest-test)
+      != '[]' }}
     steps:
       - uses: actions/setup-node@v4
         with:
@@ -346,6 +350,9 @@ jobs:
       NODE_OPTIONS: '--max_old_space_size=4096'
       YARN_ENABLE_IMMUTABLE_INSTALLS: false
       AWS_REGION: eu-central-1
+    if: >-
+      ${{ fromJson(needs.jestTestsddbConstants.outputs.packages-to-jest-test) !=
+      '[]' }}
     steps:
       - uses: actions/setup-node@v4
         with:
@@ -464,6 +471,9 @@ jobs:
       AWS_ELASTIC_SEARCH_DOMAIN_NAME: ${{ secrets.AWS_ELASTIC_SEARCH_DOMAIN_NAME }}
       ELASTIC_SEARCH_ENDPOINT: ${{ secrets.ELASTIC_SEARCH_ENDPOINT }}
       ELASTIC_SEARCH_INDEX_PREFIX: ${{ matrix.package.id }}
+    if: >-
+      ${{ fromJson(needs.jestTestsddb-esConstants.outputs.packages-to-jest-test)
+      != '[]' }} && needs.constants.outputs.is-fork-pr != 'true'
     steps:
       - uses: actions/setup-node@v4
         with:
@@ -495,7 +505,6 @@ jobs:
         working-directory: ${{ github.base_ref }}
     permissions:
       id-token: write
-    if: needs.constants.outputs.is-fork-pr != 'true'
   jestTestsddb-osConstants:
     needs:
       - constants
@@ -590,6 +599,9 @@ jobs:
       AWS_ELASTIC_SEARCH_DOMAIN_NAME: ${{ secrets.AWS_OPEN_SEARCH_DOMAIN_NAME }}
       ELASTIC_SEARCH_ENDPOINT: ${{ secrets.OPEN_SEARCH_ENDPOINT }}
       ELASTIC_SEARCH_INDEX_PREFIX: ${{ matrix.package.id }}
+    if: >-
+      ${{ fromJson(needs.jestTestsddb-osConstants.outputs.packages-to-jest-test)
+      != '[]' }} && needs.constants.outputs.is-fork-pr != 'true'
     steps:
       - uses: actions/setup-node@v4
         with:
@@ -621,4 +633,3 @@ jobs:
         working-directory: ${{ github.base_ref }}
     permissions:
       id-token: write
-    if: needs.constants.outputs.is-fork-pr != 'true'
