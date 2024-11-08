@@ -141,10 +141,6 @@ export const createTypeDefs = (models: NonEmptyArray<CmsModel>): string => {
             error: CmsError
         }
         
-        enum ExportContentEntriesModelsListEnum {
-            ${models.map(model => model.modelId).join("\n")}
-        }
-        
         extend type Query {
             getExportContentEntries(id: ID!): ExportContentEntriesResponse!
             listExportContentEntries(after: String, limit: Int): ListExportContentEntriesResponse!

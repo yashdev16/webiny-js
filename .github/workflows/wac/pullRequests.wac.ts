@@ -4,7 +4,9 @@ import {
     NODE_VERSION,
     BUILD_PACKAGES_RUNNER,
     listPackagesWithJestTests,
-    AWS_REGION
+    AWS_REGION,
+    runNodeScript,
+    addToOutputs
 } from "./utils";
 import {
     createGlobalBuildCacheSteps,
@@ -22,7 +24,12 @@ const yarnCacheSteps = createYarnCacheSteps({ workingDirectory: DIR_WEBINY_JS })
 const globalBuildCacheSteps = createGlobalBuildCacheSteps({ workingDirectory: DIR_WEBINY_JS });
 const runBuildCacheSteps = createRunBuildCacheSteps({ workingDirectory: DIR_WEBINY_JS });
 
-const createJestTestsJob = (storage: string | null) => {
+const createJestTestsJobs = (storage: string | null) => {
+    const constantsJobName = storage
+        ? `jestTests${storage}Constants`
+        : "jestTestsNoStorageConstants";
+    const runJobName = storage ? `jestTests${storage}Run` : "jestTestsNoStorageRun";
+
     const env: Record<string, string> = { AWS_REGION };
 
     if (storage) {
@@ -39,23 +46,52 @@ const createJestTestsJob = (storage: string | null) => {
         }
     }
 
-    const packages = listPackagesWithJestTests({
+    const packagesWithJestTests = listPackagesWithJestTests({
         storage
     });
 
-    const job: NormalJob = createJob({
+    const constantsJob: NormalJob = createJob({
         needs: ["constants", "build"],
+        name: "Create Jest tests constants",
+        "runs-on": "ubuntu-latest",
+        outputs: {
+            "packages-to-jest-test":
+                "${{ steps.list-packages-to-jest-test.outputs.packages-to-jest-test }}"
+        },
+        steps: [
+            {
+                name: "List packages to test with Jest",
+                id: "list-packages-to-jest-test",
+                run: runNodeScript(
+                    "listPackagesToJestTest",
+                    `[${JSON.stringify(
+                        packagesWithJestTests
+                    )}, \${{ needs.constants.outputs.changed-packages }}]`,
+                    { outputAs: "packages-to-jest-test" }
+                )
+            },
+            {
+                name: "Packages to test with Jest",
+                id: "list-packages",
+                run: "echo ${{ steps.list-packages-to-jest-test.outputs.packages-to-jest-test }}"
+            }
+        ]
+    });
+
+    const runJob: NormalJob = createJob({
+        needs: ["constants", "build", constantsJobName],
         name: "${{ matrix.package.cmd }}",
         strategy: {
             "fail-fast": false,
             matrix: {
                 os: ["ubuntu-latest"],
                 node: [NODE_VERSION],
-                package: "${{ fromJson('" + JSON.stringify(packages) + "') }}"
+                package: `$\{{ fromJson(needs.${constantsJobName}.outputs.packages-to-jest-test) }}`
             }
         },
         "runs-on": "${{ matrix.os }}",
         env,
+        if: `needs.${constantsJobName}.outputs.packages-to-jest-test != '[]'`,
         awsAuth: storage === "ddb-es" || storage === "ddb-os",
         checkout: { path: DIR_WEBINY_JS },
         steps: [
@@ -73,10 +109,13 @@ const createJestTestsJob = (storage: string | null) => {
     // We prevent running of Jest tests if a PR was created from a fork.
     // This is because we don't want to expose our AWS credentials to forks.
     if (storage === "ddb-es" || storage === "ddb-os") {
-        job.if = "needs.constants.outputs.is-fork-pr != 'true'";
+        runJob.if += " && needs.constants.outputs.is-fork-pr != 'true'";
     }
 
-    return job;
+    return {
+        [constantsJobName]: constantsJob,
+        [runJobName]: runJob
+    };
 };
 
 export const pullRequests = createWorkflow({
@@ -113,24 +152,51 @@ export const pullRequests = createWorkflow({
             outputs: {
                 "global-cache-key": "${{ steps.global-cache-key.outputs.global-cache-key }}",
                 "run-cache-key": "${{ steps.run-cache-key.outputs.run-cache-key }}",
-                "is-fork-pr": "${{ steps.is-fork-pr.outputs.is-fork-pr }}"
+                "is-fork-pr": "${{ steps.is-fork-pr.outputs.is-fork-pr }}",
+                "changed-packages": "${{ steps.detect-changed-packages.outputs.changed-packages }}"
             },
-            checkout: false,
             steps: [
                 {
                     name: "Create global cache key",
                     id: "global-cache-key",
-                    run: 'echo "global-cache-key=${{ github.base_ref }}-${{ runner.os }}-$(/bin/date -u "+%m%d")-${{ vars.RANDOM_CACHE_KEY_SUFFIX }}" >> $GITHUB_OUTPUT'
+                    run: addToOutputs(
+                        "global-cache-key",
+                        '${{ github.base_ref }}-${{ runner.os }}-$(/bin/date -u "+%m%d")-${{ vars.RANDOM_CACHE_KEY_SUFFIX }}'
+                    )
                 },
                 {
                     name: "Create workflow run cache key",
                     id: "run-cache-key",
-                    run: 'echo "run-cache-key=${{ github.run_id }}-${{ github.run_attempt }}-${{ vars.RANDOM_CACHE_KEY_SUFFIX }}" >> $GITHUB_OUTPUT'
+                    run: addToOutputs(
+                        "run-cache-key",
+                        "${{ github.run_id }}-${{ github.run_attempt }}-${{ vars.RANDOM_CACHE_KEY_SUFFIX }}"
+                    )
                 },
                 {
                     name: "Is a PR from a fork",
                     id: "is-fork-pr",
-                    run: 'echo "is-fork-pr=${{ github.event.pull_request.head.repo.fork }}" >> $GITHUB_OUTPUT'
+                    run: addToOutputs(
+                        "is-fork-pr",
+                        "${{ github.event.pull_request.head.repo.fork }}"
+                    )
+                },
+                {
+                    name: "Detect changed files",
+                    id: "detect-changed-files",
+                    uses: "dorny/paths-filter@v3",
+                    with: {
+                        filters: "changed:\n  - 'packages/**/*'\n",
+                        "list-files": "json"
+                    }
+                },
+                {
+                    name: "Detect changed packages",
+                    id: "detect-changed-packages",
+                    run: runNodeScript(
+                        "listChangedPackages",
+                        "${{ steps.detect-changed-files.outputs.changed_files }}",
+                        { outputAs: "changed-packages" }
+                    )
                 }
             ]
         }),
@@ -189,119 +255,9 @@ export const pullRequests = createWorkflow({
                 )
             ]
         }),
-        jestTestsNoStorage: createJestTestsJob(null),
-        jestTestsDdb: createJestTestsJob("ddb"),
-        jestTestsDdbEs: createJestTestsJob("ddb-es"),
-        jestTestsDdbOs: createJestTestsJob("ddb-os")
-
-        // We commented out these tests because, A) they don't bring much value, and B) these are
-        // run within "push" workflows anyway (we deploy a Webiny instance and run E2E tests there).
-        // verdaccioPublish: createJob({
-        //     name: "Publish to Verdaccio",
-        //     needs: ["constants", "build"],
-        //     if: "needs.constants.outputs.is-fork-pr != 'true'",
-        //     checkout: {
-        //         "fetch-depth": 0,
-        //         ref: "${{ github.event.pull_request.head.ref }}",
-        //         path: DIR_WEBINY_JS
-        //     },
-        //     steps: [
-        //         ...yarnCacheSteps,
-        //         ...runBuildCacheSteps,
-        //         ...installBuildSteps,
-        //         ...withCommonParams(
-        //             [
-        //                 {
-        //                     name: "Start Verdaccio local server",
-        //                     run: "npx pm2 start verdaccio -- -c .verdaccio.yaml"
-        //                 },
-        //                 {
-        //                     name: "Configure NPM to use local registry",
-        //                     run: "npm config set registry http://localhost:4873"
-        //                 },
-        //                 {
-        //                     name: "Set git email",
-        //                     run: 'git config --global user.email "webiny-bot@webiny.com"'
-        //                 },
-        //                 {
-        //                     name: "Set git username",
-        //                     run: 'git config --global user.name "webiny-bot"'
-        //                 },
-        //                 {
-        //                     name: 'Create ".npmrc" file in the project root, with a dummy auth token',
-        //                     run: "echo '//localhost:4873/:_authToken=\"dummy-auth-token\"' > .npmrc"
-        //                 },
-        //                 {
-        //                     name: "Version and publish to Verdaccio",
-        //                     run: "yarn release --type=verdaccio"
-        //                 }
-        //             ],
-        //             { "working-directory": DIR_WEBINY_JS }
-        //         ),
-        //         {
-        //             name: "Upload verdaccio files",
-        //             uses: "actions/upload-artifact@v4",
-        //             with: {
-        //                 name: "verdaccio-files",
-        //                 "retention-days": 1,
-        //                 "include-hidden-files": true,
-        //                 path: [
-        //                     DIR_WEBINY_JS + "/.verdaccio/",
-        //                     DIR_WEBINY_JS + "/.verdaccio.yaml"
-        //                 ].join("\n")
-        //             }
-        //         }
-        //     ]
-        // }),
-        // testCreateWebinyProject: createJob({
-        //     name: 'Test "create-webiny-project"',
-        //     needs: "verdaccioPublish",
-        //     strategy: {
-        //         "fail-fast": false,
-        //         matrix: {
-        //             os: ["ubuntu-latest"],
-        //             node: [NODE_VERSION]
-        //         }
-        //     },
-        //     "runs-on": "${{ matrix.os }}",
-        //     checkout: false,
-        //     setupNode: {
-        //         "node-version": "${{ matrix.node }}"
-        //     },
-        //     steps: [
-        //         {
-        //             uses: "actions/download-artifact@v4",
-        //             with: {
-        //                 name: "verdaccio-files",
-        //                 path: "verdaccio-files"
-        //             }
-        //         },
-        //         {
-        //             name: "Start Verdaccio local server",
-        //             "working-directory": "verdaccio-files",
-        //             run: "yarn add pm2 verdaccio && npx pm2 start verdaccio -- -c .verdaccio.yaml"
-        //         },
-        //         {
-        //             name: "Configure NPM to use local registry",
-        //             run: "npm config set registry http://localhost:4873"
-        //         },
-        //         {
-        //             name: "Set git email",
-        //             run: 'git config --global user.email "webiny-bot@webiny.com"'
-        //         },
-        //         {
-        //             name: "Set git username",
-        //             run: 'git config --global user.name "webiny-bot"'
-        //         },
-        //         {
-        //             name: "Disable Webiny telemetry",
-        //             run: 'mkdir ~/.webiny && echo \'{ "id": "ci", "telemetry": false }\' > ~/.webiny/config\n'
-        //         },
-        //         {
-        //             name: "Create a new Webiny project",
-        //             run: 'npx create-webiny-project@local-npm test-project --tag local-npm --no-interactive --assign-to-yarnrc \'{"npmRegistryServer":"http://localhost:4873","unsafeHttpWhitelist":["localhost"]}\' --template-options \'{"region":"eu-central-1"}\'\n'
-        //         }
-        //     ]
-        // })
+        ...createJestTestsJobs(null),
+        ...createJestTestsJobs("ddb"),
+        ...createJestTestsJobs("ddb-es"),
+        ...createJestTestsJobs("ddb-os")
     }
 });
