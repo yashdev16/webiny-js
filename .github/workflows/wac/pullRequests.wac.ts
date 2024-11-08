@@ -91,7 +91,8 @@ const createJestTestsJobs = (storage: string | null) => {
         },
         "runs-on": "${{ matrix.os }}",
         env,
-        if: "false",
+        //  if: ${{ fromJson(needs.setup.outputs.matrix_array) != [] }}
+        if: `\${{ fromJson(needs.${constantsJobName}.outputs.packages-to-jest-test) != [] }}`,
         awsAuth: storage === "ddb-es" || storage === "ddb-os",
         checkout: { path: DIR_WEBINY_JS },
         steps: [
