@@ -24,7 +24,7 @@ const yarnCacheSteps = createYarnCacheSteps({ workingDirectory: DIR_WEBINY_JS })
 const globalBuildCacheSteps = createGlobalBuildCacheSteps({ workingDirectory: DIR_WEBINY_JS });
 const runBuildCacheSteps = createRunBuildCacheSteps({ workingDirectory: DIR_WEBINY_JS });
 
-const createJestTestsJob = (storage: string | null) => {
+const createJestTestsJobs = (storage: string | null) => {
     const env: Record<string, string> = { AWS_REGION };
 
     if (storage) {
@@ -41,19 +41,42 @@ const createJestTestsJob = (storage: string | null) => {
         }
     }
 
-    const packages = listPackagesWithJestTests({
+    const packagesWithJestTests = listPackagesWithJestTests({
         storage
     });
 
-    const job: NormalJob = createJob({
+    const constantsJob: NormalJob = createJob({
         needs: ["constants", "build"],
+        name: "constants-jest",
+        "runs-on": "ubuntu-latest",
+        outputs: {
+            "packages-to-jest-test": "${{ steps.list-packages-to-jest.outputs.packages-to-jest-test }}"
+        },
+        steps: [
+            {
+                name: "List packages to test with Jest",
+                id: "list-packages-to-jest-test",
+                run: runNodeScript(
+                    "listPackagesToJestTest",
+                    [
+                        JSON.stringify(packagesWithJestTests),
+                        "${{ needs.constants.outputs.changed-packages }}"
+                    ].join(" "),
+                    { outputAs: "packages-to-jest-test" }
+                )
+            }
+        ]
+    });
+
+    const runJob: NormalJob = createJob({
+        needs: ["constants", "build", "constants-jest"],
         name: "${{ matrix.package.cmd }}",
         strategy: {
             "fail-fast": false,
             matrix: {
                 os: ["ubuntu-latest"],
                 node: [NODE_VERSION],
-                package: "${{ fromJson('" + JSON.stringify(packages) + "') }}"
+                package: "${{ fromJson(needs.constants-jest.outputs.packages-to-jest-test) }}"
             }
         },
         "runs-on": "${{ matrix.os }}",
@@ -75,10 +98,17 @@ const createJestTestsJob = (storage: string | null) => {
     // We prevent running of Jest tests if a PR was created from a fork.
     // This is because we don't want to expose our AWS credentials to forks.
     if (storage === "ddb-es" || storage === "ddb-os") {
-        job.if = "needs.constants.outputs.is-fork-pr != 'true'";
+        runJob.if = "needs.constants.outputs.is-fork-pr != 'true'";
     }
 
-    return job;
+    const constantsJobName = storage
+        ? `jestTests${storage}Constants`
+        : "jestTestsNoStorageConstants";
+    const runJobName = storage ? `jestTests${storage}Run` : "jestTestsNoStorageRun";
+    return {
+        [constantsJobName]: constantsJob,
+        [runJobName]: runJob
+    };
 };
 
 export const pullRequests = createWorkflow({
@@ -122,17 +152,26 @@ export const pullRequests = createWorkflow({
                 {
                     name: "Create global cache key",
                     id: "global-cache-key",
-                    run: 'echo "global-cache-key=${{ github.base_ref }}-${{ runner.os }}-$(/bin/date -u "+%m%d")-${{ vars.RANDOM_CACHE_KEY_SUFFIX }}" >> $GITHUB_OUTPUT'
+                    run: addToOutputs(
+                        "global-cache-key",
+                        '${{ github.base_ref }}-${{ runner.os }}-$(/bin/date -u "+%m%d")-${{ vars.RANDOM_CACHE_KEY_SUFFIX }}'
+                    )
                 },
                 {
                     name: "Create workflow run cache key",
                     id: "run-cache-key",
-                    run: 'echo "run-cache-key=${{ github.run_id }}-${{ github.run_attempt }}-${{ vars.RANDOM_CACHE_KEY_SUFFIX }}" >> $GITHUB_OUTPUT'
+                    run: addToOutputs(
+                        "run-cache-key",
+                        "${{ github.run_id }}-${{ github.run_attempt }}-${{ vars.RANDOM_CACHE_KEY_SUFFIX }}"
+                    )
                 },
                 {
                     name: "Is a PR from a fork",
                     id: "is-fork-pr",
-                    run: 'echo "is-fork-pr=${{ github.event.pull_request.head.repo.fork }}" >> $GITHUB_OUTPUT'
+                    run: addToOutputs(
+                        "is-fork-pr",
+                        "${{ github.event.pull_request.head.repo.fork }}"
+                    )
                 },
                 {
                     name: "Detect changed files",
@@ -146,12 +185,10 @@ export const pullRequests = createWorkflow({
                 {
                     name: "Detect changed packages",
                     id: "detect-changed-packages",
-                    run: addToOutputs(
-                        "changed-packages",
-                        `$(${runNodeScript(
-                            "listChangedPackages",
-                            "${{ steps.detect-changed-files.outputs.changed_files }}"
-                        )})`
+                    run: runNodeScript(
+                        "listChangedPackages",
+                        "${{ steps.detect-changed-files.outputs.changed_files }}",
+                        { outputAs: "changed-packages" }
                     )
                 }
             ]
@@ -162,10 +199,6 @@ export const pullRequests = createWorkflow({
             "runs-on": BUILD_PACKAGES_RUNNER,
             checkout: { path: DIR_WEBINY_JS },
             steps: [
-                {
-                    name: "test",
-                    run: `echo "\${{ needs.constants.outputs.changed-packages }}"`
-                },
                 ...yarnCacheSteps,
                 ...globalBuildCacheSteps,
                 ...installBuildSteps,
@@ -215,9 +248,9 @@ export const pullRequests = createWorkflow({
                 )
             ]
         }),
-        jestTestsNoStorage: createJestTestsJob(null),
-        jestTestsDdb: createJestTestsJob("ddb"),
-        jestTestsDdbEs: createJestTestsJob("ddb-es"),
-        jestTestsDdbOs: createJestTestsJob("ddb-os")
+        ...createJestTestsJobs(null),
+        ...createJestTestsJobs("ddb"),
+        ...createJestTestsJobs("ddb-es"),
+        ...createJestTestsJobs("ddb-os")
     }
 });

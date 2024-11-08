@@ -370,11 +370,17 @@ export const listPackagesWithJestTests = (params: ListPackagesWithJestTestsParam
         const packageName = allPackages[i];
 
         if (typeof CUSTOM_HANDLERS[packageName] === "function") {
-            packagesWithTests.push(...CUSTOM_HANDLERS[packageName]());
+            const packagesWithPkgName = CUSTOM_HANDLERS[packageName]().map(packageWithJestTests => {
+                return { ...packageWithJestTests, packageName };
+            });
+            packagesWithTests.push(...packagesWithPkgName);
         } else {
             const testsFolder = path.join("packages", packageName, "__tests__");
             if (hasTestFiles(testsFolder)) {
-                packagesWithTests.push({ cmd: `packages/${packageName}` } as PackageWithTests);
+                packagesWithTests.push({
+                    cmd: `packages/${packageName}`,
+                    packageName
+                } as PackageWithTests);
             }
         }
     }
