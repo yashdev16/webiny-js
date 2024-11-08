@@ -71,7 +71,7 @@ const createJestTestsJobs = (storage: string | null) => {
                 )
             },
             {
-                name: "List packages",
+                name: "Packages to test with Jest",
                 id: "list-packages",
                 run: "echo ${{ steps.list-packages-to-jest-test.outputs.packages-to-jest-test }}"
             }
@@ -91,8 +91,7 @@ const createJestTestsJobs = (storage: string | null) => {
         },
         "runs-on": "${{ matrix.os }}",
         env,
-        //  if: ${{ fromJson(needs.setup.outputs.matrix_array) != [] }}
-        if: `\${{ fromJson(needs.${constantsJobName}.outputs.packages-to-jest-test) != [] }}`,
+        if: `needs.${constantsJobName}.outputs.packages-to-jest-test != '[]'`,
         awsAuth: storage === "ddb-es" || storage === "ddb-os",
         checkout: { path: DIR_WEBINY_JS },
         steps: [
