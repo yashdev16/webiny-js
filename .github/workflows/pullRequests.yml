@@ -231,9 +231,8 @@ jobs:
       YARN_ENABLE_IMMUTABLE_INSTALLS: false
       AWS_REGION: eu-central-1
     if: >-
-      ${{
       fromJson(needs.jestTestsNoStorageConstants.outputs.packages-to-jest-test)
-      != '[]' }}
+      != '[]'
     steps:
       - uses: actions/setup-node@v4
         with:
@@ -351,8 +350,8 @@ jobs:
       YARN_ENABLE_IMMUTABLE_INSTALLS: false
       AWS_REGION: eu-central-1
     if: >-
-      ${{ fromJson(needs.jestTestsddbConstants.outputs.packages-to-jest-test) !=
-      '[]' }}
+      fromJson(needs.jestTestsddbConstants.outputs.packages-to-jest-test) !=
+      '[]'
     steps:
       - uses: actions/setup-node@v4
         with:
@@ -472,8 +471,8 @@ jobs:
       ELASTIC_SEARCH_ENDPOINT: ${{ secrets.ELASTIC_SEARCH_ENDPOINT }}
       ELASTIC_SEARCH_INDEX_PREFIX: ${{ matrix.package.id }}
     if: >-
-      ${{ fromJson(needs.jestTestsddb-esConstants.outputs.packages-to-jest-test)
-      != '[]' }} && needs.constants.outputs.is-fork-pr != 'true'
+      fromJson(needs.jestTestsddb-esConstants.outputs.packages-to-jest-test) !=
+      '[]' && needs.constants.outputs.is-fork-pr != 'true'
     steps:
       - uses: actions/setup-node@v4
         with:
@@ -600,8 +599,8 @@ jobs:
       ELASTIC_SEARCH_ENDPOINT: ${{ secrets.OPEN_SEARCH_ENDPOINT }}
       ELASTIC_SEARCH_INDEX_PREFIX: ${{ matrix.package.id }}
     if: >-
-      ${{ fromJson(needs.jestTestsddb-osConstants.outputs.packages-to-jest-test)
-      != '[]' }} && needs.constants.outputs.is-fork-pr != 'true'
+      fromJson(needs.jestTestsddb-osConstants.outputs.packages-to-jest-test) !=
+      '[]' && needs.constants.outputs.is-fork-pr != 'true'
     steps:
       - uses: actions/setup-node@v4
         with:
