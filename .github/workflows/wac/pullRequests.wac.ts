@@ -69,6 +69,11 @@ const createJestTestsJobs = (storage: string | null) => {
                     )}, \${{ needs.constants.outputs.changed-packages }}]`,
                     { outputAs: "packages-to-jest-test" }
                 )
+            },
+            {
+                name: "List packages",
+                id: "list-packages",
+                run: "echo ${{ steps.list-packages-to-jest-test.outputs.packages-to-jest-test }}"
             }
         ]
     });
