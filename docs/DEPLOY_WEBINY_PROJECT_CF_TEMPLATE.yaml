@@ -257,8 +257,8 @@ Resources:
                   - iam:GetRole
                   - iam:CreateServiceLinkedRole
                 Resource:
-                  - arn:aws:iam::*:role/aws-service-role/es.amazonaws.com/AWSServiceRoleForAmazonOpenSearchService
                   - arn:aws:iam::*:role/aws-service-role/es.amazonaws.com/AWSServiceRoleForAmazonElasticsearchService
+                  - arn:aws:iam::*:role/aws-service-role/opensearchservice.amazonaws.com/AWSServiceRoleForAmazonOpenSearchService
 
               # AWS Step Functions
               - Effect: Allow
