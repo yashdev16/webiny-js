@@ -1,8 +1,7 @@
 const args = process.argv.slice(2); // Removes the first two elements
-const [packagesWithJestTestsListString, changedPackagesString] = args;
+const [paramsString] = args;
 
-const packagesWithJestTestsList = JSON.parse(packagesWithJestTestsListString);
-const changedPackages = JSON.parse(changedPackagesString);
+const [packagesWithJestTestsList, changedPackages] = JSON.parse(paramsString);
 
 const packagesToJestTest = packagesWithJestTestsList.filter(pkg => {
     return changedPackages.includes(pkg.packageName);

@@ -1,5 +1,5 @@
-import { createWorkflow, NormalJob } from "github-actions-wac";
-import { createJob } from "./jobs";
+import {createWorkflow, NormalJob} from "github-actions-wac";
+import {createJob} from "./jobs";
 import {
     NODE_VERSION,
     BUILD_PACKAGES_RUNNER,
@@ -19,10 +19,10 @@ import {
 // Will print "next" or "dev". Important for caching (via actions/cache).
 const DIR_WEBINY_JS = "${{ github.base_ref }}";
 
-const installBuildSteps = createInstallBuildSteps({ workingDirectory: DIR_WEBINY_JS });
-const yarnCacheSteps = createYarnCacheSteps({ workingDirectory: DIR_WEBINY_JS });
-const globalBuildCacheSteps = createGlobalBuildCacheSteps({ workingDirectory: DIR_WEBINY_JS });
-const runBuildCacheSteps = createRunBuildCacheSteps({ workingDirectory: DIR_WEBINY_JS });
+const installBuildSteps = createInstallBuildSteps({workingDirectory: DIR_WEBINY_JS});
+const yarnCacheSteps = createYarnCacheSteps({workingDirectory: DIR_WEBINY_JS});
+const globalBuildCacheSteps = createGlobalBuildCacheSteps({workingDirectory: DIR_WEBINY_JS});
+const runBuildCacheSteps = createRunBuildCacheSteps({workingDirectory: DIR_WEBINY_JS});
 
 const createJestTestsJobs = (storage: string | null) => {
     const constantsJobName = storage
@@ -30,7 +30,7 @@ const createJestTestsJobs = (storage: string | null) => {
         : "jestTestsNoStorageConstants";
     const runJobName = storage ? `jestTests${storage}Run` : "jestTestsNoStorageRun";
 
-    const env: Record<string, string> = { AWS_REGION };
+    const env: Record<string, string> = {AWS_REGION};
 
     if (storage) {
         if (storage === "ddb-es") {
@@ -63,11 +63,8 @@ const createJestTestsJobs = (storage: string | null) => {
                 id: "list-packages-to-jest-test",
                 run: runNodeScript(
                     "listPackagesToJestTest",
-                    [
-                        JSON.stringify(packagesWithJestTests),
-                        "${{ needs.constants.outputs.changed-packages }}"
-                    ].join(" "),
-                    { outputAs: "packages-to-jest-test" }
+                    `[${JSON.stringify(packagesWithJestTests)}, \${{ needs.constants.outputs.changed-packages }}]`,
+                    {outputAs: "packages-to-jest-test"}
                 )
             }
         ]
@@ -87,7 +84,7 @@ const createJestTestsJobs = (storage: string | null) => {
         "runs-on": "${{ matrix.os }}",
         env,
         awsAuth: storage === "ddb-es" || storage === "ddb-os",
-        checkout: { path: DIR_WEBINY_JS },
+        checkout: {path: DIR_WEBINY_JS},
         steps: [
             ...yarnCacheSteps,
             ...runBuildCacheSteps,
@@ -125,7 +122,7 @@ export const pullRequests = createWorkflow({
         validateCommits: createJob({
             name: "Validate commit messages",
             if: "github.base_ref != 'dev'",
-            steps: [{ uses: "webiny/action-conventional-commits@v1.3.0" }]
+            steps: [{uses: "webiny/action-conventional-commits@v1.3.0"}]
         }),
         // Don't allow "feat" commits to be merged into "dev" branch.
         validateCommitsDev: createJob({
@@ -190,7 +187,7 @@ export const pullRequests = createWorkflow({
                     run: runNodeScript(
                         "listChangedPackages",
                         "${{ steps.detect-changed-files.outputs.changed_files }}",
-                        { outputAs: "changed-packages" }
+                        {outputAs: "changed-packages"}
                     )
                 }
             ]
@@ -199,7 +196,7 @@ export const pullRequests = createWorkflow({
             name: "Build",
             needs: "constants",
             "runs-on": BUILD_PACKAGES_RUNNER,
-            checkout: { path: DIR_WEBINY_JS },
+            checkout: {path: DIR_WEBINY_JS},
             steps: [
                 ...yarnCacheSteps,
                 ...globalBuildCacheSteps,
@@ -213,26 +210,26 @@ export const pullRequests = createWorkflow({
         staticCodeAnalysis: createJob({
             needs: ["constants", "build"],
             name: "Static code analysis",
-            checkout: { path: DIR_WEBINY_JS },
+            checkout: {path: DIR_WEBINY_JS},
             steps: [
                 ...yarnCacheSteps,
                 ...runBuildCacheSteps,
                 ...withCommonParams(
                     [
-                        { name: "Install dependencies", run: "yarn --immutable" },
-                        { name: "Check code formatting", run: "yarn prettier:check" },
-                        { name: "Check dependencies", run: "yarn adio" },
-                        { name: "Check TS configs", run: "yarn check-ts-configs" },
-                        { name: "ESLint", run: "yarn eslint" }
+                        {name: "Install dependencies", run: "yarn --immutable"},
+                        {name: "Check code formatting", run: "yarn prettier:check"},
+                        {name: "Check dependencies", run: "yarn adio"},
+                        {name: "Check TS configs", run: "yarn check-ts-configs"},
+                        {name: "ESLint", run: "yarn eslint"}
                     ],
-                    { "working-directory": DIR_WEBINY_JS }
+                    {"working-directory": DIR_WEBINY_JS}
                 )
             ]
         }),
         staticCodeAnalysisTs: createJob({
             name: "Static code analysis (TypeScript)",
             "runs-on": BUILD_PACKAGES_RUNNER,
-            checkout: { path: DIR_WEBINY_JS },
+            checkout: {path: DIR_WEBINY_JS},
             steps: [
                 ...yarnCacheSteps,
 
@@ -242,11 +239,11 @@ export const pullRequests = createWorkflow({
 
                 ...withCommonParams(
                     [
-                        { name: "Install dependencies", run: "yarn --immutable" },
-                        { name: "Build packages (full)", run: "yarn build" },
-                        { name: "Check types for Cypress tests", run: "yarn cy:ts" }
+                        {name: "Install dependencies", run: "yarn --immutable"},
+                        {name: "Build packages (full)", run: "yarn build"},
+                        {name: "Check types for Cypress tests", run: "yarn cy:ts"}
                     ],
-                    { "working-directory": DIR_WEBINY_JS }
+                    {"working-directory": DIR_WEBINY_JS}
                 )
             ]
         }),
