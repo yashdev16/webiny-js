@@ -12,20 +12,10 @@ export interface GroupsTeamsAuthorizerConfig<TContext extends SecurityContext = 
     identityType?: string;
 
     /**
-     * @deprecated Use `listGroupSlugs` instead.
+     * @deprecated Return group slugs from the `getIdentity` function instead.
      * Get a group slug to load permissions from.
      */
     getGroupSlug?: (context: TContext) => Promise<GroupSlug> | GroupSlug;
-
-    /**
-     * List group slugs to load permissions from.
-     */
-    listGroupSlugs?: (context: TContext) => Promise<GroupSlug[]> | GroupSlug[];
-
-    /**
-     * List team slugs to load groups and ultimately permissions from.
-     */
-    listTeamSlugs?: (context: TContext) => Promise<TeamSlug[]> | TeamSlug[];
 
     /**
      * If a security group is not found, try loading it from a parent tenant (default: true).
@@ -65,11 +55,6 @@ export const listPermissionsFromGroupsAndTeams = async <
         groupSlugs.push(loadedGroupSlug);
     }
 
-    if (config.listGroupSlugs) {
-        const loadedGroupSlugs = await config.listGroupSlugs(context);
-        groupSlugs.push(...loadedGroupSlugs);
-    }
-
     if (identity.group) {
         groupSlugs.push(identity.group);
     }
@@ -80,11 +65,6 @@ export const listPermissionsFromGroupsAndTeams = async <
 
     if (wcp.canUseTeams()) {
         // Load groups coming from teams.
-        if (config.listTeamSlugs) {
-            const loadedTeamSlugs = await config.listTeamSlugs(context);
-            teamSlugs.push(...loadedTeamSlugs);
-        }
-
         if (identity.team) {
             teamSlugs.push(identity.team);
         }
