@@ -2,10 +2,6 @@ import { CmsContext } from "@webiny/api-headless-cms/types";
 import { Context as BaseContext } from "@webiny/handler/types";
 import {
     Context as TasksContext,
-    ITaskOnAbortParams,
-    ITaskOnErrorParams,
-    ITaskOnMaxIterationsParams,
-    ITaskOnSuccessParams,
     ITaskResponseDoneResultOutput,
     ITaskRunParams
 } from "@webiny/tasks/types";
@@ -70,11 +66,17 @@ export type IBulkActionOperationByModelTaskParams = ITaskRunParams<
 >;
 
 /**
- * Trash Bin
+ * Empty Trash Bin
  */
 
-export type TrashBinCleanUpParams =
-    | ITaskOnSuccessParams<HcmsBulkActionsContext>
-    | ITaskOnErrorParams<HcmsBulkActionsContext>
-    | ITaskOnAbortParams<HcmsBulkActionsContext>
-    | ITaskOnMaxIterationsParams<HcmsBulkActionsContext>;
+export interface IEmptyTrashBinsInput {
+    executedTenantIds?: string[] | null;
+}
+
+export type IEmptyTrashBinsOutput = ITaskResponseDoneResultOutput;
+
+export type IEmptyTrashBinsTaskParams = ITaskRunParams<
+    HcmsBulkActionsContext,
+    IEmptyTrashBinsInput,
+    IEmptyTrashBinsOutput
+>;
