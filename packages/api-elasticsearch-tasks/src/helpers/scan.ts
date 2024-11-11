@@ -1,11 +1,11 @@
 import { scan as tableScan, ScanOptions } from "@webiny/db-dynamodb";
-import { Table } from "@webiny/db-dynamodb/toolbox";
+import { TableDef } from "@webiny/db-dynamodb/toolbox";
 import { IElasticsearchIndexingTaskValuesKeys } from "~/types";
 
 interface Params {
-    table: Table<string, string, string>;
+    table: TableDef;
     keys?: IElasticsearchIndexingTaskValuesKeys;
-    options?: Pick<ScanOptions, "limit">;
+    options?: ScanOptions;
 }
 
 export const scan = async <T = any>(params: Params) => {
@@ -13,9 +13,9 @@ export const scan = async <T = any>(params: Params) => {
     return tableScan<T>({
         table,
         options: {
+            ...params.options,
             startKey: keys,
-            limit: 200,
-            ...params.options
+            limit: params.options?.limit || 200
         }
     });
 };

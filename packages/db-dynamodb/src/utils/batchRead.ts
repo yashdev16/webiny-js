@@ -1,6 +1,7 @@
 import lodashChunk from "lodash/chunk";
 import WebinyError from "@webiny/error";
 import { TableDef } from "~/toolbox";
+import { GenericRecord } from "@webiny/api/types";
 
 export interface BatchReadItem {
     Table?: TableDef;
@@ -57,7 +58,7 @@ const batchReadAllChunk = async <T = any>(params: BatchReadAllChunkParams): Prom
  * This helper function is meant to be used to batch read from one table.
  * It will fetch all results, as there is a next() method call built in.
  */
-export const batchReadAll = async <T = any>(
+export const batchReadAll = async <T = GenericRecord>(
     params: BatchReadParams,
     maxChunk = MAX_BATCH_ITEMS
 ): Promise<T[]> => {
@@ -75,7 +76,7 @@ export const batchReadAll = async <T = any>(
 
     const records: T[] = [];
 
-    const chunkItemsList: BatchReadItem[][] = lodashChunk(params.items, maxChunk);
+    const chunkItemsList = lodashChunk(params.items, maxChunk);
 
     for (const chunkItems of chunkItemsList) {
         const results = await batchReadAllChunk<T>({

@@ -208,6 +208,16 @@ export const createStorageOperations: StorageOperationsFactory = params => {
 
     return {
         beforeInit: async (context: PbContext) => {
+            context.db.registry.register({
+                item: entities.pages,
+                app: "pb",
+                tags: ["regular", entities.pages.name]
+            });
+            context.db.registry.register({
+                item: entities.pagesEs,
+                app: "pb",
+                tags: ["es", entities.pagesEs.name]
+            });
             const types: string[] = [
                 // Elasticsearch
                 CompressionPlugin.type,

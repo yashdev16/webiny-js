@@ -17,6 +17,7 @@ import { IIsCloseToTimeoutCallable, ITaskManagerStore } from "./runner/abstracti
 import { SecurityPermission } from "@webiny/api-security/types";
 import { GenericRecord } from "@webiny/api/types";
 import { IStepFunctionServiceFetchResult } from "~/service/StepFunctionServicePlugin";
+import { ITimer } from "@webiny/handler-aws";
 
 import type zod from "zod";
 
@@ -334,6 +335,7 @@ export interface ITaskRunParams<
     trigger<SI = ITaskDataInput>(
         params: Omit<ITaskTriggerParams<SI>, "parent">
     ): Promise<ITask<SI>>;
+    timer: ITimer;
 }
 
 export interface ITaskOnSuccessParams<
