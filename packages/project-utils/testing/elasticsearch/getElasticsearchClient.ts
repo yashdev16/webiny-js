@@ -13,7 +13,7 @@ import { getDocumentClient, simulateStream } from "../dynamodb";
 import { PluginCollection } from "../environment";
 import { ElasticsearchContext } from "../../../api-elasticsearch/src/types";
 import { getElasticsearchIndexPrefix } from "../../../api-elasticsearch/src/indexPrefix";
-import { createLogger } from "@webiny/api-log";
+import { createMockApiLogContextPlugin } from "../mockApiLog";
 
 interface GetElasticsearchClientParams {
     name: string;
@@ -82,15 +82,7 @@ export class ElasticsearchClientConfig {
         const dynamoDbHandler = createHandler({
             plugins: [
                 simulationContext,
-                createLogger({
-                    documentClient,
-                    getTenant: () => {
-                        return "root";
-                    },
-                    getLocale: () => {
-                        return "unknown";
-                    }
-                }),
+                createMockApiLogContextPlugin(),
                 createDynamoDBToElasticsearchEventHandler()
             ]
         });
