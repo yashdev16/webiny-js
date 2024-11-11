@@ -1,4 +1,4 @@
-import { CmsModelField, CmsModelFieldTypePlugin, CmsModel } from "~/types";
+import { CmsModel, CmsModelField, CmsModelFieldTypePlugin } from "~/types";
 import { plugins } from "@webiny/plugins";
 
 interface CreateFieldsListParams {
@@ -9,7 +9,7 @@ interface CreateFieldsListParams {
 
 export function createFieldsList({
     model,
-    fields,
+    fields: inputFields,
     graphQLTypePrefix
 }: CreateFieldsListParams): string {
     const fieldPlugins: Record<string, CmsModelFieldTypePlugin["field"]> = plugins
@@ -18,7 +18,7 @@ export function createFieldsList({
 
     const typePrefix = graphQLTypePrefix ?? model.singularApiName;
 
-    const allFields = fields
+    const fields = inputFields
         .map(field => {
             if (!fieldPlugins[field.type]) {
                 console.log(`Unknown field plugin for field type "${field.type}".`);
@@ -46,14 +46,11 @@ export function createFieldsList({
             return field.fieldId;
         })
         .filter(Boolean);
-
     /**
-     * If there are no fields for a given type, we add a dummy `_empty` field, which will also be present in the schema
-     * on the API side, to protect the schema from invalid types.
+     * If there are no fields, let's always load the `id` field.
      */
-    if (!allFields.length) {
-        allFields.push("_empty");
+    if (fields.length === 0) {
+        fields.push("id");
     }
-
-    return allFields.join("\n");
+    return fields.join("\n");
 }
