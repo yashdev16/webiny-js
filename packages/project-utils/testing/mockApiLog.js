@@ -1,3 +1,5 @@
+const { ContextPlugin } = require("@webiny/api");
+
 export const createMockApiLog = () => {
     const logging = {
         notice: () => {
@@ -25,4 +27,12 @@ export const createMockApiLog = () => {
         },
         ...logging
     };
+};
+
+export const createMockApiLogContextPlugin = () => {
+    return new ContextPlugin(async context => {
+        context.logger = {
+            ...createMockApiLog()
+        };
+    });
 };
