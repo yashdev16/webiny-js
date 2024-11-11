@@ -127,6 +127,9 @@
     },
     {
       "path": "../../../packages/tasks/tsconfig.build.json"
+    },
+    {
+      "path": "../../../packages/api-log/tsconfig.build.json"
     }
   ],
   "compilerOptions": {
@@ -215,7 +218,9 @@
       "@webiny/tasks/*": ["../../../packages/tasks/src/*"],
       "@webiny/tasks": ["../../../packages/tasks/src"],
       "@webiny/api-websockets/*": ["../../../packages/api-websockets/src/*"],
-      "@webiny/api-websockets": ["../../../packages/api-websockets/src"]
+      "@webiny/api-websockets": ["../../../packages/api-websockets/src"],
+      "@webiny/api-log/*": ["../../../packages/api-log/src/*"],
+      "@webiny/api-log": ["../../../packages/api-log/src"]
     },
     "baseUrl": "."
   }

@@ -41,6 +41,7 @@ export const ApiMigration = createAppModule({
                         COGNITO_REGION: String(process.env.AWS_REGION),
                         COGNITO_USER_POOL_ID: core.cognitoUserPoolId,
                         DB_TABLE: core.primaryDynamodbTableName,
+                        DB_TABLE_LOG: core.logDynamodbTableName,
                         DB_TABLE_ELASTICSEARCH: core.elasticsearchDynamodbTableName,
                         ELASTIC_SEARCH_ENDPOINT: core.elasticsearchDomainEndpoint,
                         ELASTIC_SEARCH_INDEX_PREFIX: process.env.ELASTIC_SEARCH_INDEX_PREFIX,

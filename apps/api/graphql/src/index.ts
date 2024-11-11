@@ -43,6 +43,7 @@ import { createCountDynamoDbTask } from "~/plugins/countDynamoDbTask";
 import { createContinuingTask } from "~/plugins/continuingTask";
 import { createWebsockets } from "@webiny/api-websockets";
 import { createRecordLocking } from "@webiny/api-record-locking";
+import { createLogger } from "@webiny/api-log";
 
 import scaffoldsPlugins from "./plugins/scaffolds";
 import { extensions } from "./extensions";
@@ -63,6 +64,9 @@ export const handler = createHandler({
             driver: new DynamoDbDriver({ documentClient })
         }),
         securityPlugins({ documentClient }),
+        createLogger({
+            documentClient
+        }),
         tenantManager(),
         i18nPlugins(),
         i18nDynamoDbStorageOperations(),

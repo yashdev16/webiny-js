@@ -14,6 +14,7 @@ import { addServiceManifestTableItem, TableDefinition } from "~/utils/addService
 import { DEFAULT_PROD_ENV_NAMES } from "~/constants";
 import * as random from "@pulumi/random";
 import { featureFlags } from "@webiny/feature-flags";
+import { LogDynamo } from "./LogDynamo";
 
 export type CorePulumiApp = ReturnType<typeof createCorePulumiApp>;
 
@@ -150,6 +151,7 @@ export function createCorePulumiApp(projectAppParams: CreateCorePulumiAppParams 
 
             // Setup DynamoDB table
             const dynamoDbTable = app.addModule(CoreDynamo, { protect });
+            const logDynamoDbTable = app.addModule(LogDynamo, { protect });
 
             // Setup VPC
             const vpcEnabled = app.getParam(projectAppParams?.vpc) ?? isProduction;
@@ -188,6 +190,10 @@ export function createCorePulumiApp(projectAppParams: CreateCorePulumiAppParams 
                 primaryDynamodbTableName: dynamoDbTable.output.name,
                 primaryDynamodbTableHashKey: dynamoDbTable.output.hashKey,
                 primaryDynamodbTableRangeKey: dynamoDbTable.output.rangeKey,
+                logDynamodbTableArn: logDynamoDbTable.output.arn,
+                logDynamodbTableName: logDynamoDbTable.output.name,
+                logDynamodbTableHashKey: logDynamoDbTable.output.hashKey,
+                logDynamodbTableRangeKey: logDynamoDbTable.output.rangeKey,
                 cognitoUserPoolId: cognito.userPool.output.id,
                 cognitoUserPoolArn: cognito.userPool.output.arn,
                 cognitoUserPoolPasswordPolicy: cognito.userPool.output.passwordPolicy,
@@ -203,6 +209,7 @@ export function createCorePulumiApp(projectAppParams: CreateCorePulumiAppParams 
 
             return {
                 dynamoDbTable,
+                logDynamoDbTable,
                 vpc,
                 ...cognito,
                 fileManagerBucket,

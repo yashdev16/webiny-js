@@ -47,6 +47,8 @@ export const renderField = ({
     if (!plugin) {
         // Let's not render the field if it does not exist in the field plugins.
         return null;
+    } else if (!plugin[type]) {
+        throw new Error(`Missing "${type}" plugin for field type "${field.type}".`);
     }
     const { createTypeField } = plugin[type] as CmsModelFieldToGraphQLPlugin["manage"];
     const defs = createTypeField({

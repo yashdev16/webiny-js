@@ -7,7 +7,7 @@ export interface BatchWriteItem {
 }
 
 export interface BatchWriteParams {
-    table?: TableDef;
+    table: TableDef | undefined;
     items: BatchWriteItem[];
 }
 

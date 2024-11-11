@@ -1,6 +1,8 @@
-import { Context } from "@webiny/handler/types";
+import { Context as LoggerContext } from "@webiny/api-log/types";
 import { Plugin } from "@webiny/plugins/types";
-import { RenderEvent, PrerenderingSettings, Render } from "~/types";
+import { PrerenderingSettings, Render, RenderEvent } from "~/types";
+
+export type Context = LoggerContext;
 
 export type HandlerPayload = RenderEvent | RenderEvent[];
 

@@ -36,6 +36,7 @@ import { createApwGraphQL, createApwPageBuilderContext } from "@webiny/api-apw";
 import { createStorageOperations as createApwSaStorageOperations } from "@webiny/api-apw-scheduler-so-ddb";
 import { createWebsockets } from "@webiny/api-websockets";
 import { createRecordLocking } from "@webiny/api-record-locking";
+import { createLogger } from "@webiny/api-log";
 
 // Imports plugins created via scaffolding utilities.
 import scaffoldsPlugins from "./plugins/scaffolds";
@@ -57,6 +58,9 @@ export const handler = createHandler({
             driver: new DynamoDbDriver({ documentClient })
         }),
         securityPlugins({ documentClient }),
+        createLogger({
+            documentClient
+        }),
         tenantManager(),
         i18nPlugins(),
         i18nDynamoDbStorageOperations(),

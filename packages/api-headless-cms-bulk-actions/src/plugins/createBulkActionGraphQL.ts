@@ -2,6 +2,7 @@ import { ContextPlugin } from "@webiny/api";
 import { HcmsBulkActionsContext } from "~/types";
 import { CmsGraphQLSchemaPlugin, isHeadlessCmsReady } from "@webiny/api-headless-cms";
 import { Response } from "@webiny/handler-graphql";
+import { CMS_MODEL_SINGLETON_TAG } from "@webiny/api-headless-cms/constants";
 
 export interface CreateBulkActionGraphQL {
     name: string;
@@ -16,11 +17,19 @@ export const createBulkActionGraphQL = (config: CreateBulkActionGraphQL) => {
 
         const models = await context.security.withoutAuthorization(async () => {
             const allModels = await context.cms.listModels();
-            return allModels.filter(
-                model =>
-                    !model.isPrivate &&
-                    (!config.modelIds?.length || config.modelIds.includes(model.modelId))
-            );
+            return allModels.filter(model => {
+                if (model.isPrivate) {
+                    return false;
+                }
+                const tags = Array.isArray(model.tags) ? model.tags : [];
+                if (tags.includes(CMS_MODEL_SINGLETON_TAG)) {
+                    return false;
+                }
+                if (config.modelIds?.length) {
+                    return config.modelIds.includes(model.modelId);
+                }
+                return true;
+            });
         });
 
         const plugins: CmsGraphQLSchemaPlugin<HcmsBulkActionsContext>[] = [];

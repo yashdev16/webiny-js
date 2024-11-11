@@ -25,7 +25,7 @@ interface PackageWithTestsWithId extends PackageWithTests {
 // Takes a PackageWithTests object and returns an array of commands, where each
 // command is just running a subset of tests. This is achieved by using the
 // Jest's `--shard` option.
-const shardPackageTestExecution = (pkg: PackageWithTests, shardsCount: number = 6) => {
+const shardPackageTestExecution = (pkg: PackageWithTests, shardsCount = 6) => {
     const commands: PackageWithTests[] = [];
     for (let currentShard = 1; currentShard <= shardsCount; currentShard++) {
         commands.push({ ...pkg, cmd: pkg.cmd + ` --shard=${currentShard}/${shardsCount}` });
@@ -59,6 +59,10 @@ const CUSTOM_HANDLERS: Record<string, () => Array<PackageWithTests>> = {
 
     "api-tenant-manager": () => {
         return [{ cmd: "packages/api-tenant-manager --storage=ddb", storage: "ddb" }];
+    },
+
+    "api-log": () => {
+        return [{ cmd: "packages/api-log --storage=ddb", storage: "ddb" }];
     },
 
     "api-file-manager": () => {

@@ -1,17 +1,25 @@
 import type { NonEmptyArray } from "@webiny/api/types";
 import { CmsModel } from "@webiny/api-headless-cms/types";
+import { CMS_MODEL_SINGLETON_TAG } from "@webiny/api-headless-cms/constants";
 
 const createExportContentEntriesByModel = (models: NonEmptyArray<CmsModel>): string => {
     return models
         .map(model => {
+            let whereCondition = "";
+            const tags = model.tags || [];
+            if (tags.includes(CMS_MODEL_SINGLETON_TAG) === false) {
+                whereCondition = /* GraphQL */ `
+                    # filter the entries by providing a where input
+                    where: ${model.singularApiName}ListWhereInput
+                `;
+            }
             return /* GraphQL */ `
             export${model.pluralApiName}ContentEntries(
                 # limit on how much entries will be fetched in a single batch - mostly used for testing
                 limit: Int
                 # do we export assets as well? default is false
                 exportAssets: Boolean
-                # filter the entries by providing a where input
-                where: ${model.singularApiName}ListWhereInput
+                ${whereCondition}
                 # if after is provided, export will start after the provided cursor
                 after: String
             ): ExportContentEntriesResponse!

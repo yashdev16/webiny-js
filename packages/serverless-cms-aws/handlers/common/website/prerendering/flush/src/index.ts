@@ -8,6 +8,9 @@ const documentClient = getDocumentClient();
 
 export const handler = createHandler({
     plugins: [
+        createLogger({
+            documentClient
+        }),
         flushPlugins({
             storage: {
                 name: String(process.env.DELIVERY_BUCKET)

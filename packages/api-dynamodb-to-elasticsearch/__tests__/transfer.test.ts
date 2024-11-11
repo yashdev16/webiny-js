@@ -1,5 +1,7 @@
 import { createEventHandler, OperationType } from "~/index";
 import { createElasticsearchClient } from "@webiny/project-utils/testing/elasticsearch/createClient";
+// @ts-expect-error
+import { createMockApiLog } from "@webiny/project-utils/testing/mockApiLog";
 import { ElasticsearchContext } from "@webiny/api-elasticsearch/types";
 import { Context, LambdaContext, Reply, Request } from "@webiny/handler-aws/types";
 import { marshall } from "@webiny/aws-sdk/client-dynamodb";
@@ -13,6 +15,7 @@ describe("transfer data", () => {
 
         const context = {
             elasticsearch,
+            logger: createMockApiLog(),
             plugins: new PluginsContainer()
         } as unknown as ElasticsearchContext & Context;
         /**

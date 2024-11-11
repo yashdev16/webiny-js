@@ -1,9 +1,9 @@
 import { getNumberEnvVariable } from "~/helpers/getNumberEnvVariable";
 import { createDynamoDBEventHandler, timerFactory } from "@webiny/handler-aws";
-import { ElasticsearchContext } from "@webiny/api-elasticsearch/types";
 import { Decompressor } from "~/Decompressor";
 import { OperationsBuilder } from "~/OperationsBuilder";
 import { executeWithRetry } from "~/executeWithRetry";
+import { Context } from "~/types";
 
 const MAX_PROCESSOR_PERCENT = getNumberEnvVariable(
     "MAX_ES_PROCESSOR",
@@ -20,7 +20,7 @@ const MAX_RUNNING_TIME = 900;
 export const createEventHandler = () => {
     return createDynamoDBEventHandler(async ({ event, context: ctx, lambdaContext }) => {
         const timer = timerFactory(lambdaContext);
-        const context = ctx as unknown as ElasticsearchContext;
+        const context = ctx as unknown as Context;
         if (!context.elasticsearch) {
             console.error("Missing elasticsearch definition on context.");
             return null;

@@ -1,7 +1,7 @@
 import WebinyError from "@webiny/error";
-import { Entity } from "~/toolbox";
-import { EntityQueryOptions } from "~/toolbox";
+import { Entity, EntityQueryOptions } from "~/toolbox";
 import { cleanupItem, cleanupItems } from "~/utils/cleanup";
+import { GenericRecord } from "@webiny/api/types";
 
 export interface QueryAllParams {
     entity: Entity<any>;
@@ -128,6 +128,36 @@ export const queryAll = async <T>(params: QueryAllParams): Promise<DbItem<T>[]> 
 export const queryAllClean = async <T>(params: QueryAllParams): Promise<T[]> => {
     const results = await queryAll<T>(params);
     return cleanupItems(params.entity, results);
+};
+
+export interface IQueryPageResponse<T> {
+    items: T[];
+    lastEvaluatedKey: GenericRecord;
+}
+
+export const queryPerPage = async <T>(params: QueryAllParams): Promise<IQueryPageResponse<T>> => {
+    const result = await query<T>({
+        ...params,
+        options: {
+            ...params.options,
+            limit: params.options?.limit || 50
+        }
+    });
+
+    return {
+        items: result.items,
+        lastEvaluatedKey: result.result?.LastEvaluatedKey
+    };
+};
+
+export const queryPerPageClean = async <T>(
+    params: QueryAllParams
+): Promise<IQueryPageResponse<T>> => {
+    const result = await queryPerPage<T>(params);
+    return {
+        items: cleanupItems<T>(params.entity, result.items),
+        lastEvaluatedKey: result.lastEvaluatedKey
+    };
 };
 
 /**

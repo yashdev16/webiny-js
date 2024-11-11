@@ -19,6 +19,7 @@
     { "path": "../api-i18n/tsconfig.build.json" },
     { "path": "../api-i18n-content/tsconfig.build.json" },
     { "path": "../api-i18n-ddb/tsconfig.build.json" },
+    { "path": "../api-log/tsconfig.build.json" },
     { "path": "../api-page-builder/tsconfig.build.json" },
     { "path": "../api-page-builder-aco/tsconfig.build.json" },
     { "path": "../api-page-builder-import-export/tsconfig.build.json" },

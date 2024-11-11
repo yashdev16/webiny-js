@@ -2,7 +2,7 @@ import renderUrl, { File } from "./renderUrl";
 import { join } from "path";
 import { S3, PutObjectCommandInput } from "@webiny/aws-sdk/client-s3";
 import { getStorageFolder, getRenderUrl, getIsNotFoundPage, isMultiTenancyEnabled } from "~/utils";
-import { HandlerPayload, RenderHookPlugin } from "./types";
+import { Context, HandlerPayload, RenderHookPlugin } from "./types";
 import { PrerenderingServiceStorageOperations, Render, TagPathLink } from "~/types";
 import omit from "lodash/omit";
 import { EventPlugin } from "@webiny/handler";
@@ -46,7 +46,7 @@ export default (params: RenderParams) => {
     const isMultiTenant = isMultiTenancyEnabled();
     const log = console.log;
 
-    return new EventPlugin<HandlerPayload>(async ({ payload, context }) => {
+    return new EventPlugin<HandlerPayload, Context>(async ({ payload, context }) => {
         const handlerArgs = Array.isArray(payload) ? payload : [payload];
         const handlerHookPlugins = context.plugins.byType<RenderHookPlugin>("ps-render-hook");
 

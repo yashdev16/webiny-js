@@ -228,6 +228,7 @@ export const createWebsitePulumiApp = (projectAppParams: CreateWebsitePulumiAppP
                 dbTableName: core.primaryDynamodbTableName,
                 dbTableHashKey: core.primaryDynamodbTableHashKey,
                 dbTableRangeKey: core.primaryDynamodbTableRangeKey,
+                logDbTableName: core.logDynamodbTableName,
                 appUrl: pulumi.interpolate`https://${appCloudfront.output.domainName}`,
                 deliveryUrl: pulumi.interpolate`https://${deliveryCloudfront.output.domainName}`,
                 bucket: deliveryBucket.bucket.output.bucket,

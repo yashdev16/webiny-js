@@ -151,6 +151,7 @@ export const createApiPulumiApp = (projectAppParams: CreateApiPulumiAppParams = 
                     COGNITO_REGION: String(process.env.AWS_REGION),
                     COGNITO_USER_POOL_ID: core.cognitoUserPoolId,
                     DB_TABLE: core.primaryDynamodbTableName,
+                    DB_TABLE_LOG: core.logDynamodbTableName,
                     DB_TABLE_ELASTICSEARCH: core.elasticsearchDynamodbTableName,
                     ELASTIC_SEARCH_ENDPOINT: core.elasticsearchDomainEndpoint,
 
@@ -171,6 +172,7 @@ export const createApiPulumiApp = (projectAppParams: CreateApiPulumiAppParams = 
                     COGNITO_REGION: String(process.env.AWS_REGION),
                     COGNITO_USER_POOL_ID: core.cognitoUserPoolId,
                     DB_TABLE: core.primaryDynamodbTableName,
+                    DB_TABLE_LOG: core.logDynamodbTableName,
                     S3_BUCKET: core.fileManagerBucketId,
                     WEBINY_LOGS_FORWARD_URL
                 }
@@ -181,6 +183,7 @@ export const createApiPulumiApp = (projectAppParams: CreateApiPulumiAppParams = 
                     COGNITO_REGION: String(process.env.AWS_REGION),
                     COGNITO_USER_POOL_ID: core.cognitoUserPoolId,
                     DB_TABLE: core.primaryDynamodbTableName,
+                    DB_TABLE_LOG: core.logDynamodbTableName,
                     DB_TABLE_ELASTICSEARCH: core.elasticsearchDynamodbTableName,
                     ELASTIC_SEARCH_ENDPOINT: core.elasticsearchDomainEndpoint,
 
@@ -207,7 +210,8 @@ export const createApiPulumiApp = (projectAppParams: CreateApiPulumiAppParams = 
 
             const fileManager = app.addModule(ApiFileManager, {
                 env: {
-                    DB_TABLE: core.primaryDynamodbTableName
+                    DB_TABLE: core.primaryDynamodbTableName,
+                    DB_TABLE_LOG: core.logDynamodbTableName
                 }
             });
 

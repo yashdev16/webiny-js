@@ -43,6 +43,8 @@ import pageBuilderImportExportPlugins from "@webiny/api-page-builder-import-expo
 import { createStorageOperations as createPageBuilderImportExportStorageOperations } from "@webiny/api-page-builder-import-export-so-ddb";
 import { Context } from "~/index";
 import { getDocumentClient } from "@webiny/project-utils/testing/dynamodb";
+import { createLogger } from "@webiny/api-log";
+import { createCmsPlugins } from "../cms";
 
 export interface ICreateCoreParams {
     plugins?: Plugin[];
@@ -149,6 +151,9 @@ export const createCore = (params: ICreateCoreParams): ICreateCoreResult => {
             ...tenancyStorage.plugins,
             ...adminUsersStorage.plugins,
             ...security.plugins,
+            createLogger({
+                documentClient
+            }),
             createAdminUsersApp({
                 storageOperations: adminUsersStorage.storageOperations
             }),
@@ -167,6 +172,7 @@ export const createCore = (params: ICreateCoreParams): ICreateCoreResult => {
                 storageOperations: cmsStorage.storageOperations
             }),
             createHeadlessCmsGraphQL(),
+            ...createCmsPlugins(),
             createPageBuilderContext({
                 storageOperations: pageBuilderStorage.storageOperations
             }),

@@ -17,12 +17,18 @@ const attributesToRemove = [
     "GSI1_SK",
     "GSI2_PK",
     "GSI2_SK",
+    "GSI3_PK",
+    "GSI3_SK",
+    "GSI4_PK",
+    "GSI4_SK",
+    "GSI5_PK",
+    "GSI5_SK",
     "TYPE"
 ];
 
 export function cleanupItem<T>(
     entity: Entity<any>,
-    item?: (T & Record<string, any>) | null,
+    item?: T | null,
     removeAttributes: string[] = []
 ): T | null {
     if (!item) {
@@ -47,7 +53,7 @@ export function cleanupItem<T>(
 
 export function cleanupItems<T>(
     entity: Entity<any>,
-    items: (T & Record<string, any>)[],
+    items: T[],
     removeAttributes: string[] = []
 ): T[] {
     return items.map(item => cleanupItem<T>(entity, item, removeAttributes) as T);

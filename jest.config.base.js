@@ -91,8 +91,44 @@ module.exports = function ({ path }, presets = []) {
 
 process.env.DB_TABLE = "DynamoDB";
 process.env.DB_TABLE_ELASTICSEARCH = "ElasticsearchStream";
+process.env.DB_TABLE_LOG = "DynamoDBLog";
 process.env.WEBINY_VERSION = version;
 process.env.WEBINY_ELASTICSEARCH_INDEX_LOCALE = "true";
+
+const createGlobalSecondaryIndexesAttributeDefinitions = amount => {
+    const attributes = [];
+
+    for (let current = 1; current <= amount; current++) {
+        attributes.push({ AttributeName: `GSI${current}_PK`, AttributeType: "S" });
+        attributes.push({ AttributeName: `GSI${current}_SK`, AttributeType: "S" });
+    }
+    return attributes;
+};
+
+const createGlobalSecondaryIndexes = options => {
+    if (!options.amount) {
+        return [];
+    }
+    const indexes = [];
+    for (let current = 1; current <= options.amount; current++) {
+        indexes.push({
+            IndexName: `GSI${current}`,
+            KeySchema: [
+                { AttributeName: `GSI${current}_PK`, KeyType: "HASH" },
+                { AttributeName: `GSI${current}_SK`, KeyType: "RANGE" }
+            ],
+            Projection: {
+                ProjectionType: "ALL"
+            },
+            ProvisionedThroughput: {
+                ReadCapacityUnits: 1,
+                WriteCapacityUnits: 1
+            }
+        });
+    }
+
+    return indexes;
+};
 
 const createDynaliteTables = (options = {}) => {
     return {
@@ -106,42 +142,12 @@ const createDynaliteTables = (options = {}) => {
                 AttributeDefinitions: [
                     { AttributeName: "PK", AttributeType: "S" },
                     { AttributeName: "SK", AttributeType: "S" },
-                    { AttributeName: "GSI1_PK", AttributeType: "S" },
-                    { AttributeName: "GSI1_SK", AttributeType: "S" },
-                    { AttributeName: "GSI2_PK", AttributeType: "S" },
-                    { AttributeName: "GSI2_SK", AttributeType: "S" }
+                    ...createGlobalSecondaryIndexesAttributeDefinitions(2)
                 ],
                 ProvisionedThroughput: { ReadCapacityUnits: 1, WriteCapacityUnits: 1 },
-                GlobalSecondaryIndexes: [
-                    {
-                        IndexName: "GSI1",
-                        KeySchema: [
-                            { AttributeName: "GSI1_PK", KeyType: "HASH" },
-                            { AttributeName: "GSI1_SK", KeyType: "RANGE" }
-                        ],
-                        Projection: {
-                            ProjectionType: "ALL"
-                        },
-                        ProvisionedThroughput: {
-                            ReadCapacityUnits: 1,
-                            WriteCapacityUnits: 1
-                        }
-                    },
-                    {
-                        IndexName: "GSI2",
-                        KeySchema: [
-                            { AttributeName: "GSI2_PK", KeyType: "HASH" },
-                            { AttributeName: "GSI2_SK", KeyType: "RANGE" }
-                        ],
-                        Projection: {
-                            ProjectionType: "ALL"
-                        },
-                        ProvisionedThroughput: {
-                            ReadCapacityUnits: 1,
-                            WriteCapacityUnits: 1
-                        }
-                    }
-                ],
+                GlobalSecondaryIndexes: createGlobalSecondaryIndexes({
+                    amount: 2
+                }),
                 data: options.data || []
             },
             {
@@ -155,6 +161,23 @@ const createDynaliteTables = (options = {}) => {
                     { AttributeName: "SK", AttributeType: "S" }
                 ],
                 ProvisionedThroughput: { ReadCapacityUnits: 1, WriteCapacityUnits: 1 }
+            },
+            {
+                TableName: process.env.DB_TABLE_LOG,
+                KeySchema: [
+                    { AttributeName: "PK", KeyType: "HASH" },
+                    { AttributeName: "SK", KeyType: "RANGE" }
+                ],
+                AttributeDefinitions: [
+                    { AttributeName: "PK", AttributeType: "S" },
+                    { AttributeName: "SK", AttributeType: "S" },
+                    ...createGlobalSecondaryIndexesAttributeDefinitions(5)
+                ],
+                ProvisionedThroughput: { ReadCapacityUnits: 1, WriteCapacityUnits: 1 },
+                GlobalSecondaryIndexes: createGlobalSecondaryIndexes({
+                    amount: 5
+                }),
+                data: options.data || []
             }
         ],
         basePort: 8000

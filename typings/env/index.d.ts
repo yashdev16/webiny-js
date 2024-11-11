@@ -10,6 +10,7 @@ declare namespace NodeJS {
         DB_TABLE_HEADLESS_CMS?: string;
         DB_PAGE_BUILDER?: string;
         DB_TABLE_PAGE_BUILDER?: string;
+        DB_TABLE_LOG?: string;
         ELASTICSEARCH_SHARED_INDEXES?: "true" | "false" | string;
         WEBINY_VERSION?: string;
         WEBINY_IS_PRE_529?: "true" | "false";

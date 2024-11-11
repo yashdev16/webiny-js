@@ -294,7 +294,8 @@ jobs:
           --storage=ddb","storage":"ddb","packageName":"api-headless-cms-aco","id":"718c110b004c59ed7d13cbcc875a6b64"},{"cmd":"packages/api-headless-cms-bulk-actions
           --storage=ddb","storage":"ddb","packageName":"api-headless-cms-bulk-actions","id":"00c0a57737502f28c304015d2d1ba442"},{"cmd":"packages/api-headless-cms-import-export
           --storage=ddb","storage":"ddb","packageName":"api-headless-cms-import-export","id":"e9052e7c40171aeb43ce089fdfbbe3c8"},{"cmd":"packages/api-i18n
-          --storage=ddb","storage":"ddb","packageName":"api-i18n","id":"943e15fe21c847b164f9413f8baf97b7"},{"cmd":"packages/api-mailer
+          --storage=ddb","storage":"ddb","packageName":"api-i18n","id":"943e15fe21c847b164f9413f8baf97b7"},{"cmd":"packages/api-log
+          --storage=ddb","storage":"ddb","packageName":"api-log","id":"9baae1f165e409fea40713e0cf2d300f"},{"cmd":"packages/api-mailer
           --storage=ddb","storage":"ddb","packageName":"api-mailer","id":"2cc1dc707a39e72f4e5d9a140677ca39"},{"cmd":"packages/api-page-builder
           --storage=ddb
           --shard=1/6","storage":"ddb","packageName":"api-page-builder","id":"b2a30dfaf230076ce7120c55eb581d32"},{"cmd":"packages/api-page-builder

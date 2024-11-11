@@ -3,11 +3,15 @@ import { createHandler } from "@webiny/handler-aws";
 import renderPlugins from "@webiny/api-prerendering-service-aws/render/sqsRender";
 import renderAwsPlugins from "@webiny/api-prerendering-service-aws/render";
 import { createPrerenderingServiceStorageOperations } from "@webiny/api-prerendering-service-so-ddb";
+import { createLogger } from "@webiny/api-log";
 
 const documentClient = getDocumentClient();
 
 export const handler = createHandler({
     plugins: [
+        createLogger({
+            documentClient
+        }),
         renderPlugins({
             storage: {
                 name: String(process.env.DELIVERY_BUCKET)

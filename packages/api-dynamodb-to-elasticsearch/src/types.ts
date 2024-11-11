@@ -1,5 +1,7 @@
 import { GenericRecord } from "@webiny/cli/types";
 import { DynamoDBRecord } from "@webiny/handler-aws/types";
+import { ElasticsearchContext } from "@webiny/api-elasticsearch/types";
+import { Context as LoggerContext } from "@webiny/api-log/types";
 
 export interface IOperationsBuilderBuildParams {
     records: DynamoDBRecord[];
@@ -33,3 +35,5 @@ export interface IOperations {
 export interface IDecompressor {
     decompress(data: GenericRecord): Promise<GenericRecord | null>;
 }
+
+export interface Context extends ElasticsearchContext, Pick<LoggerContext, "logger"> {}

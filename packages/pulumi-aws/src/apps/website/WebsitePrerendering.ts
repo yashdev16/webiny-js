@@ -15,6 +15,7 @@ interface PreRenderingServiceParams {
     dbTableName: pulumi.Output<string>;
     dbTableHashKey: pulumi.Output<string>;
     dbTableRangeKey: pulumi.Output<string>;
+    logDbTableName: pulumi.Output<string>;
     appUrl: pulumi.Output<string>;
     deliveryUrl: pulumi.Output<string>;
     bucket: pulumi.Output<string>;
@@ -104,7 +105,8 @@ function createRenderSubscriber(
             environment: {
                 variables: getCommonLambdaEnvVariables().apply(value => ({
                     ...value,
-                    DB_TABLE: params.dbTableName
+                    DB_TABLE: params.dbTableName,
+                    DB_TABLE_LOG: params.logDbTableName
                 }))
             },
             description: "Subscribes to render events on event bus",
