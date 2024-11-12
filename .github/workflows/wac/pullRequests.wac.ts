@@ -204,7 +204,7 @@ export const pullRequests = createWorkflow({
                     id: "latest-webiny-version",
                     run: addToOutputs(
                         "latest-webiny-version",
-                        "npm view @webiny/cli version"
+                        "$(npm view @webiny/cli version)"
                     ),
                 }
             ]

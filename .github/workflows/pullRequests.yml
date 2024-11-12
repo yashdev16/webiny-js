@@ -83,7 +83,7 @@ jobs:
       - name: Get latest Webiny version on NPM
         id: latest-webiny-version
         run: >-
-          echo "latest-webiny-version=npm view @webiny/cli version" >>
+          echo "latest-webiny-version=$(npm view @webiny/cli version)" >>
           $GITHUB_OUTPUT
     runs-on: ubuntu-latest
     env:
