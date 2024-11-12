@@ -43,6 +43,7 @@ jobs:
       run-cache-key: ${{ steps.run-cache-key.outputs.run-cache-key }}
       is-fork-pr: ${{ steps.is-fork-pr.outputs.is-fork-pr }}
       changed-packages: ${{ steps.detect-changed-packages.outputs.changed-packages }}
+      latest-webiny-version: ${{ steps.latest-webiny-version.outputs.latest-webiny-version }}
     steps:
       - uses: actions/setup-node@v4
         with:
@@ -79,6 +80,25 @@ jobs:
           .github/workflows/wac/utils/runNodeScripts/listChangedPackages.js '${{
           steps.detect-changed-files.outputs.changed_files }}')" >>
           $GITHUB_OUTPUT
+      - name: Get latest Webiny version on NPM
+        id: latest-webiny-version
+        run: >-
+          echo "latest-webiny-version=npm view @webiny/cli version" >>
+          $GITHUB_OUTPUT
+    runs-on: ubuntu-latest
+    env:
+      NODE_OPTIONS: '--max_old_space_size=4096'
+      YARN_ENABLE_IMMUTABLE_INSTALLS: false
+  assignMilestone:
+    name: Assign milestone
+    needs: constants
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: actions/checkout@v4
+      - name: Print latest Webiny version
+        run: echo ${{ needs.constants.outputs.latest-webiny-version }}
     runs-on: ubuntu-latest
     env:
       NODE_OPTIONS: '--max_old_space_size=4096'

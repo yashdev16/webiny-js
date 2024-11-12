@@ -153,7 +153,8 @@ export const pullRequests = createWorkflow({
                 "global-cache-key": "${{ steps.global-cache-key.outputs.global-cache-key }}",
                 "run-cache-key": "${{ steps.run-cache-key.outputs.run-cache-key }}",
                 "is-fork-pr": "${{ steps.is-fork-pr.outputs.is-fork-pr }}",
-                "changed-packages": "${{ steps.detect-changed-packages.outputs.changed-packages }}"
+                "changed-packages": "${{ steps.detect-changed-packages.outputs.changed-packages }}",
+                "latest-webiny-version": "${{ steps.latest-webiny-version.outputs.latest-webiny-version }}",
             },
             steps: [
                 {
@@ -197,6 +198,24 @@ export const pullRequests = createWorkflow({
                         "${{ steps.detect-changed-files.outputs.changed_files }}",
                         { outputAs: "changed-packages" }
                     )
+                },
+                {
+                    name: "Get latest Webiny version on NPM",
+                    id: "latest-webiny-version",
+                    run: addToOutputs(
+                        "latest-webiny-version",
+                        "npm view @webiny/cli version"
+                    ),
+                }
+            ]
+        }),
+        assignMilestone: createJob({
+            name: "Assign milestone",
+            needs: "constants",
+            steps: [
+                {
+                    name: "Print latest Webiny version",
+                    run: "echo ${{ needs.constants.outputs.latest-webiny-version }}"
                 }
             ]
         }),
