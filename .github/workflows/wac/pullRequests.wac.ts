@@ -154,7 +154,8 @@ export const pullRequests = createWorkflow({
                 "run-cache-key": "${{ steps.run-cache-key.outputs.run-cache-key }}",
                 "is-fork-pr": "${{ steps.is-fork-pr.outputs.is-fork-pr }}",
                 "changed-packages": "${{ steps.detect-changed-packages.outputs.changed-packages }}",
-                "latest-webiny-version": "${{ steps.latest-webiny-version.outputs.latest-webiny-version }}",
+                "latest-webiny-version":
+                    "${{ steps.latest-webiny-version.outputs.latest-webiny-version }}"
             },
             steps: [
                 {
@@ -202,10 +203,7 @@ export const pullRequests = createWorkflow({
                 {
                     name: "Get latest Webiny version on NPM",
                     id: "latest-webiny-version",
-                    run: addToOutputs(
-                        "latest-webiny-version",
-                        "$(npm view @webiny/cli version)"
-                    ),
+                    run: addToOutputs("latest-webiny-version", "$(npm view @webiny/cli version)")
                 }
             ]
         }),
