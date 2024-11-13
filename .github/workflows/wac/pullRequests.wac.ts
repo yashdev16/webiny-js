@@ -73,7 +73,7 @@ const createJestTestsJobs = (storage: string | null) => {
             {
                 name: "Packages to test with Jest",
                 id: "list-packages",
-                run: "echo ${{ steps.list-packages-to-jest-test.outputs.packages-to-jest-test }}"
+                run: "echo '${{ steps.list-packages-to-jest-test.outputs.packages-to-jest-test }}'"
             }
         ]
     });

@@ -222,8 +222,8 @@ jobs:
       - name: Packages to test with Jest
         id: list-packages
         run: >-
-          echo ${{
-          steps.list-packages-to-jest-test.outputs.packages-to-jest-test }}
+          echo '${{
+          steps.list-packages-to-jest-test.outputs.packages-to-jest-test }}'
     env:
       NODE_OPTIONS: '--max_old_space_size=4096'
       YARN_ENABLE_IMMUTABLE_INSTALLS: false
@@ -340,8 +340,8 @@ jobs:
       - name: Packages to test with Jest
         id: list-packages
         run: >-
-          echo ${{
-          steps.list-packages-to-jest-test.outputs.packages-to-jest-test }}
+          echo '${{
+          steps.list-packages-to-jest-test.outputs.packages-to-jest-test }}'
     env:
       NODE_OPTIONS: '--max_old_space_size=4096'
       YARN_ENABLE_IMMUTABLE_INSTALLS: false
@@ -456,8 +456,8 @@ jobs:
       - name: Packages to test with Jest
         id: list-packages
         run: >-
-          echo ${{
-          steps.list-packages-to-jest-test.outputs.packages-to-jest-test }}
+          echo '${{
+          steps.list-packages-to-jest-test.outputs.packages-to-jest-test }}'
     env:
       NODE_OPTIONS: '--max_old_space_size=4096'
       YARN_ENABLE_IMMUTABLE_INSTALLS: false
@@ -585,8 +585,8 @@ jobs:
       - name: Packages to test with Jest
         id: list-packages
         run: >-
-          echo ${{
-          steps.list-packages-to-jest-test.outputs.packages-to-jest-test }}
+          echo '${{
+          steps.list-packages-to-jest-test.outputs.packages-to-jest-test }}'
     env:
       NODE_OPTIONS: '--max_old_space_size=4096'
       YARN_ENABLE_IMMUTABLE_INSTALLS: false
