@@ -233,7 +233,7 @@ export const pullRequests = createWorkflow({
             ]
         }),
         staticCodeAnalysis: createJob({
-            needs: ["constants", "build"],
+            needs: ["constants"],
             name: "Static code analysis",
             checkout: { path: DIR_WEBINY_JS },
             steps: [

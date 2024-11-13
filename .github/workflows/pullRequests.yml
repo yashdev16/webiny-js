@@ -138,7 +138,6 @@ jobs:
   staticCodeAnalysis:
     needs:
       - constants
-      - build
     name: Static code analysis
     steps:
       - uses: actions/setup-node@v4
