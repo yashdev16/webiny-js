@@ -277,7 +277,8 @@ jobs:
           ${{ fromJson('[{"cmd":"packages/api-aco
           --storage=ddb-es,ddb","storage":"ddb-es","packageName":"api-aco","id":"8f23ec33f547aa62236f5c71115688d6"},{"cmd":"packages/api-audit-logs
           --storage=ddb-es,ddb","storage":"ddb-es","packageName":"api-audit-logs","id":"a292444cd9100f78d8fc196274393ea8"},{"cmd":"packages/api-dynamodb-to-elasticsearch
-          --storage=ddb-es,ddb","storage":["ddb-es"],"packageName":"api-dynamodb-to-elasticsearch","id":"e2c325f0940ba5fb5a891a8cf74fca61"},{"cmd":"packages/api-elasticsearch","storage":["ddb-es","ddb-os"],"packageName":"api-elasticsearch","id":"430874606aeb8e8041b325955f9330e3"},{"cmd":"packages/api-elasticsearch-tasks
+          --storage=ddb-es,ddb","storage":["ddb-es"],"packageName":"api-dynamodb-to-elasticsearch","id":"e2c325f0940ba5fb5a891a8cf74fca61"},{"cmd":"packages/api-elasticsearch
+          --storage=ddb-es,ddb","storage":["ddb-es"],"packageName":"api-elasticsearch","id":"5963079c60b96202bbaf2a802ad14383"},{"cmd":"packages/api-elasticsearch-tasks
           --storage=ddb-es,ddb","storage":"ddb-es","packageName":"api-elasticsearch-tasks","id":"d81ad1d024a8746cc440e2e548770f8f"},{"cmd":"packages/api-file-manager
           --storage=ddb-es,ddb","storage":"ddb-es","packageName":"api-file-manager","id":"d6f293add4a252b96cbd770ab6e80557"},{"cmd":"packages/api-form-builder
           --storage=ddb-es,ddb","storage":"ddb-es","packageName":"api-form-builder","id":"3753bde0144d808eb15c755b7176386c"},{"cmd":"packages/api-form-builder-so-ddb-es
@@ -372,7 +373,8 @@ jobs:
           ${{ fromJson('[{"cmd":"packages/api-aco
           --storage=ddb-os,ddb","storage":"ddb-os","packageName":"api-aco","id":"e4b1b5ebc172f2657485e41c35ad1cd7"},{"cmd":"packages/api-audit-logs
           --storage=ddb-os,ddb","storage":"ddb-os","packageName":"api-audit-logs","id":"b36aac5f0e34dc4583e5422ae589f1ed"},{"cmd":"packages/api-dynamodb-to-elasticsearch
-          --storage=ddb-os,ddb","storage":["ddb-os"],"packageName":"api-dynamodb-to-elasticsearch","id":"6e0b282c3d135703e52b2c55822d4fb0"},{"cmd":"packages/api-elasticsearch","storage":["ddb-es","ddb-os"],"packageName":"api-elasticsearch","id":"430874606aeb8e8041b325955f9330e3"},{"cmd":"packages/api-elasticsearch-tasks
+          --storage=ddb-os,ddb","storage":["ddb-os"],"packageName":"api-dynamodb-to-elasticsearch","id":"6e0b282c3d135703e52b2c55822d4fb0"},{"cmd":"packages/api-elasticsearch
+          --storage=ddb-os,ddb","storage":["ddb-os"],"packageName":"api-elasticsearch","id":"b0f477d6b209f654714809b318be888e"},{"cmd":"packages/api-elasticsearch-tasks
           --storage=ddb-os,ddb","storage":"ddb-os","packageName":"api-elasticsearch-tasks","id":"580a9577fdbd4a241034a42e1a47dee5"},{"cmd":"packages/api-file-manager
           --storage=ddb-os,ddb","storage":"ddb-os","packageName":"api-file-manager","id":"346430a79981d3e214c87254a08e31b2"},{"cmd":"packages/api-form-builder
           --storage=ddb-os,ddb","storage":"ddb-os","packageName":"api-form-builder","id":"d386cddfd3c366ad9955193dcfe74363"},{"cmd":"packages/api-form-builder-so-ddb-es
