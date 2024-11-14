@@ -66,11 +66,19 @@ module.exports = () => {
             });
         });
 
+        const initializedDbPlugins = dbPlugins({
+            table: process.env.DB_TABLE,
+            driver: new DynamoDbDriver({
+                documentClient
+            })
+        });
+
         return {
             storageOperations: createStorageOperations({
                 documentClient,
                 elasticsearch: elasticsearchClient,
                 plugins: [
+                    ...initializedDbPlugins,
                     getElasticsearchOperators(),
                     createCmsEntryElasticsearchBodyModifierPlugin({
                         modifyBody: ({ body }) => {
@@ -91,16 +99,7 @@ module.exports = () => {
                     })
                 ]
             }),
-            plugins: [
-                ...plugins,
-                dbPlugins({
-                    table: process.env.DB_TABLE,
-                    driver: new DynamoDbDriver({
-                        documentClient
-                    })
-                }),
-                createOrRefreshIndexSubscription
-            ]
+            plugins: [...plugins, ...initializedDbPlugins, createOrRefreshIndexSubscription]
         };
     });
 };

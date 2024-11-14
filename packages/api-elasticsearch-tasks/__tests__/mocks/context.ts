@@ -8,11 +8,14 @@ import {
     IUpdateTaskResponse
 } from "@webiny/tasks/types";
 import { ElasticsearchContext } from "@webiny/api-elasticsearch/types";
+// @ts-expect-error
+import { createMockApiLog } from "@webiny/project-utils/testing/mockApiLog";
 
 export const createContextMock = (
     params?: PartialDeep<Context & ElasticsearchContext>
 ): Context & ElasticsearchContext => {
     return {
+        logger: createMockApiLog(),
         tenancy: {
             listTenants: async () => {
                 return [

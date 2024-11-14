@@ -35,22 +35,22 @@ module.exports = () => {
             }
         });
 
+        const initializedDbPlugins = dbPlugins({
+            table: process.env.DB_TABLE,
+            driver: new DynamoDbDriver({
+                documentClient
+            })
+        });
+
         return {
             storageOperations: createStorageOperations({
                 documentClient,
                 elasticsearch: elasticsearchClient,
                 table: table => ({ ...table, name: process.env.DB_TABLE }),
-                esTable: table => ({ ...table, name: process.env.DB_TABLE_ELASTICSEARCH })
+                esTable: table => ({ ...table, name: process.env.DB_TABLE_ELASTICSEARCH }),
+                plugins: [...initializedDbPlugins]
             }),
-            plugins: [
-                ...plugins,
-                dbPlugins({
-                    table: process.env.DB_TABLE,
-                    driver: new DynamoDbDriver({
-                        documentClient
-                    })
-                })
-            ]
+            plugins: [...plugins, ...initializedDbPlugins]
         };
     });
 };

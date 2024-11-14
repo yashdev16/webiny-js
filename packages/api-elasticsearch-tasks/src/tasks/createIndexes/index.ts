@@ -12,23 +12,24 @@ export const createIndexesTaskDefinition = (params?: IElasticsearchTaskConfig) =
          * No point in having more than 2 runs, as the create index operations should not even take 1 full run, no matter how much indeexs is there to create.
          */
         maxIterations: 2,
-        run: async ({ response, context, isCloseToTimeout, isAborted, store, input }) => {
+        run: async ({ response, context, isCloseToTimeout, isAborted, store, input, timer }) => {
             const { Manager } = await import(
-                /* webpackChunkName: "ElasticsearchTaskManager" */
+                /* webpackChunkName: "Manager" */
                 "../Manager"
             );
             const { IndexManager } = await import(
-                /* webpackChunkName: "ElasticsearchTaskSettings" */ "~/settings"
+                /* webpackChunkName: "IndexManager" */ "~/settings"
             );
 
-            const manager = new Manager({
+            const manager = new Manager<IElasticsearchCreateIndexesTaskInput>({
                 elasticsearchClient: params?.elasticsearchClient,
                 documentClient: params?.documentClient,
                 response,
                 context,
                 isAborted,
                 isCloseToTimeout,
-                store
+                store,
+                timer
             });
 
             const indexManager = new IndexManager(manager.elasticsearch, {});

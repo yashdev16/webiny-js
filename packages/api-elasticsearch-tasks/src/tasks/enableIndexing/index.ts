@@ -6,27 +6,28 @@ export const createEnableIndexingTask = (params?: IElasticsearchTaskConfig) => {
     return createTaskDefinition<Context, IElasticsearchEnableIndexingTaskInput>({
         id: "elasticsearchEnableIndexing",
         title: "Enable Indexing on Elasticsearch Indexes",
-        run: async ({ response, context, isAborted, isCloseToTimeout, input, store }) => {
+        run: async ({ response, context, isAborted, isCloseToTimeout, input, store, timer }) => {
             const { Manager } = await import(
-                /* webpackChunkName: "ElasticsearchTaskManager" */
+                /* webpackChunkName: "Manager" */
                 "../Manager"
             );
             const { IndexManager } = await import(
-                /* webpackChunkName: "ElasticsearchTaskSettings" */ "~/settings"
+                /* webpackChunkName: "IndexManager" */ "~/settings"
             );
 
             const { EnableIndexingTaskRunner } = await import(
-                /* webpackChunkName: "ElasticsearchEnableIndexingTaskRunner" */ "./EnableIndexingTaskRunner"
+                /* webpackChunkName: "EnableIndexingTaskRunner" */ "./EnableIndexingTaskRunner"
             );
 
-            const manager = new Manager({
+            const manager = new Manager<IElasticsearchEnableIndexingTaskInput>({
                 elasticsearchClient: params?.elasticsearchClient,
                 documentClient: params?.documentClient,
                 response,
                 context,
                 isAborted,
                 isCloseToTimeout,
-                store
+                store,
+                timer
             });
 
             const indexManager = new IndexManager(

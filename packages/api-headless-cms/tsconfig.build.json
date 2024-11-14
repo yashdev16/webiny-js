@@ -17,7 +17,8 @@
     { "path": "../utils/tsconfig.build.json" },
     { "path": "../validation/tsconfig.build.json" },
     { "path": "../api-wcp/tsconfig.build.json" },
-    { "path": "../aws-sdk/tsconfig.build.json" }
+    { "path": "../aws-sdk/tsconfig.build.json" },
+    { "path": "../db-dynamodb/tsconfig.build.json" }
   ],
   "compilerOptions": {
     "rootDir": "./src",

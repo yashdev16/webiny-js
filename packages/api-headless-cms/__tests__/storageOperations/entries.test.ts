@@ -1,6 +1,6 @@
 import { createPersonEntries, createPersonModel, deletePersonModel } from "./helpers";
 import { useGraphQLHandler } from "../testHelpers/useGraphQLHandler";
-import { CmsContext } from "~/types";
+import { createStorageOperationsContext } from "~tests/storageOperations/context";
 
 jest.setTimeout(90000);
 
@@ -15,9 +15,11 @@ describe("Entries storage operations", () => {
      * Some others might not need them...
      */
     beforeAll(async () => {
-        await storageOperations.beforeInit({
-            plugins
-        } as unknown as CmsContext);
+        await storageOperations.beforeInit(
+            await createStorageOperationsContext({
+                plugins
+            })
+        );
     });
 
     beforeEach(async () => {

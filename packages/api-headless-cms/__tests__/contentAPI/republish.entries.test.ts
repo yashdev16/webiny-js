@@ -1,10 +1,11 @@
 import { mdbid } from "@webiny/utils";
 import models from "./mocks/contentModels";
 import { useGraphQLHandler } from "../testHelpers/useGraphQLHandler";
-import { CmsContext, CmsEntry, CmsGroup, CmsModel, StorageOperationsCmsModel } from "~/types";
+import { CmsEntry, CmsGroup, CmsModel, StorageOperationsCmsModel } from "~/types";
 import { useCategoryManageHandler } from "../testHelpers/useCategoryManageHandler";
 import { useCategoryReadHandler } from "../testHelpers/useCategoryReadHandler";
 import { useProductManageHandler } from "../testHelpers/useProductManageHandler";
+import { createStorageOperationsContext } from "~tests/storageOperations/context";
 
 const cliPackageJson = require("@webiny/cli/package.json");
 const webinyVersion = cliPackageJson.version;
@@ -288,9 +289,11 @@ describe("Republish entries", () => {
 
         const { storageOperations, plugins } = useCategoryManageHandler(manageOpts);
 
-        await storageOperations.beforeInit({
-            plugins
-        } as CmsContext);
+        await storageOperations.beforeInit(
+            await createStorageOperationsContext({
+                plugins
+            })
+        );
 
         const { entry: galaEntry } = createEntry(productModel, {
             title: "Gala",

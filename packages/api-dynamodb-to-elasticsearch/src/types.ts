@@ -27,6 +27,7 @@ export interface IDeleteOperationParams {
 export interface IOperations {
     items: GenericRecord[];
     total: number;
+    clear(): void;
     insert(params: IInsertOperationParams): void;
     modify(params: IModifyOperationParams): void;
     delete(params: IDeleteOperationParams): void;

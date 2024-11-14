@@ -73,7 +73,7 @@ const createJestTestsJobs = (storage: string | null) => {
             {
                 name: "Packages to test with Jest",
                 id: "list-packages",
-                run: "echo ${{ steps.list-packages-to-jest-test.outputs.packages-to-jest-test }}"
+                run: "echo '${{ steps.list-packages-to-jest-test.outputs.packages-to-jest-test }}'"
             }
         ]
     });
@@ -153,7 +153,9 @@ export const pullRequests = createWorkflow({
                 "global-cache-key": "${{ steps.global-cache-key.outputs.global-cache-key }}",
                 "run-cache-key": "${{ steps.run-cache-key.outputs.run-cache-key }}",
                 "is-fork-pr": "${{ steps.is-fork-pr.outputs.is-fork-pr }}",
-                "changed-packages": "${{ steps.detect-changed-packages.outputs.changed-packages }}"
+                "changed-packages": "${{ steps.detect-changed-packages.outputs.changed-packages }}",
+                "latest-webiny-version":
+                    "${{ steps.latest-webiny-version.outputs.latest-webiny-version }}"
             },
             steps: [
                 {
@@ -197,6 +199,21 @@ export const pullRequests = createWorkflow({
                         "${{ steps.detect-changed-files.outputs.changed_files }}",
                         { outputAs: "changed-packages" }
                     )
+                },
+                {
+                    name: "Get latest Webiny version on NPM",
+                    id: "latest-webiny-version",
+                    run: addToOutputs("latest-webiny-version", "$(npm view @webiny/cli version)")
+                }
+            ]
+        }),
+        assignMilestone: createJob({
+            name: "Assign milestone",
+            needs: "constants",
+            steps: [
+                {
+                    name: "Print latest Webiny version",
+                    run: "echo ${{ needs.constants.outputs.latest-webiny-version }}"
                 }
             ]
         }),
@@ -216,7 +233,7 @@ export const pullRequests = createWorkflow({
             ]
         }),
         staticCodeAnalysis: createJob({
-            needs: ["constants", "build"],
+            needs: ["constants"],
             name: "Static code analysis",
             checkout: { path: DIR_WEBINY_JS },
             steps: [

@@ -1,11 +1,11 @@
 import { DynamoDBDocument, getDocumentClient } from "@webiny/aws-sdk/client-dynamodb";
 import { Client, createElasticsearchClient } from "@webiny/api-elasticsearch";
 import { createTable } from "~/definitions";
-import { Context, IElasticsearchIndexingTaskValues, IManager } from "~/types";
+import { Context, IManager } from "~/types";
 import { createEntry } from "~/definitions/entry";
 import { Entity } from "@webiny/db-dynamodb/toolbox";
 import { ITaskResponse } from "@webiny/tasks/response/abstractions";
-import { ITaskManagerStore } from "@webiny/tasks/runner/abstractions";
+import { IIsCloseToTimeoutCallable, ITaskManagerStore } from "@webiny/tasks/runner/abstractions";
 import {
     batchReadAll,
     BatchReadItem,
@@ -13,30 +13,33 @@ import {
     BatchWriteItem,
     BatchWriteResult
 } from "@webiny/db-dynamodb";
+import { ITimer } from "@webiny/handler-aws/utils";
 
-export interface ManagerParams {
+export interface ManagerParams<T> {
     context: Context;
     documentClient?: DynamoDBDocument;
     elasticsearchClient?: Client;
-    isCloseToTimeout: () => boolean;
+    isCloseToTimeout: IIsCloseToTimeoutCallable;
     isAborted: () => boolean;
     response: ITaskResponse;
-    store: ITaskManagerStore<IElasticsearchIndexingTaskValues>;
+    store: ITaskManagerStore<T>;
+    timer: ITimer;
 }
 
-export class Manager implements IManager {
+export class Manager<T> implements IManager<T> {
     public readonly documentClient: DynamoDBDocument;
     public readonly elasticsearch: Client;
     public readonly context: Context;
     public readonly table: ReturnType<typeof createTable>;
-    public readonly isCloseToTimeout: () => boolean;
+    public readonly isCloseToTimeout: IIsCloseToTimeoutCallable;
     public readonly isAborted: () => boolean;
     public readonly response: ITaskResponse;
-    public readonly store: ITaskManagerStore<IElasticsearchIndexingTaskValues>;
+    public readonly store: ITaskManagerStore<T>;
+    public readonly timer: ITimer;
 
     private readonly entities: Record<string, Entity<any>> = {};
 
-    public constructor(params: ManagerParams) {
+    public constructor(params: ManagerParams<T>) {
         this.context = params.context;
         this.documentClient = params?.documentClient || getDocumentClient();
 
@@ -58,6 +61,7 @@ export class Manager implements IManager {
         };
         this.response = params.response;
         this.store = params.store;
+        this.timer = params.timer;
     }
 
     public getEntity(name: string): Entity<any> {

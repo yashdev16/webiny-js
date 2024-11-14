@@ -45,10 +45,10 @@ const border: ElementStylesModifier = ({ element, theme }) => {
         if (radius) {
             if (radius.advanced) {
                 Object.assign(styles, {
-                    borderRadiusTop: radius.top && parseInt(radius.top),
-                    borderRadiusRight: radius.right && parseInt(radius.right),
-                    borderRadiusBottom: radius.bottom && parseInt(radius.bottom),
-                    borderRadiusLeft: radius.left && parseInt(radius.left)
+                    borderTopLeftRadius: radius.topLeft && parseInt(radius.topLeft),
+                    borderTopRightRadius: radius.topRight && parseInt(radius.topRight),
+                    borderBottomLeftRadius: radius.bottomLeft && parseInt(radius.bottomLeft),
+                    borderBottomRightRadius: radius.bottomRight && parseInt(radius.bottomRight)
                 });
             } else {
                 Object.assign(styles, { borderRadius: parseInt(radius.all || "0") });

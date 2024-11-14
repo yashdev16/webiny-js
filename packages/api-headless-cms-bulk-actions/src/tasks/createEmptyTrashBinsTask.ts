@@ -1,10 +1,11 @@
-import { createPrivateTaskDefinition, TaskDataStatus } from "@webiny/tasks";
+import { createTaskDefinition } from "@webiny/tasks";
+import { createDeleteEntry, createListDeletedEntries } from "~/useCases";
 import {
     HcmsBulkActionsContext,
-    IBulkActionOperationByModelInput,
-    TrashBinCleanUpParams
+    IEmptyTrashBinsInput,
+    IEmptyTrashBinsOutput,
+    IEmptyTrashBinsTaskParams
 } from "~/types";
-import { ChildTasksCleanup } from "~/useCases/internals";
 
 const calculateDateTimeString = () => {
     // Retrieve the retention period from the environment variable WEBINY_TRASH_BIN_RETENTION_PERIOD_DAYS,
@@ -23,122 +24,95 @@ const calculateDateTimeString = () => {
     return currentDate.toISOString();
 };
 
-const cleanup = async ({ context, task }: TrashBinCleanUpParams) => {
-    // We want to clean all child tasks and logs, which have no errors.
-    const childTasksCleanup = new ChildTasksCleanup();
-    try {
-        await childTasksCleanup.execute({
-            context,
-            task
-        });
-    } catch (ex) {
-        console.error(`Error while cleaning "EmptyTrashBins" child tasks.`, ex);
-    }
-};
-
 export const createEmptyTrashBinsTask = () => {
-    return createPrivateTaskDefinition<HcmsBulkActionsContext>({
+    return createTaskDefinition<
+        HcmsBulkActionsContext,
+        IEmptyTrashBinsInput,
+        IEmptyTrashBinsOutput
+    >({
+        isPrivate: true,
         id: "hcmsEntriesEmptyTrashBins",
         title: "Headless CMS - Empty all trash bins",
-        description:
-            "Delete all entries found in the trash bin, for each model found in the system.",
-        maxIterations: 24,
+        description: "Delete all entries in the trash bin for each model in the system.",
+        maxIterations: 120,
         disableDatabaseLogs: true,
-        run: async params => {
-            const { response, isAborted, isCloseToTimeout, context, trigger, input, store } =
-                params;
+        run: async (params: IEmptyTrashBinsTaskParams) => {
+            const { response, isAborted, context, input, isCloseToTimeout } = params;
+
+            // Abort the task if needed.
             if (isAborted()) {
                 return response.aborted();
-            } else if (isCloseToTimeout()) {
-                return response.continue(
-                    {
-                        ...input
-                    },
-                    {
-                        seconds: 30
-                    }
-                );
             }
 
-            if (input.triggered) {
-                const { items } = await context.tasks.listTasks({
-                    where: {
-                        parentId: store.getTask().id,
-                        taskStatus_in: [TaskDataStatus.RUNNING, TaskDataStatus.PENDING]
-                    },
-                    limit: 100000
-                });
+            // Fetch all tenants, excluding those already processed.
+            const baseTenants = await context.tenancy.listTenants();
+            const executedTenantIds = input.executedTenantIds || [];
+            const tenants = baseTenants.filter(tenant => !executedTenantIds.includes(tenant.id));
+            let shouldContinue = false; // Flag to check if task should continue.
 
-                if (items.length === 0) {
-                    return response.done(
-                        "Task done: emptying the trash bin for all registered models."
-                    );
+            // Iterate over each tenant.
+            await context.tenancy.withEachTenant(tenants, async tenant => {
+                if (isCloseToTimeout()) {
+                    shouldContinue = true;
+                    return;
                 }
 
-                for (const item of items) {
-                    const status = await context.tasks.fetchServiceInfo(item.id);
-
-                    if (status?.status === "FAILED" || status?.status === "TIMED_OUT") {
-                        await context.tasks.updateTask(item.id, {
-                            taskStatus: TaskDataStatus.FAILED
-                        });
-                        continue;
-                    }
-
-                    if (status?.status === "ABORTED") {
-                        await context.tasks.updateTask(item.id, {
-                            taskStatus: TaskDataStatus.ABORTED
-                        });
-                    }
-                }
-
-                return response.continue(
-                    {
-                        ...input
-                    },
-                    {
-                        seconds: 3600
-                    }
-                );
-            }
-
-            try {
+                // Fetch all locales for the tenant.
                 const locales = context.i18n.getLocales();
-
                 await context.i18n.withEachLocale(locales, async () => {
-                    const models = await context.security.withoutAuthorization(async () => {
-                        return (await context.cms.listModels()).filter(model => !model.isPrivate);
-                    });
+                    if (isCloseToTimeout()) {
+                        shouldContinue = true;
+                        return;
+                    }
 
+                    // List all non-private models for the current locale.
+                    const models = await context.security.withoutAuthorization(async () =>
+                        (await context.cms.listModels()).filter(m => !m.isPrivate)
+                    );
+
+                    // Process each model to delete trashed entries.
                     for (const model of models) {
-                        await trigger<IBulkActionOperationByModelInput>({
-                            name: `Headless CMS - Empty trash bin for "${model.name}" model.`,
-                            definition: "hcmsBulkListDeleteEntries",
-                            input: {
-                                modelId: model.modelId,
-                                where: {
-                                    deletedOn_lt: calculateDateTimeString()
-                                }
+                        const list = createListDeletedEntries(context); // List trashed entries.
+                        const mutation = createDeleteEntry(context); // Mutation to delete entries.
+
+                        // Query parameters for fetching deleted entries older than a minute ago.
+                        const listEntriesParams = {
+                            where: { deletedOn_lt: calculateDateTimeString() },
+                            limit: 50
+                        };
+
+                        let result;
+                        // Continue deleting entries while there are entries left to delete.
+                        while (
+                            (result = await list.execute(model.modelId, listEntriesParams)) &&
+                            result.meta.totalCount > 0
+                        ) {
+                            if (isCloseToTimeout()) {
+                                shouldContinue = true;
+                                break;
                             }
-                        });
+                            for (const entry of result.entries) {
+                                if (isCloseToTimeout()) {
+                                    shouldContinue = true;
+                                    break;
+                                }
+                                // Delete each entry individually.
+                                await mutation.execute(model, entry.id);
+                            }
+                        }
                     }
                 });
 
-                return response.continue(
-                    {
-                        triggered: true
-                    },
-                    {
-                        seconds: 120
-                    }
-                );
-            } catch (ex) {
-                return response.error(ex.message ?? "Error while executing EmptyTrashBins task");
-            }
-        },
-        onMaxIterations: cleanup,
-        onDone: cleanup,
-        onError: cleanup,
-        onAbort: cleanup
+                // If the task isn't continuing, add the tenant to the executed list.
+                if (!shouldContinue) {
+                    executedTenantIds.push(tenant.id);
+                }
+            });
+
+            // Continue the task or mark it as done based on the `shouldContinue` flag.
+            return shouldContinue
+                ? response.continue({ ...input, executedTenantIds })
+                : response.done("Task done: emptied the trash bin for all registered models.");
+        }
     });
 };

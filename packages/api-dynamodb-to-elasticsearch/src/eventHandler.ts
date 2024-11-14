@@ -1,14 +1,8 @@
-import { getNumberEnvVariable } from "~/helpers/getNumberEnvVariable";
 import { createDynamoDBEventHandler, timerFactory } from "@webiny/handler-aws";
+import { Context } from "~/types";
 import { Decompressor } from "~/Decompressor";
 import { OperationsBuilder } from "~/OperationsBuilder";
 import { executeWithRetry } from "~/executeWithRetry";
-import { Context } from "~/types";
-
-const MAX_PROCESSOR_PERCENT = getNumberEnvVariable(
-    "MAX_ES_PROCESSOR",
-    process.env.NODE_ENV === "test" ? 101 : 98
-);
 
 /**
  * Also, we need to set the maximum running time for the Lambda Function.
@@ -49,7 +43,6 @@ export const createEventHandler = () => {
         await executeWithRetry({
             timer,
             maxRunningTime: MAX_RUNNING_TIME,
-            maxProcessorPercent: MAX_PROCESSOR_PERCENT,
             context,
             operations
         });

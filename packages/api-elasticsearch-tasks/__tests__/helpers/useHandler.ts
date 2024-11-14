@@ -18,6 +18,7 @@ import { createElasticsearchBackgroundTasks } from "~/index";
 import { getDocumentClient } from "@webiny/project-utils/testing/dynamodb";
 import dbPlugins from "@webiny/handler-db";
 import { DynamoDbDriver } from "@webiny/db-dynamodb";
+import { createLogger } from "@webiny/api-log";
 
 export interface UseHandlerParams {
     plugins?: PluginCollection;
@@ -45,6 +46,9 @@ export const useHandler = (params?: UseHandlerParams) => {
                 setupGraphQL: false,
                 permissions: createPermissions(),
                 identity: createIdentity()
+            }),
+            createLogger({
+                documentClient
             }),
             i18nContext(),
             i18nStorage.storageOperations,

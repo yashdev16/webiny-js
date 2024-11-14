@@ -1,14 +1,20 @@
 import { ElasticsearchContext } from "@webiny/api-elasticsearch/types";
 import { Entity } from "@webiny/db-dynamodb/toolbox";
-import { Context as TasksContext } from "@webiny/tasks/types";
+import {
+    Context as TasksContext,
+    IIsCloseToTimeoutCallable,
+    ITaskResponseDoneResultOutput
+} from "@webiny/tasks/types";
 import { DynamoDBDocument } from "@webiny/aws-sdk/client-dynamodb";
 import { Client } from "@webiny/api-elasticsearch";
 import { createTable } from "~/definitions";
 import { ITaskResponse } from "@webiny/tasks/response/abstractions";
 import { ITaskManagerStore } from "@webiny/tasks/runner/abstractions";
 import { BatchWriteItem, BatchWriteResult } from "@webiny/db-dynamodb";
+import { ITimer } from "@webiny/handler-aws";
+import { Context as LoggerContext } from "@webiny/api-log/types";
 
-export interface Context extends ElasticsearchContext, TasksContext {}
+export interface Context extends ElasticsearchContext, TasksContext, LoggerContext {}
 
 export interface IElasticsearchTaskConfig {
     documentClient?: DynamoDBDocument;
@@ -51,15 +57,19 @@ export interface IDynamoDbElasticsearchRecord {
     modified: string;
 }
 
-export interface IManager {
+export interface IManager<
+    T,
+    O extends ITaskResponseDoneResultOutput = ITaskResponseDoneResultOutput
+> {
     readonly documentClient: DynamoDBDocument;
     readonly elasticsearch: Client;
     readonly context: Context;
     readonly table: ReturnType<typeof createTable>;
-    readonly isCloseToTimeout: () => boolean;
+    readonly isCloseToTimeout: IIsCloseToTimeoutCallable;
     readonly isAborted: () => boolean;
-    readonly response: ITaskResponse;
-    readonly store: ITaskManagerStore<IElasticsearchIndexingTaskValues>;
+    readonly response: ITaskResponse<T, O>;
+    readonly store: ITaskManagerStore<T>;
+    readonly timer: ITimer;
 
     getEntity: (name: string) => Entity<any>;
 
