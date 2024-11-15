@@ -17,7 +17,8 @@
     { "path": "../utils" },
     { "path": "../validation" },
     { "path": "../api-wcp" },
-    { "path": "../aws-sdk" }
+    { "path": "../aws-sdk" },
+    { "path": "../db-dynamodb" }
   ],
   "compilerOptions": {
     "rootDirs": ["./src", "./__tests__"],
@@ -57,7 +58,9 @@
       "@webiny/api-wcp/*": ["../api-wcp/src/*"],
       "@webiny/api-wcp": ["../api-wcp/src"],
       "@webiny/aws-sdk/*": ["../aws-sdk/src/*"],
-      "@webiny/aws-sdk": ["../aws-sdk/src"]
+      "@webiny/aws-sdk": ["../aws-sdk/src"],
+      "@webiny/db-dynamodb/*": ["../db-dynamodb/src/*"],
+      "@webiny/db-dynamodb": ["../db-dynamodb/src"]
     },
     "baseUrl": "."
   }

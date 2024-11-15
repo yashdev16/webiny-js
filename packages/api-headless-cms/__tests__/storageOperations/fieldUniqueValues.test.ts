@@ -1,10 +1,10 @@
-import { CmsContext } from "~/types";
 import {
     createPersonEntries,
     createPersonModel,
     deletePersonModel
 } from "~tests/storageOperations/helpers";
 import { useGraphQLHandler } from "~tests/testHelpers/useGraphQLHandler";
+import { createStorageOperationsContext } from "~tests/storageOperations/context";
 
 describe("field unique values listing", () => {
     const { storageOperations, plugins } = useGraphQLHandler({
@@ -17,9 +17,11 @@ describe("field unique values listing", () => {
      * Some others might not need them...
      */
     beforeAll(async () => {
-        await storageOperations.beforeInit({
-            plugins
-        } as unknown as CmsContext);
+        await storageOperations.beforeInit(
+            await createStorageOperationsContext({
+                plugins
+            })
+        );
     });
 
     beforeEach(async () => {
