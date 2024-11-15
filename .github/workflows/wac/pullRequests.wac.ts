@@ -210,10 +210,32 @@ export const pullRequests = createWorkflow({
         assignMilestone: createJob({
             name: "Assign milestone",
             needs: "constants",
+            if: "needs.constants.outputs.is-fork-pr != 'true'",
             steps: [
                 {
                     name: "Print latest Webiny version",
                     run: "echo ${{ needs.constants.outputs.latest-webiny-version }}"
+                },
+                {
+                    id: "get-milestone-to-assign",
+                    name: "Get milestone to assign",
+                    run: runNodeScript(
+                        "getMilestoneToAssign",
+                        JSON.stringify({
+                            latestWebinyVersion:
+                                "${{ needs.constants.outputs.latest-webiny-version }}",
+                            baseBranch: "${{ github.base_ref }}"
+                        }),
+                        { outputAs: "milestone" }
+                    )
+                },
+                {
+                    uses: "zoispag/action-assign-milestone@v1",
+                    if: "steps.get-milestone-to-assign.outputs.milestone",
+                    with: {
+                        "repo-token": "${{ secrets.GH_TOKEN }}",
+                        milestone: "${{ steps.get-milestone-to-assign.outputs.milestone }}"
+                    }
                 }
             ]
         }),
