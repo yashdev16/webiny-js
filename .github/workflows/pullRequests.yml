@@ -105,8 +105,8 @@ jobs:
         run: >-
           echo "milestone=$(node
           .github/workflows/wac/utils/runNodeScripts/getMilestoneToAssign.js
-          '{"latestWebinyVersion":"\"${{
-          needs.constants.outputs.latest-webiny-version }}\"","baseBranch":"${{
+          '{"latestWebinyVersion":"${{
+          needs.constants.outputs.latest-webiny-version }}","baseBranch":"${{
           github.base_ref }}"}')" >> $GITHUB_OUTPUT
       - uses: zoispag/action-assign-milestone@v1
         if: steps.get-milestone-to-assign.outputs.milestone

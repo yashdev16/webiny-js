@@ -223,7 +223,7 @@ export const pullRequests = createWorkflow({
                         "getMilestoneToAssign",
                         JSON.stringify({
                             latestWebinyVersion:
-                                '"${{ needs.constants.outputs.latest-webiny-version }}"',
+                                "${{ needs.constants.outputs.latest-webiny-version }}",
                             baseBranch: "${{ github.base_ref }}"
                         }),
                         { outputAs: "milestone" }
