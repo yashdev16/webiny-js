@@ -43,7 +43,7 @@ import { getFetchPolicy } from "~/utils/getFetchPolicy";
 export interface EntryError {
     message: string;
     code?: string;
-    data?: Record<string, any>;
+    data?: any;
 }
 
 export interface OperationSuccess {
