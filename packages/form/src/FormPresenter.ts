@@ -8,7 +8,7 @@ import { FormField } from "./FormField";
 import { FormValidator } from "./FormValidator";
 import { FieldValidationResult } from "./FormFieldValidator";
 
-interface FormInvalidFields {
+export interface FormInvalidFields {
     [name: string]: string;
 }
 
