@@ -177,6 +177,7 @@ export const EventActionHandlerProvider = makeDecoratable(
         );
 
         const takeSnapshot = useRecoilCallback(({ snapshot }) => () => {
+            snapshot.retain();
             return snapshot;
         });
 

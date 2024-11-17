@@ -5,6 +5,7 @@ import { Elements as BaseElements } from "~/editor/config/Elements";
 import { Element as BaseElement, ElementProps as BaseElementProps } from "~/editor/config/Element";
 import { createGetId } from "~/editor/config/createGetId";
 import { useDebugUtilities } from "~/editor/useDebugUtilities";
+import { ElementControls } from "~/editor/contexts/EditorPageElementsProvider/ElementControls";
 
 const SCOPE = "content";
 
@@ -38,4 +39,4 @@ const Elements = makeDecoratable("ContentElements", () => {
     return <BaseElements scope={SCOPE} />;
 });
 
-export const Content = Object.assign(BaseContent, { Layout, Element, Elements });
+export const Content = Object.assign(BaseContent, { Layout, Element, Elements, ElementControls });

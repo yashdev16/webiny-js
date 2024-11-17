@@ -4,6 +4,8 @@ export { useCurrentBlockElement } from "./useCurrentBlockElement";
 export { useCurrentElement } from "./useCurrentElement";
 export { useDisplayMode } from "./useDisplayMode";
 export { useElementById } from "./useElementById";
+export { useGetElementById } from "./useGetElementById";
+export { useMoveElement } from "./useMoveElement";
 export { useElementSidebar } from "./useElementSidebar";
 export { useElementVariables, useElementVariableValue } from "./useElementVariableValue";
 export { useEventActionHandler } from "./useEventActionHandler";
