@@ -1,7 +1,7 @@
 import React from "react";
 
 export interface CompositionScopeContext {
-    name: string;
+    scope: string[];
 }
 
 const CompositionScopeContext = React.createContext<CompositionScopeContext | undefined>(undefined);
@@ -12,8 +12,10 @@ interface CompositionScopeProps {
 }
 
 export const CompositionScope = ({ name, children }: CompositionScopeProps) => {
+    const parentScope = useCompositionScope();
+
     return (
-        <CompositionScopeContext.Provider value={{ name }}>
+        <CompositionScopeContext.Provider value={{ scope: [...parentScope, name] }}>
             {children}
         </CompositionScopeContext.Provider>
     );
@@ -22,7 +24,7 @@ export const CompositionScope = ({ name, children }: CompositionScopeProps) => {
 export function useCompositionScope() {
     const context = React.useContext(CompositionScopeContext);
     if (!context) {
-        return undefined;
+        return [];
     }
-    return context.name;
+    return context.scope;
 }

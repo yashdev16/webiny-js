@@ -81,7 +81,7 @@ describe("Decoration of Hooks and Components", () => {
             return <span>{label}</span>;
         };
 
-        const DecorateHook = createDecorator(useLabel, baseHook => {
+        const DecorateHook = useLabel.createDecorator(baseHook => {
             return params => {
                 return { ...baseHook(params), label: "Decorated Label" };
             };

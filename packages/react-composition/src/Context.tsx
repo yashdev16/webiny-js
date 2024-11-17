@@ -52,7 +52,7 @@ type ComponentScopes = Map<string, ComposedComponents>;
 export type DecoratableTypes = DecoratableComponent | DecoratableHook;
 
 interface CompositionContextGetComponentCallable {
-    (component: ComponentType<unknown>, scope?: string):
+    (component: ComponentType<unknown>, scope: string[]):
         | ComposedFunction
         | GenericComponent
         | undefined;
@@ -128,16 +128,17 @@ export const CompositionProvider = ({ children }: CompositionProviderProps) => {
     );
 
     const getComponent = useCallback<CompositionContextGetComponentCallable>(
-        (Component, scope = "*") => {
-            const scopeMap: ComposedComponents = components.get(scope) || new Map();
-            const composedComponent = scopeMap.get(Component);
-            if (!composedComponent && scope !== "*") {
-                // Check if a default scope component exists
-                const defaultScopeMap: ComposedComponents = components.get("*") || new Map();
-                const defaultComponent = defaultScopeMap.get(Component);
-                return defaultComponent ? defaultComponent.component : undefined;
+        (Component, scope = []) => {
+            const scopesToResolve = ["*", ...scope].reverse();
+            for (const scope of scopesToResolve) {
+                const scopeMap: ComposedComponents = components.get(scope) || new Map();
+                const composedComponent = scopeMap.get(Component);
+                if (composedComponent) {
+                    return composedComponent.component;
+                }
             }
-            return composedComponent ? composedComponent.component : undefined;
+
+            return undefined;
         },
         [components]
     );
