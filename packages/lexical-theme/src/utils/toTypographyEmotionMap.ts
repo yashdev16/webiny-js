@@ -1,5 +1,5 @@
 import { ThemeEmotionMap, TypographyHTMLTag } from "~/types";
-import { WebinyTheme } from "~/createTheme";
+import { EditorTheme } from "~/createTheme";
 import { css as EmotionCSS } from "emotion";
 
 /*
@@ -8,7 +8,7 @@ import { css as EmotionCSS } from "emotion";
  */
 export const toTypographyEmotionMap = (
     css: typeof EmotionCSS,
-    theme: WebinyTheme,
+    theme: EditorTheme,
     themeStylesTransformer?: any
 ): ThemeEmotionMap => {
     const map: ThemeEmotionMap = {};

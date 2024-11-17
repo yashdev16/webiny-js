@@ -9,7 +9,7 @@ import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
 import { allNodes } from "@webiny/lexical-nodes";
 import {
     createTheme,
-    WebinyTheme,
+    EditorTheme,
     ThemeEmotionMap,
     toTypographyEmotionMap
 } from "@webiny/lexical-theme";
@@ -22,7 +22,7 @@ import { RichTextEditorProvider } from "~/context/RichTextEditorContext";
 interface LexicalHtmlRendererProps {
     nodes?: Klass<LexicalNode>[];
     value: LexicalValue | null;
-    theme: WebinyTheme;
+    theme: EditorTheme;
     themeEmotionMap?: ThemeEmotionMap;
     themeStylesTransformer?: (cssObject: Record<string, any>) => CSSObject;
 }
@@ -35,7 +35,7 @@ export const LexicalHtmlRenderer = ({
 }: LexicalHtmlRendererProps) => {
     const themeEmotionMap =
         props?.themeEmotionMap ?? toTypographyEmotionMap(css, theme, props.themeStylesTransformer);
-    const editorTheme = useRef(createTheme());
+    const editorTheme = useRef(createTheme(theme));
     const editorValue = isValidLexicalData(value) ? value : generateInitialLexicalValue();
 
     const initialConfig = {
