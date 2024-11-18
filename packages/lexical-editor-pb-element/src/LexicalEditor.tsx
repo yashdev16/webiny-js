@@ -4,6 +4,7 @@ import { LexicalValue } from "@webiny/lexical-editor/types";
 import { usePageElements } from "@webiny/app-page-builder-elements";
 import { assignStyles } from "@webiny/app-page-builder-elements/utils";
 import { StylesObject } from "@webiny/theme/types";
+import type { EditorTheme } from "@webiny/lexical-theme";
 
 interface LexicalEditorProps {
     type: "heading" | "paragraph";
@@ -16,6 +17,11 @@ interface LexicalEditorProps {
     width?: number | string;
     children?: React.ReactNode | React.ReactNode[];
 }
+
+const defaultTheme: EditorTheme = {
+    styles: {},
+    emotionMap: {}
+};
 
 export const LexicalEditor = ({ type, value, onChange, ...rest }: LexicalEditorProps) => {
     const { theme } = usePageElements();
@@ -36,7 +42,7 @@ export const LexicalEditor = ({ type, value, onChange, ...rest }: LexicalEditorP
         <>
             {isHeading ? (
                 <HeadingEditor
-                    theme={theme}
+                    theme={{ ...defaultTheme, ...theme }}
                     themeStylesTransformer={themeStylesTransformer}
                     value={value}
                     onChange={onChange}
@@ -44,7 +50,7 @@ export const LexicalEditor = ({ type, value, onChange, ...rest }: LexicalEditorP
                 />
             ) : (
                 <ParagraphEditor
-                    theme={theme}
+                    theme={{ ...defaultTheme, ...theme }}
                     themeStylesTransformer={themeStylesTransformer}
                     value={value}
                     onChange={onChange}
