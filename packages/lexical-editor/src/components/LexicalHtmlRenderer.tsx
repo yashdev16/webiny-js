@@ -22,17 +22,13 @@ import { RichTextEditorProvider } from "~/context/RichTextEditorContext";
 interface LexicalHtmlRendererProps {
     nodes?: Klass<LexicalNode>[];
     value: LexicalValue | null;
-    theme: EditorTheme;
+    theme: Partial<EditorTheme>;
     themeEmotionMap?: ThemeEmotionMap;
     themeStylesTransformer?: (cssObject: Record<string, any>) => CSSObject;
 }
 
-export const LexicalHtmlRenderer = ({
-    nodes,
-    value,
-    theme,
-    ...props
-}: LexicalHtmlRendererProps) => {
+export const LexicalHtmlRenderer = ({ nodes, value, ...props }: LexicalHtmlRendererProps) => {
+    const theme: EditorTheme = { styles: {}, emotionMap: {}, ...props.theme };
     const themeEmotionMap =
         props?.themeEmotionMap ?? toTypographyEmotionMap(css, theme, props.themeStylesTransformer);
     const editorTheme = useRef(createTheme(theme));

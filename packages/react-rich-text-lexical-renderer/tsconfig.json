@@ -4,6 +4,7 @@
   "references": [
     { "path": "../app-theme" },
     { "path": "../lexical-editor" },
+    { "path": "../lexical-theme" },
     { "path": "../react-composition" }
   ],
   "compilerOptions": {
@@ -17,6 +18,8 @@
       "@webiny/app-theme": ["../app-theme/src"],
       "@webiny/lexical-editor/*": ["../lexical-editor/src/*"],
       "@webiny/lexical-editor": ["../lexical-editor/src"],
+      "@webiny/lexical-theme/*": ["../lexical-theme/src/*"],
+      "@webiny/lexical-theme": ["../lexical-theme/src"],
       "@webiny/react-composition/*": ["../react-composition/src/*"],
       "@webiny/react-composition": ["../react-composition/src"]
     },
