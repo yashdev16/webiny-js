@@ -43,7 +43,7 @@ export interface UseRevisionProps {
 export const useRevision = ({ revision }: UseRevisionProps) => {
     const contentEntry = useContentEntry();
     const { history } = useRouter();
-    const { showSnackbar } = useSnackbar();
+    const { showSnackbar, showErrorSnackbar } = useSnackbar();
     const { contentModel } = contentEntry;
     const { modelId } = contentModel;
 
@@ -107,7 +107,7 @@ export const useRevision = ({ revision }: UseRevisionProps) => {
                         });
 
                         if (response.error) {
-                            showSnackbar(response.error.message);
+                            showErrorSnackbar(response.error.message);
                             return response;
                         }
 
