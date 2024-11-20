@@ -401,6 +401,9 @@ const FileManagerView = () => {
                                         <BottomInfoBar
                                             accept={view.accept}
                                             listing={view.isListLoadingMore}
+                                            loading={view.isListLoading}
+                                            totalCount={view.meta?.totalCount ?? 0}
+                                            currentCount={view.files.length}
                                         />
                                         <UploadStatus
                                             numberOfFiles={filesBeingUploaded}

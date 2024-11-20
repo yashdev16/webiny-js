@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { i18n } from "@webiny/app/i18n";
 import mime from "mime/lite";
 
@@ -23,22 +23,45 @@ const getUniqueFilePlugins = (accept: string[]): string[] => {
 
 export interface SupportedFileTypesProps {
     accept: string[];
+    loading: boolean;
+    totalCount: number;
+    currentCount: number;
 }
 
-const SupportedFileTypes = ({ accept }: SupportedFileTypesProps) => {
-    if (!accept) {
+const SupportedFileTypes = ({
+    accept,
+    loading,
+    totalCount,
+    currentCount
+}: SupportedFileTypesProps) => {
+    const getLabel = useCallback((count = 0): string => {
+        return `${count} ${count === 1 ? "file" : "files"}`;
+    }, []);
+
+    if (!accept || loading) {
         return null;
     }
 
     if (accept.length === 0) {
-        return <span>{t`Showing all file extensions.`}</span>;
+        return (
+            <span>
+                {t`Showing {currentCount} out of {totalCountLabel} from all file extensions.`({
+                    currentCount,
+                    totalCountLabel: getLabel(totalCount)
+                })}
+            </span>
+        );
     }
 
     return (
         <span>
-            {t`Showing the following file extensions: {files}.`({
-                files: getUniqueFilePlugins(accept).join(", ")
-            })}
+            {t`Showing {currentCount} out of {totalCountLabel} from the following file extensions: {files}.`(
+                {
+                    currentCount,
+                    totalCountLabel: getLabel(totalCount),
+                    files: getUniqueFilePlugins(accept).join(", ")
+                }
+            )}
         </span>
     );
 };

@@ -20,7 +20,7 @@ export const LoadingMore = ({ show }: LoadingMoreProps) => {
             <LoaderContainer>
                 <CircularProgress size={20} />
             </LoaderContainer>
-            <Typography use={"body2"}>{t`Loading more entries...`}</Typography>
+            <Typography use={"body2"}>{t`Loading more pages...`}</Typography>
         </Container>
     );
 };
