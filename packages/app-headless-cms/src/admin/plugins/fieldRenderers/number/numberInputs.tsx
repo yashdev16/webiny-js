@@ -37,15 +37,12 @@ const plugin: CmsModelFieldRendererPlugin = {
                                 onEnter={() => bind.field.appendValue("")}
                                 label={t`Value {number}`({ number: index + 1 })}
                                 placeholder={props.field.placeholderText}
-                                description={props.field.helpText}
                                 data-testid={`fr.input.numbers.${props.field.label}.${index + 1}`}
                                 type="number"
-                                trailingIcon={
-                                    index > 0 && {
-                                        icon: <DeleteIcon />,
-                                        onClick: () => bind.field.removeValue(index)
-                                    }
-                                }
+                                trailingIcon={{
+                                    icon: <DeleteIcon />,
+                                    onClick: () => bind.field.removeValue(index)
+                                }}
                             />
                         </DelayedOnChange>
                     )}

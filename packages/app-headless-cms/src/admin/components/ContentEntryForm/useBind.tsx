@@ -99,7 +99,7 @@ export function useBind({ Bind, field }: UseBindProps) {
                                     let value = bind.value;
                                     value = [...value.slice(0, index), ...value.slice(index + 1)];
 
-                                    bind.onChange(value);
+                                    bind.onChange(value.length === 0 ? null : value);
 
                                     // To make sure the field is still valid, we must trigger validation.
                                     form.validateInput(field.fieldId);

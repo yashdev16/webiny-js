@@ -66,13 +66,13 @@ const plugin: CmsModelFieldRendererPlugin = {
                                     />
                                 )}
                             </DelayedOnChange>
-                            <FormElementMessage>{field.helpText}</FormElementMessage>
-                            {index > 0 && (
-                                <IconButton
-                                    icon={<DeleteIcon />}
-                                    onClick={() => bind.field.removeValue(index)}
-                                />
+                            {field.multipleValues ? null : (
+                                <FormElementMessage>{field.helpText}</FormElementMessage>
                             )}
+                            <IconButton
+                                icon={<DeleteIcon />}
+                                onClick={() => bind.field.removeValue(index)}
+                            />
                         </EditorWrapper>
                     )}
                 </DynamicSection>

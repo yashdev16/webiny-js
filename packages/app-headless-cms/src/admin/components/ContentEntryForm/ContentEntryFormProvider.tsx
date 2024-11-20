@@ -136,6 +136,7 @@ export const ContentEntryFormProvider = ({
             onSubmit={onFormSubmit}
             data={entry}
             ref={ref}
+            validateOnFirstSubmit
             invalidFields={invalidFields}
             onInvalid={invalidFields => {
                 setInvalidFields(formValidationToMap(invalidFields));

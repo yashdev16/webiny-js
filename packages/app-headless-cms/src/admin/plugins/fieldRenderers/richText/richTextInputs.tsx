@@ -98,7 +98,6 @@ const plugin: CmsModelFieldRendererPlugin = {
                                     {...rteProps}
                                     label={`Value ${index + 1}`}
                                     placeholder={field.placeholderText}
-                                    description={field.helpText}
                                 />
                             </DelayedOnChange>
                         </EditorWrapper>
