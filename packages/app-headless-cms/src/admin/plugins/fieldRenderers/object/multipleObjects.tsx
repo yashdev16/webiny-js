@@ -2,8 +2,6 @@ import React, { Dispatch, SetStateAction, useState, useCallback } from "react";
 import { i18n } from "@webiny/app/i18n";
 import { IconButton } from "@webiny/ui/Button";
 import { Cell } from "@webiny/ui/Grid";
-import { FormElementMessage } from "@webiny/ui/FormElementMessage";
-import { Typography } from "@webiny/ui/Typography";
 import {
     BindComponentRenderProp,
     CmsModelFieldRendererPlugin,
@@ -17,7 +15,6 @@ import { ReactComponent as ArrowDown } from "./arrow_drop_down.svg";
 import Accordion from "~/admin/plugins/fieldRenderers/Accordion";
 import {
     fieldsWrapperStyle,
-    dynamicSectionTitleStyle,
     dynamicSectionGridStyle,
     fieldsGridStyle,
     ItemHighLight,
