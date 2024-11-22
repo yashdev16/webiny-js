@@ -57,19 +57,27 @@ export function useBind({ Bind, field }: UseBindProps) {
             const isMultipleValues = index === -1 && field.multipleValues;
             const inputValidators = isMultipleValues ? listValidators : validators;
 
+            const defaultValueFromSettings = field.settings
+                ? (field.settings.defaultValue as any)
+                : null;
+
+            const indexDefaultValue = field.multipleValues
+                ? (defaultValueFromSettings ?? [])[index]
+                : null;
+
             memoizedBindComponents.current[componentId] = function UseBind(params: UseBindParams) {
                 const {
                     name: childName,
                     validators: childValidators,
                     children,
-                    defaultValue
+                    defaultValue = index === -1 ? defaultValueFromSettings : indexDefaultValue
                 } = params;
 
                 return (
                     <Bind
                         name={childName || name}
                         validators={childValidators || inputValidators}
-                        defaultValue={!isMultipleValues ? defaultValue : null}
+                        defaultValue={defaultValue ?? undefined}
                     >
                         {bind => {
                             // Multiple-values functions below.
