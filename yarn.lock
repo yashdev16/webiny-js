@@ -13739,6 +13739,7 @@ __metadata:
     "@webiny/cli": 0.0.0
     "@webiny/form": 0.0.0
     "@webiny/lexical-editor": 0.0.0
+    "@webiny/lexical-theme": 0.0.0
     "@webiny/plugins": 0.0.0
     "@webiny/project-utils": 0.0.0
     "@webiny/react-composition": 0.0.0
@@ -15199,6 +15200,7 @@ __metadata:
     fs-extra: ^11.2.0
     get-yarn-workspaces: 1.0.2
     inquirer: 8.2.6
+    is-ci: ^3.0.0
     load-json-file: 6.2.0
     lodash: ^4.17.21
     open: ^8.4.0
@@ -15887,6 +15889,7 @@ __metadata:
     "@webiny/app-theme": 0.0.0
     "@webiny/cli": 0.0.0
     "@webiny/lexical-editor": 0.0.0
+    "@webiny/lexical-theme": 0.0.0
     "@webiny/project-utils": 0.0.0
     "@webiny/react-composition": 0.0.0
     identity-obj-proxy: ^3.0.0
