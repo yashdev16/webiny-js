@@ -29,7 +29,7 @@ export const Input = ({ bind, ...props }: InputProps) => {
             }}
             label={props.field.label}
             placeholder={props.field.placeholderText}
-            description={props.field.helpText}
+            description={props.field.multipleValues ? undefined : props.field.helpText}
             type={props.type}
             trailingIcon={props.trailingIcon}
             data-testid={`fr.input.${props.field.label}`}

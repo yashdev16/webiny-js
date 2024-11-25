@@ -57,19 +57,24 @@ export function useBind({ Bind, field }: UseBindProps) {
             const isMultipleValues = index === -1 && field.multipleValues;
             const inputValidators = isMultipleValues ? listValidators : validators;
 
+            // We only use default values for single-value fields.
+            const defaultValueFromSettings = !isMultipleValues
+                ? field.settings?.defaultValue
+                : null;
+
             memoizedBindComponents.current[componentId] = function UseBind(params: UseBindParams) {
                 const {
                     name: childName,
                     validators: childValidators,
                     children,
-                    defaultValue
+                    defaultValue = defaultValueFromSettings
                 } = params;
 
                 return (
                     <Bind
                         name={childName || name}
                         validators={childValidators || inputValidators}
-                        defaultValue={!isMultipleValues ? defaultValue : null}
+                        defaultValue={defaultValue ?? null}
                     >
                         {bind => {
                             // Multiple-values functions below.
@@ -99,7 +104,7 @@ export function useBind({ Bind, field }: UseBindProps) {
                                     let value = bind.value;
                                     value = [...value.slice(0, index), ...value.slice(index + 1)];
 
-                                    bind.onChange(value);
+                                    bind.onChange(value.length === 0 ? null : value);
 
                                     // To make sure the field is still valid, we must trigger validation.
                                     form.validateInput(field.fieldId);

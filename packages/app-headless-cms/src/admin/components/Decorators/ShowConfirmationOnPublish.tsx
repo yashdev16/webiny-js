@@ -47,7 +47,7 @@ const EntryMessage = ({ id, entryType, getEntry }: EntryMessageProps) => {
 
 export const ShowConfirmationOnPublish = useContentEntry.createDecorator(baseHook => {
     return () => {
-        const { showSnackbar } = useSnackbar();
+        const { showSnackbar, showErrorSnackbar } = useSnackbar();
         const dialogs = useDialogs();
         const hook = baseHook();
         const { contentModel } = hook;
@@ -57,7 +57,9 @@ export const ShowConfirmationOnPublish = useContentEntry.createDecorator(baseHoo
             const response = await hook.publishEntryRevision({ id: entry.id });
 
             if (response.error) {
-                showSnackbar(`Could not publish ${entry.meta.title}! (${response.error.message})`);
+                showErrorSnackbar(
+                    `Could not publish ${entry.meta.title}! (${response.error.message})`
+                );
 
                 return response;
             }

@@ -19,6 +19,7 @@ import { Table } from "~/admin/components/Table/Table";
 import { MainContainer, Wrapper } from "./styled";
 import { usePagesPermissions } from "~/hooks/permissions";
 import { ROOT_FOLDER } from "~/admin/constants";
+import { BottomInfoBar } from "~/admin/components/BottomInfoBar";
 
 const t = i18n.ns("app-page-builder/admin/views/pages/table/main");
 
@@ -138,6 +139,11 @@ export const Main = ({ folderId: initialFolderId }: Props) => {
                                     onClick={list.listMoreRecords}
                                 />
                             </Scrollbar>
+                            <BottomInfoBar
+                                loading={list.isListLoading}
+                                totalCount={list.meta.totalCount}
+                                currentCount={list.records.length}
+                            />
                             <LoadingMore show={list.isListLoadingMore} />
                         </>
                     )}

@@ -41,6 +41,7 @@ import { validateOrGetDefaultDbSort } from "~/sorting";
 import { useAcoApp } from "~/hooks";
 import { parseIdentifier } from "@webiny/utils";
 import { useStateIfMounted } from "@webiny/app-admin";
+import { useAcoConfig } from "~/config";
 
 interface ListTagsParams {
     where?: ListTagsWhereQueryVariables;
@@ -112,6 +113,13 @@ export const SearchRecordsProvider = ({ children }: Props) => {
     const { app, client, mode } = useAcoApp();
     const { model } = app;
 
+    /**
+     * Retrieve all `fieldIds` from the ACO configuration, considering field `name`:
+     * The result is a deduplicated flat array of unique field IDs.
+     */
+    const { table } = useAcoConfig();
+    const fieldIds = table.columns.map(config => config.name).filter(Boolean);
+
     const [records, setRecords] = useStateIfMounted<SearchRecordItem[]>([]);
     const [tags, setTags] = useStateIfMounted<TagItem[]>([]);
     const [loading, setLoading] = useStateIfMounted<Loading<LoadingActions>>(defaultLoading);
@@ -127,7 +135,7 @@ export const SearchRecordsProvider = ({ children }: Props) => {
         LIST_TAGS
     } = useMemo(() => {
         return {
-            LIST_RECORDS: createListRecords(model, mode),
+            LIST_RECORDS: createListRecords(model, mode, fieldIds),
             UPDATE_RECORD: createUpdateRecord(model, mode),
             MOVE_RECORD: createMoveRecord(model, mode),
             GET_RECORD: createGetRecord(model, mode),
@@ -135,7 +143,7 @@ export const SearchRecordsProvider = ({ children }: Props) => {
             DELETE_RECORD: createDeleteRecord(model, mode),
             CREATE_RECORD: createCreateRecord(model, mode)
         };
-    }, [app.id, model.modelId]);
+    }, [app.id, model.modelId, fieldIds]);
 
     const context = useMemo<SearchRecordsContext>(() => {
         return {

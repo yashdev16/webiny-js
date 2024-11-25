@@ -15,7 +15,7 @@ import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import {
     createTheme,
-    WebinyTheme,
+    EditorTheme,
     ThemeEmotionMap,
     toTypographyEmotionMap
 } from "@webiny/lexical-theme";
@@ -48,7 +48,7 @@ export interface RichTextEditorProps {
     staticToolbar?: React.ReactNode;
     styles?: React.CSSProperties;
     tag?: string;
-    theme: WebinyTheme;
+    theme: EditorTheme;
     themeEmotionMap?: ThemeEmotionMap;
     toolbarActionPlugins?: ToolbarActionPlugin[];
     themeStylesTransformer?: (cssObject: Record<string, any>) => CSSObject;
@@ -79,7 +79,7 @@ const BaseRichTextEditor = ({
         props.themeEmotionMap ??
         toTypographyEmotionMap(css, props.theme, props.themeStylesTransformer);
 
-    const editorTheme = useRef(createTheme());
+    const editorTheme = useRef(createTheme(props.theme));
     const config = useLexicalEditorConfig();
     const { historyState } = useSharedHistoryContext();
     const placeholderElem = (

@@ -2,8 +2,6 @@ import React, { Dispatch, SetStateAction, useState, useCallback } from "react";
 import { i18n } from "@webiny/app/i18n";
 import { IconButton } from "@webiny/ui/Button";
 import { Cell } from "@webiny/ui/Grid";
-import { FormElementMessage } from "@webiny/ui/FormElementMessage";
-import { Typography } from "@webiny/ui/Typography";
 import {
     BindComponentRenderProp,
     CmsModelFieldRendererPlugin,
@@ -17,7 +15,6 @@ import { ReactComponent as ArrowDown } from "./arrow_drop_down.svg";
 import Accordion from "~/admin/plugins/fieldRenderers/Accordion";
 import {
     fieldsWrapperStyle,
-    dynamicSectionTitleStyle,
     dynamicSectionGridStyle,
     fieldsGridStyle,
     ItemHighLight,
@@ -64,13 +61,13 @@ const Actions = ({ setHighlightIndex, bind, index }: ActionsProps) => {
         [moveValueUp, index]
     );
 
-    return index > 0 ? (
+    return (
         <>
             <IconButton icon={<ArrowDown />} onClick={onDown} />
             <IconButton icon={<ArrowUp />} onClick={onUp} />
             <IconButton icon={<DeleteIcon />} onClick={() => bind.field.removeValue(index)} />
         </>
-    ) : null;
+    );
 };
 
 const ObjectsRenderer = (props: CmsModelFieldRendererProps) => {
@@ -87,20 +84,7 @@ const ObjectsRenderer = (props: CmsModelFieldRendererProps) => {
     const settings = fieldSettings.getSettings();
 
     return (
-        <DynamicSection
-            {...props}
-            emptyValue={{}}
-            showLabel={false}
-            renderTitle={value => (
-                <Cell span={12} className={dynamicSectionTitleStyle}>
-                    <Typography use={"headline5"}>
-                        {`${field.label} ${value.length ? `(${value.length})` : ""}`}
-                    </Typography>
-                    {field.helpText && <FormElementMessage>{field.helpText}</FormElementMessage>}
-                </Cell>
-            )}
-            gridClassName={dynamicSectionGridStyle}
-        >
+        <DynamicSection {...props} emptyValue={{}} gridClassName={dynamicSectionGridStyle}>
             {({ Bind, bind, index }) => (
                 <ObjectItem>
                     {highlightMap[index] ? <ItemHighLight key={highlightMap[index]} /> : null}

@@ -12,7 +12,7 @@ import {
     HeadingTagType,
     SerializedHeadingNode as BaseSerializedHeadingNode
 } from "@lexical/rich-text";
-import { WebinyTheme, ThemeEmotionMap, findTypographyStyleByHtmlTag } from "@webiny/lexical-theme";
+import { EditorTheme, ThemeEmotionMap, findTypographyStyleByHtmlTag } from "@webiny/lexical-theme";
 import { ParagraphNode } from "~/ParagraphNode";
 import { TypographyStylesNode, ThemeStyleValue, TextNodeThemeStyles } from "~/types";
 
@@ -73,7 +73,7 @@ export class HeadingNode
         return new HeadingNode(node.getTag(), node.getTypographyStyleId(), node.__key);
     }
 
-    protected updateElementWithThemeClasses(element: HTMLElement, theme: WebinyTheme): HTMLElement {
+    protected updateElementWithThemeClasses(element: HTMLElement, theme: EditorTheme): HTMLElement {
         if (!theme?.emotionMap) {
             return element;
         }
@@ -103,7 +103,7 @@ export class HeadingNode
 
     override createDOM(config: EditorConfig): HTMLElement {
         const element = super.createDOM(config);
-        return this.updateElementWithThemeClasses(element, config.theme as WebinyTheme);
+        return this.updateElementWithThemeClasses(element, config.theme as EditorTheme);
     }
 
     static override importJSON(serializedNode: SerializeHeadingNode): BaseHeadingNode {

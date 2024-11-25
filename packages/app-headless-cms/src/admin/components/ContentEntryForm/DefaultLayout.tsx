@@ -1,13 +1,14 @@
 import React from "react";
+import { makeDecoratable } from "@webiny/app-admin";
 import { Bind } from "@webiny/form";
 import { CmsModel } from "@webiny/app-headless-cms-common/types";
 import { Fields } from "~/admin/components/ContentEntryForm/Fields";
 
-interface DefaultLayoutProps {
+export interface DefaultLayoutProps {
     model: CmsModel;
 }
 
-export const DefaultLayout = ({ model }: DefaultLayoutProps) => {
+export const DefaultLayout = makeDecoratable("DefaultLayout", ({ model }: DefaultLayoutProps) => {
     return (
         <Fields
             contentModel={model}
@@ -21,4 +22,4 @@ export const DefaultLayout = ({ model }: DefaultLayoutProps) => {
             Bind={Bind}
         />
     );
-};
+});

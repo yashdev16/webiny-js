@@ -9,7 +9,7 @@ const t = i18n.namespace("app-headless-cms/admin/editor/top-bar/save-button");
 const SaveContentModelButton = () => {
     const { saveContentModel } = useModelEditor();
     const [loading, setLoading] = useState<boolean>(false);
-    const { showSnackbar } = useSnackbar();
+    const { showSnackbar, showErrorSnackbar } = useSnackbar();
 
     const onClick = useCallback(async () => {
         setLoading(true);
@@ -17,7 +17,7 @@ const SaveContentModelButton = () => {
         setLoading(false);
 
         if (response.error) {
-            showSnackbar(response.error.message);
+            showErrorSnackbar(response.error.message);
             return;
         }
 

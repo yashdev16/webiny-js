@@ -14,6 +14,15 @@ export const elementInputs = {
     })
 };
 
+const isJson = (value: string) => {
+    try {
+        JSON.parse(value);
+        return true;
+    } catch {
+        return false;
+    }
+};
+
 /**
  * This renderer works with plain HTML. In the past, we used to have the MediumEditor, and it produced plain HTML.
  * For the new Lexical Editor, we decorate this renderer from the `@webiny/app-page-builder` package.
@@ -23,6 +32,10 @@ export const ParagraphRenderer = createRenderer<unknown, typeof elementInputs>(
         const { getInputValues } = useRenderer();
         const inputs = getInputValues<typeof elementInputs>();
         const __html = inputs.text || "";
+
+        if (isJson(__html)) {
+            return null;
+        }
 
         // If the text already contains `p` tags (happens when c/p-ing text into the editor),
         // we don't want to wrap it with another pair of `p` tag.

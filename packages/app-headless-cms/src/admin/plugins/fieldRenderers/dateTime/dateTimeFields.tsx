@@ -33,13 +33,10 @@ const plugin: CmsModelFieldRendererPlugin = {
             return (
                 <DynamicSection {...props}>
                     {({ bind, index }) => {
-                        let trailingIcon = undefined;
-                        if (index > 0) {
-                            trailingIcon = {
-                                icon: <DeleteIcon />,
-                                onClick: () => bind.field.removeValue(index)
-                            };
-                        }
+                        const trailingIcon = {
+                            icon: <DeleteIcon />,
+                            onClick: () => bind.field.removeValue(index)
+                        };
 
                         if (fieldSettingsType === "dateTimeWithoutTimezone") {
                             return (

@@ -6,12 +6,7 @@ import {
     NodeKey,
     Spread
 } from "lexical";
-import {
-    EditorTheme,
-    ThemeEmotionMap,
-    WebinyTheme,
-    findTypographyStyleByHtmlTag
-} from "@webiny/lexical-theme";
+import { EditorTheme, ThemeEmotionMap, findTypographyStyleByHtmlTag } from "@webiny/lexical-theme";
 import { addClassNamesToElement } from "@lexical/utils";
 import {
     QuoteNode as BaseQuoteNode,
@@ -114,7 +109,7 @@ export class QuoteNode extends BaseQuoteNode implements TextNodeThemeStyles, Typ
 
     override createDOM(config: EditorConfig): HTMLElement {
         const element = super.createDOM(config);
-        const wTheme = config.theme as WebinyTheme;
+        const wTheme = config.theme as EditorTheme;
         const emotionThemeMap = wTheme?.emotionMap;
 
         if (!emotionThemeMap) {
@@ -126,7 +121,7 @@ export class QuoteNode extends BaseQuoteNode implements TextNodeThemeStyles, Typ
             this.setDefaultTypography(emotionThemeMap);
         }
 
-        this.addThemeStylesToHTMLElement(element, config.theme);
+        this.addThemeStylesToHTMLElement(element, config.theme as EditorTheme);
         return element;
     }
 
