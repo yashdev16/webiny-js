@@ -14,7 +14,6 @@ import { AttributeDefinition, Entity, Table, TableConstructor } from "@webiny/db
 import { DynamoDBDocument } from "@webiny/aws-sdk/client-dynamodb";
 import { Client } from "@elastic/elasticsearch";
 import { PluginsContainer } from "@webiny/plugins";
-import { ElasticsearchContext } from "@webiny/api-elasticsearch/types";
 
 /**
  * A definition of the entry that is being prepared for the Elasticsearch.
@@ -167,10 +166,11 @@ export interface StorageOperationsFactoryParams {
     plugins?: PluginCollection;
 }
 
-export interface CmsContext extends BaseCmsContext, ElasticsearchContext {
+export interface CmsContext extends BaseCmsContext {
     cms: HeadlessCms & {
         storageOperations: HeadlessCmsStorageOperations;
     };
+    [key: string]: any;
 }
 
 export interface HeadlessCmsStorageOperations extends BaseHeadlessCmsStorageOperations<CmsContext> {
