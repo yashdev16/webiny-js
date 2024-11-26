@@ -1,5 +1,5 @@
-import { createDateStorageTransformPlugin } from "~/dynamoDb/storage/date";
-import { ToStorageParams } from "@webiny/api-headless-cms";
+import { ToStorageParams } from "~/plugins/StorageTransformPlugin";
+import { createDateStorageTransformPlugin } from "~/storage/date";
 
 const createDefaultArgs = ({ storageId = "storageId", type = "", multipleValues = false }) => {
     return {

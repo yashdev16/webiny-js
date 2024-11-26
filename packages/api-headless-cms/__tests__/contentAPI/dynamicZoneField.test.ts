@@ -24,10 +24,18 @@ const contentEntryQueryData = {
         },
         {
             title: "Hero Title #1",
+            date: "2021-01-01",
+            time: "12:00:00",
+            dateTimeWithTimezone: "2021-01-01T12:00:00+01:00",
+            dateTimeWithoutTimezone: "2021-01-01T12:00:00.000Z",
             __typename: `${singularPageApiName}_Content_Hero`
         },
         {
             title: "Hero Title #2",
+            date: "2021-02-05",
+            time: "14:00:00",
+            dateTimeWithTimezone: "2021-02-05T12:00:00+01:00",
+            dateTimeWithoutTimezone: "2021-02-05T12:00:00.000Z",
             __typename: `${singularPageApiName}_Content_Hero`
         },
         {
@@ -36,10 +44,18 @@ const contentEntryQueryData = {
                 __typename: `${singularPageApiName}_Content_Objecting_NestedObject`,
                 objectNestedObject: [
                     {
-                        nestedObjectNestedTitle: "Content Objecting nested title #1"
+                        nestedObjectNestedTitle: "Content Objecting nested title #1",
+                        date: "2021-01-01",
+                        time: "12:00:00",
+                        dateTimeWithTimezone: "2021-01-01T12:00:00+01:00",
+                        dateTimeWithoutTimezone: "2021-01-01T12:00:00.000Z"
                     },
                     {
-                        nestedObjectNestedTitle: "Content Objecting nested title #2"
+                        nestedObjectNestedTitle: "Content Objecting nested title #2",
+                        date: "2021-02-05",
+                        time: "14:00:00",
+                        dateTimeWithTimezone: "2021-02-05T12:00:00+01:00",
+                        dateTimeWithoutTimezone: "2021-02-05T12:00:00.000Z"
                     }
                 ],
                 objectTitle: "Objective title #1"
@@ -77,10 +93,18 @@ const contentEntryQueryData = {
         nestedObject: {
             objectNestedObject: [
                 {
-                    nestedObjectNestedTitle: "Objective nested title #1"
+                    nestedObjectNestedTitle: "Objective nested title #1",
+                    date: "2021-01-01",
+                    time: "12:00:00",
+                    dateTimeWithTimezone: "2021-01-01T12:00:00+01:00",
+                    dateTimeWithoutTimezone: "2021-01-01T12:00:00.000Z"
                 },
                 {
-                    nestedObjectNestedTitle: "Objective nested title #2"
+                    nestedObjectNestedTitle: "Objective nested title #2",
+                    date: "2021-02-05",
+                    time: "14:00:00",
+                    dateTimeWithTimezone: "2021-02-05T12:00:00+01:00",
+                    dateTimeWithoutTimezone: "2021-02-05T12:00:00.000Z"
                 }
             ],
             objectTitle: "Objective title #1",
@@ -138,10 +162,22 @@ const contentEntryMutationData = {
             SimpleText: { text: "Simple Text #1" }
         },
         {
-            Hero: { title: "Hero Title #1" }
+            Hero: {
+                title: "Hero Title #1",
+                date: "2021-01-01",
+                time: "12:00:00",
+                dateTimeWithTimezone: "2021-01-01T12:00:00+01:00",
+                dateTimeWithoutTimezone: "2021-01-01T12:00:00.000Z"
+            }
         },
         {
-            Hero: { title: "Hero Title #2" }
+            Hero: {
+                title: "Hero Title #2",
+                date: "2021-02-05",
+                time: "14:00:00",
+                dateTimeWithTimezone: "2021-02-05T12:00:00+01:00",
+                dateTimeWithoutTimezone: "2021-02-05T12:00:00.000Z"
+            }
         },
         {
             Objecting: {
@@ -149,10 +185,18 @@ const contentEntryMutationData = {
                     objectTitle: "Objective title #1",
                     objectNestedObject: [
                         {
-                            nestedObjectNestedTitle: "Content Objecting nested title #1"
+                            nestedObjectNestedTitle: "Content Objecting nested title #1",
+                            date: "2021-01-01",
+                            time: "12:00:00",
+                            dateTimeWithTimezone: "2021-01-01T12:00:00+01:00",
+                            dateTimeWithoutTimezone: "2021-01-01T12:00:00.000Z"
                         },
                         {
-                            nestedObjectNestedTitle: "Content Objecting nested title #2"
+                            nestedObjectNestedTitle: "Content Objecting nested title #2",
+                            date: "2021-02-05",
+                            time: "14:00:00",
+                            dateTimeWithTimezone: "2021-02-05T12:00:00+01:00",
+                            dateTimeWithoutTimezone: "2021-02-05T12:00:00.000Z"
                         }
                     ]
                 },
@@ -210,10 +254,18 @@ const contentEntryMutationData = {
                 ],
                 objectNestedObject: [
                     {
-                        nestedObjectNestedTitle: "Objective nested title #1"
+                        nestedObjectNestedTitle: "Objective nested title #1",
+                        date: "2021-01-01",
+                        time: "12:00:00",
+                        dateTimeWithTimezone: "2021-01-01T12:00:00+01:00",
+                        dateTimeWithoutTimezone: "2021-01-01T12:00:00.000Z"
                     },
                     {
-                        nestedObjectNestedTitle: "Objective nested title #2"
+                        nestedObjectNestedTitle: "Objective nested title #2",
+                        date: "2021-02-05",
+                        time: "14:00:00",
+                        dateTimeWithTimezone: "2021-02-05T12:00:00+01:00",
+                        dateTimeWithoutTimezone: "2021-02-05T12:00:00.000Z"
                     }
                 ]
             }
@@ -480,7 +532,7 @@ describe("dynamicZone field", () => {
             }
         });
 
-        const tplIsConverted = <T>(tpl: T) => "_templateId" in tpl;
+        const tplIsConverted = <T extends object>(tpl: T) => "_templateId" in tpl;
 
         expect(eventEntryContent.beforeCreate?.values.content.every(tplIsConverted)).toEqual(true);
         expect(eventEntryContent.afterCreate?.values.content.every(tplIsConverted)).toEqual(true);

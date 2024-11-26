@@ -4,10 +4,11 @@ import {
 } from "~/plugins/CmsModelFieldConverterPlugin";
 import { CmsEntryValues, CmsModelFieldWithParent } from "~/types";
 import { ConverterCollection } from "~/utils/converters/ConverterCollection";
+import { GenericRecord } from "@webiny/api/types";
 
 interface ProcessChildFieldsParams {
     fields: CmsModelFieldWithParent[];
-    value?: Record<string, any> | null;
+    value?: GenericRecord<string> | null;
     converterCollection: ConverterCollection;
 }
 
@@ -43,7 +44,7 @@ export class CmsModelObjectFieldConverterPlugin extends CmsModelFieldConverterPl
                 };
             }
             return {
-                [field.storageId]: value.map((itemValue: any) => {
+                [field.storageId]: value.map((itemValue: GenericRecord) => {
                     return this.processChildFieldsToStorage({
                         fields: childFields.map(child => {
                             return {
@@ -96,7 +97,7 @@ export class CmsModelObjectFieldConverterPlugin extends CmsModelFieldConverterPl
                     if (Array.isArray(value[field.fieldId]) === false) {
                         return output;
                     }
-                    const values = value[field.fieldId].map((childValue: any) => {
+                    const values = value[field.fieldId].map((childValue: GenericRecord) => {
                         return converterCollection.convertToStorage({
                             fields: childFields.map(child => {
                                 return {
@@ -167,7 +168,7 @@ export class CmsModelObjectFieldConverterPlugin extends CmsModelFieldConverterPl
                 };
             }
             return {
-                [field.fieldId]: value.map((itemValue: any) => {
+                [field.fieldId]: value.map((itemValue: GenericRecord) => {
                     return this.processChildFieldsFromStorage({
                         fields: childFields.map(child => {
                             return {
@@ -218,7 +219,9 @@ export class CmsModelObjectFieldConverterPlugin extends CmsModelFieldConverterPl
 
             if (childFields.length > 0) {
                 if (field.multipleValues) {
-                    const inputValues = value[field.storageId] as unknown as Record<string, any>[];
+                    const inputValues = value[
+                        field.storageId
+                    ] as unknown as GenericRecord<string>[];
                     if (!inputValues || Array.isArray(inputValues) === false) {
                         return output;
                     }

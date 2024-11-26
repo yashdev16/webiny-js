@@ -25,6 +25,7 @@ export interface StorageValue {
 
 export const createLongTextStorageTransformPlugin = () => {
     return new StorageTransformPlugin<string | string[], StorageValue>({
+        name: "headless-cms.storage-transform.long-text.default",
         fieldType: "long-text",
         fromStorage: async ({ field, value: storageValue }) => {
             const typeOf = typeof storageValue;

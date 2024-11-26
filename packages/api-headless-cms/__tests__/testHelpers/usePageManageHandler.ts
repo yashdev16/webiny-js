@@ -9,6 +9,10 @@ const pageFields = `
     content {
         ...on ${singularPageApiName}_Content_Hero {
             title
+            date
+            time
+            dateTimeWithoutTimezone
+            dateTimeWithTimezone
             _templateId
             __typename
         }
@@ -23,6 +27,10 @@ const pageFields = `
                 objectTitle
                 objectNestedObject {
                     nestedObjectNestedTitle
+                    date
+                    time
+                    dateTimeWithoutTimezone
+                    dateTimeWithTimezone
                 }
             }
             dynamicZone {
@@ -68,6 +76,10 @@ const pageFields = `
                 objectBody
                 objectNestedObject {
                     nestedObjectNestedTitle
+                    date
+                    time
+                    dateTimeWithoutTimezone
+                    dateTimeWithTimezone
                 }
             }
             __typename

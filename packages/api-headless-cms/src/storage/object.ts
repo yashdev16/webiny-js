@@ -4,17 +4,18 @@ import { CmsModel, CmsModelField } from "~/types";
 import { PluginsContainer } from "@webiny/plugins";
 import { StorageTransformPlugin } from "~/plugins/StorageTransformPlugin";
 import { getBaseFieldType } from "~/utils/getBaseFieldType";
+import { GenericRecord } from "@webiny/api/types";
 
 interface ProcessValueParams {
     fields: CmsModelField[];
-    sourceValue: Record<string, any>;
+    sourceValue: GenericRecord;
     getStoragePlugin: (fieldType: string) => StorageTransformPlugin;
     plugins: PluginsContainer;
     model: CmsModel;
     operation: "toStorage" | "fromStorage";
 }
 interface ProcessValue {
-    (params: ProcessValueParams): Promise<Record<string, any>>;
+    (params: ProcessValueParams): Promise<GenericRecord>;
 }
 
 const processValue: ProcessValue = async params => {
@@ -27,11 +28,12 @@ const processValue: ProcessValue = async params => {
             if (!plugin) {
                 throw new Error(`Missing storage plugin for field type "${baseType}".`);
             }
+            const input = sourceValue[field.fieldId];
             const value = await plugin[operation]({
                 plugins,
                 model,
                 field,
-                value: sourceValue[field.fieldId],
+                value: input,
                 getStoragePlugin
             });
             return { ...values, [field.fieldId]: value };
@@ -52,7 +54,7 @@ export const createObjectStorageTransform = (): StorageTransformPlugin => {
             const fields = (field.settings?.fields || []) as CmsModelField[];
 
             if (field.multipleValues) {
-                return await pMap(value as Record<string, any>[], value =>
+                return await pMap(value as GenericRecord[], value =>
                     processValue({
                         sourceValue: value,
                         getStoragePlugin,
@@ -73,28 +75,32 @@ export const createObjectStorageTransform = (): StorageTransformPlugin => {
                 fields
             });
         },
-        fromStorage: async ({ field, value, getStoragePlugin, plugins, model }) => {
-            if (!value) {
+        fromStorage: async ({ field, value: input, getStoragePlugin, plugins, model }) => {
+            if (!input) {
                 return null;
             }
 
             const fields = (field.settings?.fields || []) as CmsModelField[];
 
             if (field.multipleValues) {
-                return pMap(value as Record<string, any>[], value =>
-                    processValue({
-                        sourceValue: value,
-                        getStoragePlugin,
-                        model,
-                        plugins,
-                        operation: "fromStorage",
-                        fields
+                const values = input as GenericRecord[];
+
+                return await Promise.all(
+                    values.map(async value => {
+                        return await processValue({
+                            sourceValue: value,
+                            getStoragePlugin,
+                            model,
+                            plugins,
+                            operation: "fromStorage",
+                            fields
+                        });
                     })
                 );
             }
 
-            return processValue({
-                sourceValue: value,
+            return await processValue({
+                sourceValue: input,
                 getStoragePlugin,
                 model,
                 plugins,

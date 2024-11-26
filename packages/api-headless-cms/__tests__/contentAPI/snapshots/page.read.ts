@@ -60,6 +60,10 @@ export default /* GraphQL */ `
 
     type PageModelApiName_Content_Hero {
         title: String
+        date: Date
+        time: Time
+        dateTimeWithTimezone: DateTimeZ
+        dateTimeWithoutTimezone: DateTime
     }
 
     type PageModelApiName_Content_SimpleText {
@@ -68,6 +72,10 @@ export default /* GraphQL */ `
 
     type PageModelApiName_Content_Objecting_NestedObject_ObjectNestedObject {
         nestedObjectNestedTitle: String
+        date: Date
+        time: Time
+        dateTimeWithTimezone: DateTimeZ
+        dateTimeWithoutTimezone: DateTime
     }
 
     input PageModelApiName_Content_Objecting_NestedObject_ObjectNestedObjectWhereInput {
@@ -79,6 +87,42 @@ export default /* GraphQL */ `
         nestedObjectNestedTitle_not_contains: String
         nestedObjectNestedTitle_startsWith: String
         nestedObjectNestedTitle_not_startsWith: String
+
+        date: Date
+        date_not: Date
+        date_in: [Date]
+        date_not_in: [Date]
+        date_lt: Date
+        date_lte: Date
+        date_gt: Date
+        date_gte: Date
+
+        time: Time
+        time_not: Time
+        time_in: [Time]
+        time_not_in: [Time]
+        time_lt: Time
+        time_lte: Time
+        time_gt: Time
+        time_gte: Time
+
+        dateTimeWithTimezone: DateTimeZ
+        dateTimeWithTimezone_not: DateTimeZ
+        dateTimeWithTimezone_in: [DateTimeZ]
+        dateTimeWithTimezone_not_in: [DateTimeZ]
+        dateTimeWithTimezone_lt: DateTimeZ
+        dateTimeWithTimezone_lte: DateTimeZ
+        dateTimeWithTimezone_gt: DateTimeZ
+        dateTimeWithTimezone_gte: DateTimeZ
+
+        dateTimeWithoutTimezone: DateTime
+        dateTimeWithoutTimezone_not: DateTime
+        dateTimeWithoutTimezone_in: [DateTime]
+        dateTimeWithoutTimezone_not_in: [DateTime]
+        dateTimeWithoutTimezone_lt: DateTime
+        dateTimeWithoutTimezone_lte: DateTime
+        dateTimeWithoutTimezone_gt: DateTime
+        dateTimeWithoutTimezone_gte: DateTime
     }
 
     type PageModelApiName_Content_Objecting_NestedObject {
@@ -133,6 +177,10 @@ export default /* GraphQL */ `
 
     type PageModelApiName_Objective_Objecting_NestedObject_ObjectNestedObject {
         nestedObjectNestedTitle: String
+        date: Date
+        time: Time
+        dateTimeWithTimezone: DateTimeZ
+        dateTimeWithoutTimezone: DateTime
     }
 
     input PageModelApiName_Objective_Objecting_NestedObject_ObjectNestedObjectWhereInput {
@@ -144,6 +192,42 @@ export default /* GraphQL */ `
         nestedObjectNestedTitle_not_contains: String
         nestedObjectNestedTitle_startsWith: String
         nestedObjectNestedTitle_not_startsWith: String
+
+        date: Date
+        date_not: Date
+        date_in: [Date]
+        date_not_in: [Date]
+        date_lt: Date
+        date_lte: Date
+        date_gt: Date
+        date_gte: Date
+
+        time: Time
+        time_not: Time
+        time_in: [Time]
+        time_not_in: [Time]
+        time_lt: Time
+        time_lte: Time
+        time_gt: Time
+        time_gte: Time
+
+        dateTimeWithTimezone: DateTimeZ
+        dateTimeWithTimezone_not: DateTimeZ
+        dateTimeWithTimezone_in: [DateTimeZ]
+        dateTimeWithTimezone_not_in: [DateTimeZ]
+        dateTimeWithTimezone_lt: DateTimeZ
+        dateTimeWithTimezone_lte: DateTimeZ
+        dateTimeWithTimezone_gt: DateTimeZ
+        dateTimeWithTimezone_gte: DateTimeZ
+
+        dateTimeWithoutTimezone: DateTime
+        dateTimeWithoutTimezone_not: DateTime
+        dateTimeWithoutTimezone_in: [DateTime]
+        dateTimeWithoutTimezone_not_in: [DateTime]
+        dateTimeWithoutTimezone_lt: DateTime
+        dateTimeWithoutTimezone_lte: DateTime
+        dateTimeWithoutTimezone_gt: DateTime
+        dateTimeWithoutTimezone_gte: DateTime
     }
 
     type PageModelApiName_Objective_Objecting_NestedObject {

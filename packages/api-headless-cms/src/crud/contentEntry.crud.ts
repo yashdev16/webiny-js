@@ -74,16 +74,16 @@ import {
 } from "./contentEntry/entryDataFactories";
 import { AccessControl } from "./AccessControl/AccessControl";
 import {
+    deleteEntryUseCases,
     getEntriesByIdsUseCases,
-    listEntriesUseCases,
     getLatestEntriesByIdsUseCases,
-    getPublishedEntriesByIdsUseCases,
-    getRevisionsByEntryIdUseCases,
-    getRevisionByIdUseCases,
     getLatestRevisionByEntryIdUseCases,
     getPreviousRevisionByEntryIdUseCases,
+    getPublishedEntriesByIdsUseCases,
     getPublishedRevisionByEntryIdUseCases,
-    deleteEntryUseCases,
+    getRevisionByIdUseCases,
+    getRevisionsByEntryIdUseCases,
+    listEntriesUseCases,
     restoreEntryFromBinUseCases
 } from "~/crud/contentEntry/useCases";
 import { ContentEntryTraverser } from "~/utils/contentEntryTraverser/ContentEntryTraverser";
@@ -1296,7 +1296,7 @@ export const createContentEntryCrud = (params: CreateContentEntryCrudParams): Cm
             return context.benchmark.measure(
                 "headlessCms.crud.entries.getLatestEntriesByIds",
                 async () => {
-                    return getLatestEntriesByIdsUseCase.execute(model, { ids });
+                    return await getLatestEntriesByIdsUseCase.execute(model, { ids });
                 }
             );
         },
