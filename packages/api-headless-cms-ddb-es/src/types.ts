@@ -7,7 +7,6 @@ import {
     CmsModelField,
     CmsModelFieldToGraphQLPlugin,
     CmsModelFieldType,
-    HeadlessCms,
     HeadlessCmsStorageOperations as BaseHeadlessCmsStorageOperations
 } from "@webiny/api-headless-cms/types";
 import { AttributeDefinition, Entity, Table, TableConstructor } from "@webiny/db-dynamodb/toolbox";
@@ -167,9 +166,6 @@ export interface StorageOperationsFactoryParams {
 }
 
 export interface CmsContext extends BaseCmsContext {
-    cms: HeadlessCms & {
-        storageOperations: HeadlessCmsStorageOperations;
-    };
     [key: string]: any;
 }
 
