@@ -3,16 +3,14 @@ import type { EditorThemeClasses } from "lexical";
 import "./theme.css";
 import { ThemeEmotionMap } from "~/types";
 
-export type WebinyTheme = {
-    styles?: Record<string, any>;
-    emotionMap?: ThemeEmotionMap;
-};
-
-export type EditorTheme = WebinyTheme & EditorThemeClasses;
+export type EditorTheme = {
+    styles: Record<string, any>;
+    emotionMap: ThemeEmotionMap;
+} & EditorThemeClasses;
 
 const defaultTheme: EditorTheme = {
-    styles: undefined,
-    emotionMap: undefined,
+    styles: {},
+    emotionMap: {},
     characterLimit: "WebinyLexical__characterLimit",
     code: "WebinyLexical__code",
     codeHighlight: {
@@ -99,6 +97,12 @@ const defaultTheme: EditorTheme = {
     inlineImage: "inline-editor-image"
 };
 
-export const createTheme = (): EditorTheme => {
-    return defaultTheme;
+export const createTheme = ({
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    styles,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    emotionMap,
+    ...theme
+}: Partial<EditorTheme>): EditorTheme => {
+    return { ...defaultTheme, ...theme };
 };

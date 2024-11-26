@@ -8,6 +8,7 @@ import {
     ContentEntryListWithConfig
 } from "~/admin/config/contentEntries";
 import { ContentEntriesProvider } from "~/admin/views/contentEntries/ContentEntriesContext";
+import { ContentEntriesDebounceRenderer } from "~/admin/views/contentEntries/ContentEntriesDebounceRender";
 
 export const ContentEntries = makeDecoratable("ContentEntries", () => {
     const { model } = useModel();
@@ -18,7 +19,9 @@ export const ContentEntries = makeDecoratable("ContentEntries", () => {
                 <ContentEntryEditorWithConfig>
                     <AcoWithConfig>
                         <DialogsProvider>
-                            <CmsAcoTable />
+                            <ContentEntriesDebounceRenderer>
+                                <CmsAcoTable />
+                            </ContentEntriesDebounceRenderer>
                         </DialogsProvider>
                     </AcoWithConfig>
                 </ContentEntryEditorWithConfig>

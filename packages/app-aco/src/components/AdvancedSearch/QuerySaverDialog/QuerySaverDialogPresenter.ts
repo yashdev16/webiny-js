@@ -1,6 +1,7 @@
 import { makeAutoObservable } from "mobx";
 
 import { Filter, FilterDTO } from "../domain";
+import { FormInvalidFields } from "@webiny/form";
 
 export interface QuerySaverDialogPresenterInterface {
     load(filter: FilterDTO): void;
@@ -25,7 +26,7 @@ export interface QuerySaverDialogFormData {
 
 export interface QuerySaverDialogViewModel {
     filter: FilterDTO | undefined;
-    invalidFields: Record<string, { isValid: boolean; message: string }>;
+    invalidFields: FormInvalidFields;
 }
 
 export class QuerySaverDialogPresenter implements QuerySaverDialogPresenterInterface {

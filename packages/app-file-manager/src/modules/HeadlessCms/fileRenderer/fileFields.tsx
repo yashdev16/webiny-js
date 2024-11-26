@@ -128,7 +128,7 @@ const FieldRenderer = ({ getBind, Label, field }: CmsModelFieldRendererProps) =>
                                                                         dotProp.delete(value, index)
                                                                     )
                                                                 }
-                                                                placeholder={t`Select a file"`}
+                                                                placeholder={t`Select a file`}
                                                                 data-testid={`fr.input.file.${field.label}.${index}`}
                                                             />
                                                         </InnerImageFieldWrapper>
@@ -141,7 +141,7 @@ const FieldRenderer = ({ getBind, Label, field }: CmsModelFieldRendererProps) =>
                                                             }}
                                                             {...bind}
                                                             showFileManager={() => selectFiles()}
-                                                            placeholder={t`Select a file"`}
+                                                            placeholder={t`Select a file`}
                                                             data-testid={`fr.input.file.${field.label}`}
                                                         />
                                                     </InnerImageFieldWrapper>

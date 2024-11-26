@@ -31,7 +31,7 @@ export const Element = makeDecoratable("Element", (props: ElementProps) => {
     };
 
     return (
-        <ErrorBoundary>
+        <ErrorBoundary element={element}>
             <ElementRenderer {...props} meta={meta} />
         </ErrorBoundary>
     );

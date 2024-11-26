@@ -1,15 +1,21 @@
 import React, { useMemo } from "react";
-import { LexicalNode, LexicalValue, Klass } from "@webiny/lexical-editor/types";
-import { LexicalHtmlRenderer } from "@webiny/lexical-editor";
 import { ThemeProvider, useTheme } from "@webiny/app-theme";
+import type { LexicalNode, LexicalValue, Klass } from "@webiny/lexical-editor/types";
+import type { EditorTheme } from "@webiny/lexical-theme";
+import { LexicalHtmlRenderer } from "@webiny/lexical-editor";
 
 type RendererLexicalValue = LexicalValue | Record<string, any> | null | undefined;
 
 interface RichTextLexicalRenderer {
     value: RendererLexicalValue;
-    theme?: Record<string, any>;
+    theme?: Partial<EditorTheme>;
     nodes?: Klass<LexicalNode>[];
 }
+
+const defaultTheme: EditorTheme = {
+    styles: {},
+    emotionMap: {}
+};
 
 const LexicalRenderer = (props: RichTextLexicalRenderer) => {
     const { theme } = useTheme();
@@ -28,7 +34,7 @@ const LexicalRenderer = (props: RichTextLexicalRenderer) => {
     return (
         <LexicalHtmlRenderer
             value={getValue(props?.value)}
-            theme={rendererTheme}
+            theme={{ ...defaultTheme, ...rendererTheme }}
             nodes={props.nodes}
         />
     );

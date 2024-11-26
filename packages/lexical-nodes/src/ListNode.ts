@@ -9,7 +9,7 @@ import {
     SerializedElementNode,
     Spread
 } from "lexical";
-import { EditorTheme, WebinyTheme, findTypographyStyleByHtmlTag } from "@webiny/lexical-theme";
+import { EditorTheme, findTypographyStyleByHtmlTag } from "@webiny/lexical-theme";
 import { addClassNamesToElement, removeClassNamesFromElement } from "@lexical/utils";
 import { ListNodeTagType } from "@lexical/list/LexicalListNode";
 import { $getListDepth, wrapInListItem } from "~/utils/listNode";
@@ -56,7 +56,7 @@ export class ListNode extends ElementNode {
     override createDOM(config: EditorConfig): HTMLElement {
         const tag = this.__tag;
         const dom = document.createElement(tag);
-        const wTheme = config.theme as WebinyTheme;
+        const wTheme = config.theme as EditorTheme;
 
         if (this.__start !== 1) {
             dom.setAttribute("start", String(this.__start));
@@ -126,7 +126,7 @@ export class ListNode extends ElementNode {
     }
 
     override updateDOM(prevNode: ListNode, dom: HTMLElement, config: EditorConfig): boolean {
-        const wTheme = config.theme as WebinyTheme;
+        const wTheme = config.theme as EditorTheme;
 
         if (prevNode.__tag !== this.__tag) {
             return true;
@@ -137,7 +137,7 @@ export class ListNode extends ElementNode {
             this.setDefaultThemeListStyleByTag(this.__tag, wTheme);
         }
 
-        setListThemeClassNames(dom, config.theme, this, this.__themeStyleId);
+        setListThemeClassNames(dom, config.theme as EditorTheme, this, this.__themeStyleId);
         dom.setAttribute(TypographyStyleAttrName, this.__themeStyleId);
         return false;
     }
@@ -157,7 +157,7 @@ export class ListNode extends ElementNode {
     /*
      * Set default styleId from first style that is found in the theme that contains current ul or ol tag
      */
-    private setDefaultThemeListStyleByTag(tag: string, theme: WebinyTheme) {
+    private setDefaultThemeListStyleByTag(tag: string, theme: EditorTheme) {
         if (!tag) {
             return;
         }
@@ -182,7 +182,7 @@ export class ListNode extends ElementNode {
         return this.__tag;
     }
 
-    private isStyleExistInTheme(theme: WebinyTheme): boolean {
+    private isStyleExistInTheme(theme: EditorTheme): boolean {
         return theme?.emotionMap ? !!theme?.emotionMap[this.__themeStyleId] : false;
     }
 }

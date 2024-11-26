@@ -43,13 +43,13 @@ export const ShowConfirmationOnDelete = useContentEntry.createDecorator(baseHook
     return () => {
         const hook = baseHook();
         const dialogs = useDialogs();
-        const { showSnackbar } = useSnackbar();
+        const { showSnackbar, showErrorSnackbar } = useSnackbar();
 
         const onAccept = async (entry: CmsContentEntry) => {
             const response = await hook.deleteEntry({ id: entry.entryId });
 
             if (typeof response !== "boolean") {
-                showSnackbar(
+                showErrorSnackbar(
                     `Could not move ${entry.meta.title} to trash! (${response.error.message})`
                 );
 

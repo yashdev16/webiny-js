@@ -10,6 +10,7 @@ import mirrorCellPlugin from "../recoil/actions/mirrorCell/plugin";
 import updateElementPlugin from "../recoil/actions/updateElement/plugin";
 import afterDropElementPlugin from "../recoil/actions/afterDropElement/plugin";
 import moveBlockPlugin from "../recoil/actions/moveBlock/plugin";
+import moveElementPlugin from "../recoil/actions/moveElement/plugin";
 import afterUpdateElementsPlugin from "../recoil/actions/updateElementTree/plugin";
 import elementSettingsPlugin from "../plugins/elementSettings/advanced/plugin";
 
@@ -23,6 +24,7 @@ export const ActionPlugins = memo(() => {
         afterDropElementPlugin(),
         deleteElementPlugin(),
         moveBlockPlugin(),
+        moveElementPlugin(),
         afterUpdateElementsPlugin(),
         ...dragPlugin(),
         elementSettingsPlugin

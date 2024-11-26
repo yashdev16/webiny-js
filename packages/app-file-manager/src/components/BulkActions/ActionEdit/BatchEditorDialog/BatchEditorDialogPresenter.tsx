@@ -7,6 +7,7 @@ import {
     OperationDTO,
     OperatorDTO
 } from "~/components/BulkActions/ActionEdit/domain";
+import type { FormInvalidFields } from "@webiny/form";
 
 export interface IBatchEditorDialogPresenter {
     load(batch: BatchDTO, fields: FieldDTO[]): void;
@@ -19,7 +20,7 @@ export interface IBatchEditorDialogPresenter {
 }
 
 export interface BatchEditorDialogViewModel {
-    invalidFields: Record<string, { isValid: boolean; message: string }>;
+    invalidFields: FormInvalidFields;
     canAddOperation: boolean;
     data: BatchEditorFormData;
 }

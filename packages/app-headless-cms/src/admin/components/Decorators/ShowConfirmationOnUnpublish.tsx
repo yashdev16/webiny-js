@@ -47,7 +47,7 @@ const EntryMessage = ({ id, entryType, getEntry }: EntryMessageProps) => {
 
 export const ShowConfirmationOnUnpublish = useContentEntry.createDecorator(baseHook => {
     return () => {
-        const { showSnackbar } = useSnackbar();
+        const { showSnackbar, showErrorSnackbar } = useSnackbar();
         const dialogs = useDialogs();
         const hook = baseHook();
         const { contentModel } = hook;
@@ -57,7 +57,7 @@ export const ShowConfirmationOnUnpublish = useContentEntry.createDecorator(baseH
             const response = await hook.unpublishEntryRevision({ id: entry.id });
 
             if (response.error) {
-                showSnackbar(
+                showErrorSnackbar(
                     `Could not unpublish ${entry.meta.title}! (${response.error.message})`
                 );
 

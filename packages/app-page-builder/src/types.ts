@@ -599,11 +599,6 @@ export enum OnCreateActions {
     SKIP_ELEMENT_HEIGHT = "skipElementHighlight"
 }
 
-export type PbEditorPageElementActionPlugin = Plugin & {
-    type: "pb-editor-page-element-action";
-    render: (params: { element: PbEditorElement; plugin: PbEditorPageElementPlugin }) => ReactNode;
-};
-
 export type PbPageDetailsPlugin = Plugin & {
     render: (params: { page: PbPageData; [key: string]: any }) => ReactNode;
 };

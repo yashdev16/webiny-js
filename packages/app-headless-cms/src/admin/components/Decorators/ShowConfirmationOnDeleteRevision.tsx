@@ -44,7 +44,7 @@ export const ShowConfirmationOnDeleteRevision = useContentEntry.createDecorator(
     return () => {
         const hook = baseHook();
         const dialogs = useDialogs();
-        const { showSnackbar } = useSnackbar();
+        const { showSnackbar, showErrorSnackbar } = useSnackbar();
 
         const onAccept = async (params: DeleteEntryRevisionParams) => {
             const revisionToDelete = hook.revisions.find(rev => rev.id === params.id)!;
@@ -52,7 +52,7 @@ export const ShowConfirmationOnDeleteRevision = useContentEntry.createDecorator(
             const response = await hook.deleteEntryRevision(revisionToDelete);
             if (typeof response === "object" && response.error) {
                 const { error } = response;
-                showSnackbar(error.message);
+                showErrorSnackbar(error.message);
                 return response;
             }
 

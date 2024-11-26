@@ -38,7 +38,23 @@ export const createTopic = <TEvent extends Event = Event>(topicName?: string): T
         },
         async publish(event: TEvent) {
             for (const cb of subscribers) {
-                await cb(event);
+                try {
+                    await cb(event);
+                } catch (e) {
+                    console.error(
+                        `An error occurred while publishing an event (topic: ${topicName}).`,
+                        {
+                            topicName: topicName,
+                            error: {
+                                message: e.message,
+                                code: e.code,
+                                data: e.data,
+                                stack: e.stack
+                            }
+                        }
+                    );
+                    throw e;
+                }
             }
         }
     };

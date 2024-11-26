@@ -147,7 +147,7 @@ export interface FieldProps {
 
 const Field = (props: FieldProps) => {
     const { field, onEdit, parent } = props;
-    const { showSnackbar } = useSnackbar();
+    const { showSnackbar, showErrorSnackbar } = useSnackbar();
     const { setData: setModel, data: model } = useModelEditor();
     const { getFieldPlugin, getFieldRendererPlugin } = useModelFieldEditor();
 
@@ -208,7 +208,7 @@ const Field = (props: FieldProps) => {
         });
 
         if (response && response.error) {
-            return showSnackbar(response.error.message);
+            return showErrorSnackbar(response.error.message);
         }
 
         showSnackbar(t`Title field set successfully.`);
@@ -220,7 +220,7 @@ const Field = (props: FieldProps) => {
         });
 
         if (response && response.error) {
-            return showSnackbar(response.error.message);
+            return showErrorSnackbar(response.error.message);
         }
 
         showSnackbar(t`Description field set successfully.`);
@@ -232,7 +232,7 @@ const Field = (props: FieldProps) => {
         });
 
         if (response && response.error) {
-            return showSnackbar(response.error.message);
+            return showErrorSnackbar(response.error.message);
         }
 
         showSnackbar(t`Image field set successfully.`);

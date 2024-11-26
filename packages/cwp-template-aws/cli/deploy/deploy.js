@@ -10,6 +10,7 @@ const { getInfo } = require("../info");
 const sleep = require("../utils/sleep");
 const open = require("open");
 const ora = require("ora");
+const isCI = require("is-ci");
 
 const deployApp = async ({ name, folder, inputs, context, isFirstDeployment }) => {
     context.info(`Deploying %s project application...`, name);
@@ -47,7 +48,7 @@ module.exports = async (inputs, context) => {
         installed && console.log();
 
         // 2. Check if first deployment.
-        const isFirstDeployment = !getStackOutput({ folder: "apps/core", env });
+        const isFirstDeployment = !isCI && !getStackOutput({ folder: "apps/core", env });
         if (isFirstDeployment) {
             context.info(`Looks like this is your first time deploying the project.`);
             context.info(

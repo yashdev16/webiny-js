@@ -15,6 +15,7 @@ import { useRouter } from "@webiny/react-router";
 import { ROOT_FOLDER } from "~/admin/constants";
 import { BulkActions } from "~/admin/components/ContentEntries/BulkActions";
 import { SelectAll } from "~/admin/components/ContentEntries/SelectAll";
+import { BottomInfoBar } from "~/admin/components/ContentEntries/BottomInfoBar";
 
 interface MainProps {
     folderId?: string;
@@ -113,6 +114,11 @@ export const Main = ({ folderId: initialFolderId }: MainProps) => {
                                     onClick={list.listMoreRecords}
                                 />
                             </Scrollbar>
+                            <BottomInfoBar
+                                loading={list.isListLoading}
+                                totalCount={list.meta.totalCount}
+                                currentCount={list.records.length}
+                            />
                             <LoadingMore show={list.isListLoadingMore} />
                         </>
                     )}

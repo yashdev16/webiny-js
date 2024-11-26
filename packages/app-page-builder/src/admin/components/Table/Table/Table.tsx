@@ -3,6 +3,7 @@ import React, { ForwardRefRenderFunction, useMemo } from "react";
 import { createFoldersData, createRecordsData, Table as AcoTable } from "@webiny/app-aco";
 import { usePagesList } from "~/admin/views/Pages/hooks/usePagesList";
 
+import { TableContainer } from "./styled";
 import { TableItem } from "~/types";
 
 const BaseTable: ForwardRefRenderFunction<HTMLDivElement> = (_, ref) => {
@@ -13,7 +14,7 @@ const BaseTable: ForwardRefRenderFunction<HTMLDivElement> = (_, ref) => {
     }, [list.folders, list.records]);
 
     return (
-        <div ref={ref}>
+        <TableContainer ref={ref}>
             <AcoTable<TableItem>
                 data={data}
                 loading={list.isListLoading}
@@ -23,7 +24,7 @@ const BaseTable: ForwardRefRenderFunction<HTMLDivElement> = (_, ref) => {
                 selected={list.selected}
                 namespace={"pb.page"}
             />
-        </div>
+        </TableContainer>
     );
 };
 

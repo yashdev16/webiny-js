@@ -81,8 +81,8 @@ export class TypographyNode extends ElementNode {
     }
 
     addStylesHTMLElement(element: HTMLElement, theme: EditorTheme): HTMLElement {
-        const typographyStyleValue = theme?.emotionMap
-            ? theme?.emotionMap[this.__styleId]
+        const typographyStyleValue = theme.emotionMap
+            ? theme.emotionMap[this.__styleId]
             : undefined;
         if (typographyStyleValue) {
             this.__css = typographyStyleValue.styles;
@@ -121,7 +121,7 @@ export class TypographyNode extends ElementNode {
     override createDOM(config: EditorConfig): HTMLElement {
         const tag = this.__tag;
         const element = document.createElement(tag);
-        return this.addStylesHTMLElement(element, config.theme);
+        return this.addStylesHTMLElement(element, config.theme as EditorTheme);
     }
 
     override updateDOM(): boolean {

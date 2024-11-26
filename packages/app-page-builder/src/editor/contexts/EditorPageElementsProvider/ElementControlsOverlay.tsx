@@ -21,6 +21,7 @@ declare global {
     namespace JSX {
         interface IntrinsicElements {
             "pb-eco": React.HTMLProps<HTMLDivElement>;
+            "pb-eco-interactivity": React.HTMLProps<HTMLDivElement>;
         }
     }
 }
@@ -203,6 +204,9 @@ const StyledPbElementControlsOverlay = styled(
 );
 
 interface Props {
+    canDrag: boolean;
+    canHighlight: boolean;
+    canActivate: boolean;
     children?: React.ReactNode;
     dropRef?: React.RefCallback<any>;
 }
@@ -230,6 +234,11 @@ export const ElementControlsOverlay = (props: Props) => {
     let isDraggable = false;
     if (elementPlugin) {
         isDraggable = Array.isArray(elementPlugin?.target) && elementPlugin.target.length > 0;
+
+        // In case this flag is passed from outside...
+        if (typeof props.canDrag !== "undefined") {
+            isDraggable = props.canDrag;
+        }
     }
 
     const beginDrag = useCallback(() => {
@@ -282,11 +291,14 @@ export const ElementControlsOverlay = (props: Props) => {
                     element={element}
                     elementRendererMeta={meta}
                     onClick={() => {
+                        if (!rest.canActivate) {
+                            return;
+                        }
                         updateEditorElement(element => ({ ...element, isHighlighted: false }));
                         setActiveElementId(element.id);
                     }}
                     onMouseEnter={e => {
-                        if (isActive || isHighlighted) {
+                        if (isActive || isHighlighted || !rest.canHighlight) {
                             return;
                         }
 

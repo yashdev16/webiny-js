@@ -10,7 +10,7 @@ import {
     Spread
 } from "lexical";
 import { EditorConfig } from "lexical";
-import { WebinyTheme, ThemeEmotionMap, findTypographyStyleByHtmlTag } from "@webiny/lexical-theme";
+import { EditorTheme, ThemeEmotionMap, findTypographyStyleByHtmlTag } from "@webiny/lexical-theme";
 import { addClassNamesToElement } from "@lexical/utils";
 import { TypographyStylesNode, ThemeStyleValue, TextNodeThemeStyles } from "~/types";
 
@@ -76,7 +76,7 @@ export class ParagraphNode
         return new ParagraphNode(node.getTypographyStyleId(), node.__key);
     }
 
-    private updateElementWithThemeClasses(element: HTMLElement, theme: WebinyTheme): HTMLElement {
+    private updateElementWithThemeClasses(element: HTMLElement, theme: EditorTheme): HTMLElement {
         if (!theme?.emotionMap) {
             return element;
         }
@@ -106,7 +106,7 @@ export class ParagraphNode
 
     override createDOM(config: EditorConfig): HTMLElement {
         const element = super.createDOM(config);
-        return this.updateElementWithThemeClasses(element, config.theme as WebinyTheme);
+        return this.updateElementWithThemeClasses(element, config.theme as EditorTheme);
     }
 
     override updateDOM(prevNode: ParagraphNode, dom: HTMLElement, config: EditorConfig): boolean {
@@ -114,12 +114,12 @@ export class ParagraphNode
         const nextTypoStyleId = this.getTypographyStyleId();
 
         if (!nextTypoStyleId) {
-            this.updateElementWithThemeClasses(dom, config.theme as WebinyTheme);
+            this.updateElementWithThemeClasses(dom, config.theme as EditorTheme);
             return false;
         }
 
         if (prevTypoStyleId !== nextTypoStyleId && nextTypoStyleId) {
-            this.updateElementWithThemeClasses(dom, config.theme as WebinyTheme);
+            this.updateElementWithThemeClasses(dom, config.theme as EditorTheme);
         }
         // Returning false tells Lexical that this node does not need its
         // DOM element replacing with a new copy from createDOM.

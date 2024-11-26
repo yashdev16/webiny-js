@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import pick from "lodash/pick";
 import { Prompt } from "@webiny/react-router";
-import { Form, FormAPI, FormOnSubmit, FormValidation } from "@webiny/form";
+import { Form, FormAPI, FormOnSubmit, FormValidation, FormInvalidFields } from "@webiny/form";
 import { CmsContentEntry, CmsModel } from "@webiny/app-headless-cms-common/types";
 import { CompositionScope, useSnackbar } from "@webiny/app-admin";
 import { prepareFormData } from "@webiny/app-headless-cms-common";
@@ -18,17 +18,12 @@ interface SaveEntryOptions {
 export interface ContentEntryFormContext {
     entry: Partial<CmsContentEntry>;
     saveEntry: (options?: SaveEntryOptions) => Promise<CmsContentEntry | null>;
-    invalidFields: FormValidation;
+    invalidFields: FormInvalidFields;
 }
 
 export const ContentEntryFormContext = React.createContext<ContentEntryFormContext | undefined>(
     undefined
 );
-
-interface InvalidFieldError {
-    fieldId: string;
-    error: string;
-}
 
 export interface SetSaveEntry {
     (cb: ContentEntryFormContext["saveEntry"]): void;
@@ -50,10 +45,15 @@ interface ContentEntryFormProviderProps {
     children: React.ReactNode;
 }
 
-const formValidationToMap = (invalidFields: FormValidation) => {
+interface InvalidFieldError {
+    fieldId: string;
+    error: string;
+}
+
+const formValidationToMap = (invalidFields: FormValidation): FormInvalidFields => {
     return Object.keys(invalidFields).reduce(
-        (acc, key) => ({ ...acc, [key]: invalidFields[key].message }),
-        {} as Record<string, string | undefined>
+        (acc, key) => ({ ...acc, [key]: invalidFields[key].message || "Value is invalid." }),
+        {} as FormInvalidFields
     );
 };
 
@@ -67,7 +67,7 @@ export const ContentEntryFormProvider = ({
     confirmNavigationIfDirty
 }: ContentEntryFormProviderProps) => {
     const ref = useRef<FormAPI<CmsContentEntry> | null>(null);
-    const [invalidFields, setInvalidFields] = useState({});
+    const [invalidFields, setInvalidFields] = useState<FormInvalidFields>({});
     const { showSnackbar } = useSnackbar();
     const saveOptionsRef = useRef<SaveEntryOptions>({ skipValidators: undefined });
 
@@ -95,8 +95,15 @@ export const ContentEntryFormProvider = ({
         );
 
         if (error) {
+            if (error.code === "VALIDATION_FAILED") {
+                const errors: InvalidFieldError[] = error.data || [];
+
+                setInvalidFields(
+                    errors.reduce((acc, item) => ({ ...acc, [item.fieldId]: item.error }), {})
+                );
+            }
             showSnackbar(error.message);
-            setInvalidFields(error.data as InvalidFieldError[]);
+
             return;
         }
 
@@ -129,6 +136,7 @@ export const ContentEntryFormProvider = ({
             onSubmit={onFormSubmit}
             data={entry}
             ref={ref}
+            validateOnFirstSubmit
             invalidFields={invalidFields}
             onInvalid={invalidFields => {
                 setInvalidFields(formValidationToMap(invalidFields));

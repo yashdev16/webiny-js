@@ -144,7 +144,7 @@ export class FontColorNode extends TextNode {
 
     override updateDOM(prevNode: FontColorNode, dom: HTMLElement, config: EditorConfig): boolean {
         const isUpdated = super.updateDOM(prevNode, dom, config);
-        this.__color.updateFromTheme(config.theme);
+        this.__color.updateFromTheme(config.theme as EditorTheme);
 
         dom.setAttribute(FontColorNodeAttrName, this.__color.getName());
         dom.style.color = this.__color.getValue();
@@ -160,7 +160,7 @@ export class FontColorNode extends TextNode {
 
     override createDOM(config: EditorConfig): HTMLElement {
         const element = super.createDOM(config);
-        return this.addColorValueToHTMLElement(element, config.theme);
+        return this.addColorValueToHTMLElement(element, config.theme as EditorTheme);
     }
 }
 

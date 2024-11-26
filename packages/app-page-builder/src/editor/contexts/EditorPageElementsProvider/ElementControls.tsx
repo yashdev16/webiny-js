@@ -8,17 +8,43 @@ import Droppable, { DragObjectWithTypeWithTarget } from "~/editor/components/Dro
 import { useRecoilValue } from "recoil";
 import { uiAtom } from "~/editor/recoil/modules";
 import { useElementPlugin } from "~/editor/contexts/EditorPageElementsProvider/useElementPlugin";
-import { useSnackbar } from "@webiny/app-admin";
+import { makeDecoratable, useSnackbar } from "@webiny/app-admin";
 import { getElementTitle } from "~/editor/contexts/EditorPageElementsProvider/getElementTitle";
+import styled from "@emotion/styled";
+
+const DisablePointerEvents = styled("pb-eco-interactivity")`
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+`;
+
+export interface ElementControlsProps {
+    canDrag?: boolean;
+    canEdit?: boolean;
+    canHighlight?: boolean;
+    canActivate?: boolean;
+    children?: React.ReactNode;
+}
 
 // Provides controls and visual feedback for page elements:
 // - hover / active visual overlays
 // - drag and drop functionality
-export const ElementControls = () => {
+export const ElementControls = makeDecoratable("ElementControls", (props: ElementControlsProps) => {
     const { getElement, meta } = useRenderer();
     const { showSnackbar } = useSnackbar();
 
     const element = getElement();
+
+    const overlayInteractions = {
+        canDrag: typeof props.canDrag === "undefined" ? true : props.canDrag,
+        canHighlight: typeof props.canHighlight === "undefined" ? true : props.canHighlight,
+        canActivate: typeof props.canActivate === "undefined" ? true : props.canActivate
+    };
+
+    const canEdit = typeof props.canEdit === "undefined" ? true : props.canEdit;
 
     // No need to add any controls and visual feedback for the root document page element.
     // Note that the element type never changes, that's why we're safe to return here,
@@ -102,7 +128,11 @@ export const ElementControls = () => {
                         type={element.type}
                         isVisible={() => true}
                     >
-                        {({ drop }) => <ElementControlsOverlay dropRef={drop} />}
+                        {({ drop }) => (
+                            <ElementControlsOverlay dropRef={drop} {...overlayInteractions}>
+                                {props.children}
+                            </ElementControlsOverlay>
+                        )}
                     </Droppable>
                     {render}
                 </>
@@ -112,5 +142,12 @@ export const ElementControls = () => {
         return render;
     }
 
-    return <ElementControlsOverlay />;
-};
+    return (
+        <>
+            <ElementControlsOverlay {...overlayInteractions}>
+                {props.children}
+            </ElementControlsOverlay>
+            {!canEdit ? <DisablePointerEvents /> : null}
+        </>
+    );
+});

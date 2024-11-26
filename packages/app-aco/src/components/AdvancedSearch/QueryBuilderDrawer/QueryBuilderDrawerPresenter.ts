@@ -1,6 +1,6 @@
 import { makeAutoObservable } from "mobx";
-
 import { Filter, FilterDTO, FilterGroupDTO, FilterGroupFilterDTO, Operation } from "../domain";
+import { FormInvalidFields } from "@webiny/form";
 
 export interface QueryBuilderDrawerPresenterInterface {
     load(filter: FilterDTO): void;
@@ -18,7 +18,7 @@ export interface QueryBuilderDrawerPresenterInterface {
 export interface QueryBuilderViewModel {
     name: string;
     description: string;
-    invalidFields: Record<string, { isValid: boolean; message: string }>;
+    invalidFields: FormInvalidFields;
     invalidMessage: string;
     data: QueryBuilderFormData;
 }

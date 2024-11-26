@@ -1,5 +1,8 @@
 import React from "react";
 import { Validator } from "@webiny/validation/types";
+import { FormInvalidFields } from "~/FormPresenter";
+
+export { FormInvalidFields };
 
 export interface BindComponentRenderPropValidation {
     isValid: boolean | null;
@@ -95,7 +98,7 @@ export interface FormPropsState<T extends GenericFormData = GenericFormData> {
     data: T;
 }
 export interface FormProps<T extends GenericFormData = GenericFormData> {
-    invalidFields?: { [key: string]: any };
+    invalidFields?: FormInvalidFields;
     data?: Partial<T>;
     disabled?: boolean | ((state: FormPropsState<T>) => boolean);
     validateOnFirstSubmit?: boolean;

@@ -17,9 +17,10 @@ export interface PageAtomType {
     pid?: string;
     path: string;
     status: string;
-    settings?: {
-        general?: {
-            layout?: string;
+    settings: {
+        general: {
+            layout: string;
+            tags: string[];
         };
     };
     parent?: string;
@@ -44,6 +45,12 @@ export const pageAtom = atom<PageAtomType>({
         snippet: null,
         createdBy: {
             id: null
+        },
+        settings: {
+            general: {
+                layout: "static",
+                tags: []
+            }
         },
         path: "",
         status: ""

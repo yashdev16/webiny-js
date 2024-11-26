@@ -3,10 +3,10 @@ import { FileManager } from "~/components";
 import { RichTextEditor as BaseEditor } from "@webiny/lexical-editor";
 import { RichTextEditorProps } from "@webiny/lexical-editor/types";
 import { useTheme } from "@webiny/app-theme";
-import { Theme } from "@webiny/app-theme/types";
+import { EditorTheme } from "@webiny/lexical-theme";
 
 interface LexicalEditorProps extends Omit<RichTextEditorProps, "theme"> {
-    theme?: Theme;
+    theme?: Partial<EditorTheme>;
 }
 
 const imagesOnly = ["image/*"];
@@ -14,12 +14,19 @@ const imagesOnly = ["image/*"];
 export const LexicalEditor = (props: LexicalEditorProps) => {
     const { theme } = useTheme();
 
+    const editorTheme: EditorTheme = {
+        styles: {},
+        emotionMap: {},
+        ...theme,
+        ...(props.theme || {})
+    };
+
     return (
         <FileManager accept={imagesOnly}>
             {({ showFileManager }) => (
                 <BaseEditor
                     {...props}
-                    theme={{ ...theme, ...props?.theme }}
+                    theme={editorTheme}
                     toolbarActionPlugins={[
                         ...(props.toolbarActionPlugins || []),
                         { targetAction: "image-action", plugin: showFileManager }
