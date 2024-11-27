@@ -5,10 +5,9 @@ import {
 } from "~/plugins/CmsModelFieldConverterPlugin";
 import { CmsDynamicZoneTemplate, CmsEntryValues, CmsModelDynamicZoneField } from "~/types";
 import { ConverterCollection } from "~/utils/converters/ConverterCollection";
+import { GenericRecord } from "@webiny/api/types";
 
-interface DynamicZoneValue {
-    [key: string]: any;
-}
+type DynamicZoneValue = GenericRecord<string>;
 
 interface ProcessValue {
     templates: CmsDynamicZoneTemplate[];
@@ -87,7 +86,7 @@ export class CmsModelDynamicZoneFieldConverterPlugin extends CmsModelFieldConver
             return undefined;
         }
 
-        return template.fields.reduce<Record<string, any>>(
+        return template.fields.reduce<GenericRecord<string>>(
             (values, field) => {
                 const converter = converterCollection.getConverter(field.type);
                 const converted = converter.convertToStorage({
@@ -169,7 +168,7 @@ export class CmsModelDynamicZoneFieldConverterPlugin extends CmsModelFieldConver
             );
         }
 
-        return template.fields.reduce<Record<string, any>>(
+        return template.fields.reduce<GenericRecord<string>>(
             (values, field) => {
                 const converter = converterCollection.getConverter(field.type);
                 const converted = converter.convertFromStorage({

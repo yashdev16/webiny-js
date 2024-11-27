@@ -1,3 +1,6 @@
+/**
+ * Storage transforms are used to transform the data before it is saved to the database and after it is read from the database.
+ */
 import { Plugin } from "@webiny/plugins/Plugin";
 import { CmsModel, CmsModelField, CmsModelFieldType } from "~/types";
 import { PluginsContainer } from "@webiny/plugins";

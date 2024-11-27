@@ -2,6 +2,7 @@ import {
     CmsModelFieldConverterPlugin,
     ConvertParams
 } from "~/plugins/CmsModelFieldConverterPlugin";
+import { GenericRecord } from "@webiny/api/types";
 
 export class CmsModelDefaultFieldConverterPlugin extends CmsModelFieldConverterPlugin {
     public override name = "cms.field.converter.default";
@@ -10,7 +11,7 @@ export class CmsModelDefaultFieldConverterPlugin extends CmsModelFieldConverterP
         return "*";
     }
 
-    public override convertToStorage({ field, value }: ConvertParams): any {
+    public override convertToStorage({ field, value }: ConvertParams): GenericRecord {
         /**
          * Do not convert if no value was passed.
          */
@@ -25,7 +26,7 @@ export class CmsModelDefaultFieldConverterPlugin extends CmsModelFieldConverterP
         };
     }
 
-    public override convertFromStorage({ field, value }: ConvertParams): any {
+    public override convertFromStorage({ field, value }: ConvertParams): GenericRecord {
         /**
          * Do not convert if no value was passed.
          */

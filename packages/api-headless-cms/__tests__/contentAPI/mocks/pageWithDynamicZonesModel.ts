@@ -92,6 +92,62 @@ export const pageModel: CmsModel = {
                                     }
                                 ],
                                 fieldId: "title"
+                            },
+                            {
+                                settings: {
+                                    type: "date"
+                                },
+                                renderer: {
+                                    name: "date-time-input"
+                                },
+                                label: "Date",
+                                id: "eyqi5168",
+                                type: "datetime",
+                                validation: [],
+                                fieldId: "date",
+                                storageId: "datetime@eyqi5168"
+                            },
+                            {
+                                settings: {
+                                    type: "time"
+                                },
+                                renderer: {
+                                    name: "date-time-input"
+                                },
+                                label: "Time",
+                                id: "zwnirh2r",
+                                type: "datetime",
+                                validation: [],
+                                fieldId: "time",
+                                storageId: "datetime@zwnirh2r"
+                            },
+                            {
+                                settings: {
+                                    type: "dateTimeWithTimezone"
+                                },
+                                renderer: {
+                                    name: "date-time-input"
+                                },
+                                label: "Date Time With Timezone",
+                                id: "wwn7s1rp",
+                                type: "datetime",
+                                validation: [],
+                                fieldId: "dateTimeWithTimezone",
+                                storageId: "datetime@wwn7s1rp"
+                            },
+                            {
+                                settings: {
+                                    type: "dateTimeWithoutTimezone"
+                                },
+                                renderer: {
+                                    name: "date-time-input"
+                                },
+                                label: "Date Time Without Timezone",
+                                id: "521a5932",
+                                type: "datetime",
+                                validation: [],
+                                fieldId: "dateTimeWithoutTimezone",
+                                storageId: "datetime@521a5932"
                             }
                         ],
                         validation: [
@@ -186,6 +242,62 @@ export const pageModel: CmsModel = {
                                                                 message: `"nestedObject.objectNestedObject.nestedObjectNestedTitle" is required.`
                                                             }
                                                         ]
+                                                    },
+                                                    {
+                                                        settings: {
+                                                            type: "date"
+                                                        },
+                                                        renderer: {
+                                                            name: "date-time-input"
+                                                        },
+                                                        label: "Date",
+                                                        id: "6he8oex2",
+                                                        type: "datetime",
+                                                        validation: [],
+                                                        fieldId: "date",
+                                                        storageId: "datetime@6he8oex2"
+                                                    },
+                                                    {
+                                                        settings: {
+                                                            type: "time"
+                                                        },
+                                                        renderer: {
+                                                            name: "date-time-input"
+                                                        },
+                                                        label: "Time",
+                                                        id: "3k56vyr9",
+                                                        type: "datetime",
+                                                        validation: [],
+                                                        fieldId: "time",
+                                                        storageId: "datetime@3k56vyr9"
+                                                    },
+                                                    {
+                                                        settings: {
+                                                            type: "dateTimeWithTimezone"
+                                                        },
+                                                        renderer: {
+                                                            name: "date-time-input"
+                                                        },
+                                                        label: "Date Time With Timezone",
+                                                        id: "dualjcdv",
+                                                        type: "datetime",
+                                                        validation: [],
+                                                        fieldId: "dateTimeWithTimezone",
+                                                        storageId: "datetime@dualjcdv"
+                                                    },
+                                                    {
+                                                        settings: {
+                                                            type: "dateTimeWithoutTimezone"
+                                                        },
+                                                        renderer: {
+                                                            name: "date-time-input"
+                                                        },
+                                                        label: "Date Time Without Timezone",
+                                                        id: "7y789p8j",
+                                                        type: "datetime",
+                                                        validation: [],
+                                                        fieldId: "dateTimeWithoutTimezone",
+                                                        storageId: "datetime@7y789p8j"
                                                     }
                                                 ]
                                             }
@@ -466,6 +578,62 @@ export const pageModel: CmsModel = {
                                                                 message: `"nestedObjectNestedTitle" is required.`
                                                             }
                                                         ]
+                                                    },
+                                                    {
+                                                        settings: {
+                                                            type: "date"
+                                                        },
+                                                        renderer: {
+                                                            name: "date-time-input"
+                                                        },
+                                                        label: "Date",
+                                                        id: "6he8oex2",
+                                                        type: "datetime",
+                                                        validation: [],
+                                                        fieldId: "date",
+                                                        storageId: "datetime@6he8oex2"
+                                                    },
+                                                    {
+                                                        settings: {
+                                                            type: "time"
+                                                        },
+                                                        renderer: {
+                                                            name: "date-time-input"
+                                                        },
+                                                        label: "Time",
+                                                        id: "3k56vyr9",
+                                                        type: "datetime",
+                                                        validation: [],
+                                                        fieldId: "time",
+                                                        storageId: "datetime@3k56vyr9"
+                                                    },
+                                                    {
+                                                        settings: {
+                                                            type: "dateTimeWithTimezone"
+                                                        },
+                                                        renderer: {
+                                                            name: "date-time-input"
+                                                        },
+                                                        label: "Date Time With Timezone",
+                                                        id: "dualjcdv",
+                                                        type: "datetime",
+                                                        validation: [],
+                                                        fieldId: "dateTimeWithTimezone",
+                                                        storageId: "datetime@dualjcdv"
+                                                    },
+                                                    {
+                                                        settings: {
+                                                            type: "dateTimeWithoutTimezone"
+                                                        },
+                                                        renderer: {
+                                                            name: "date-time-input"
+                                                        },
+                                                        label: "Date Time Without Timezone",
+                                                        id: "7y789p8j",
+                                                        type: "datetime",
+                                                        validation: [],
+                                                        fieldId: "dateTimeWithoutTimezone",
+                                                        storageId: "datetime@7y789p8j"
                                                     }
                                                 ]
                                             }

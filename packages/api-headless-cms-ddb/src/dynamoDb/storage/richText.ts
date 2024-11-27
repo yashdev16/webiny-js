@@ -31,6 +31,7 @@ const transformArray = (value: any) => {
 
 export const createRichTextStorageTransformPlugin = () => {
     return new StorageTransformPlugin({
+        name: "headless-cms.storage-transform.rich-text.default",
         fieldType: "rich-text",
         fromStorage: async ({ field, value: storageValue }) => {
             if (!storageValue) {
