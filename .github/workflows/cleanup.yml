@@ -4,7 +4,7 @@ name: Cloud infrastructure Cleanup
 on:
   workflow_dispatch:
   repository_dispatch:
-    types: [cleanup-infrastructure]
+    types: [ cleanup-infrastructure ]
   schedule:
     - cron: "0 2 * * *" # Every day at 2AM.
 
@@ -37,22 +37,3 @@ jobs:
           --access-key-id ${{ env.AWS_ACCESS_KEY_ID }}
           --secret-access-key ${{ env.AWS_SECRET_ACCESS_KEY }}
           --session-token ${{ env.AWS_SESSION_TOKEN }}
-
-  aws-cloudfront-functions-cleanup:
-    runs-on: ubuntu-latest
-    needs: [aws-nuke]
-    env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-    steps:
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - uses: actions/checkout@v4
-
-      - name: Install dependencies
-        run: yarn --immutable
-
-      - name: Run Cloudfront Functions Cleanup
-        run: node ./.github/workflows/cleanup/cleanupCloudfrontFunctions.js
