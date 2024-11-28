@@ -21,11 +21,10 @@ const runBuildCacheSteps = createRunBuildCacheSteps({ workingDirectory: DIR_WEBI
 
 const createCheckoutPrSteps = () =>
     [
-        { name: "Install Hub Utility", run: "sudo apt-get install -y hub" },
         {
             name: "Checkout Pull Request",
             "working-directory": DIR_WEBINY_JS,
-            run: "hub pr checkout ${{ github.event.issue.number }}",
+            run: "gh pr checkout ${{ github.event.issue.number }}",
             env: { GITHUB_TOKEN: "${{ secrets.GH_TOKEN }}" }
         }
     ] as NonNullable<NormalJob["steps"]>;
@@ -251,12 +250,11 @@ export const pullRequestsCommandCypress = createWorkflow({
                 "base-branch": "${{ steps.base-branch.outputs.base-branch }}"
             },
             steps: [
-                { name: "Install Hub Utility", run: "sudo apt-get install -y hub" },
                 {
                     name: "Get base branch",
                     id: "base-branch",
                     env: { GITHUB_TOKEN: "${{ secrets.GH_TOKEN }}" },
-                    run: 'echo "base-branch=$(hub pr show ${{ github.event.issue.number }} -f %B)" >> $GITHUB_OUTPUT'
+                    run: 'echo "base-branch=$(gh pr view ${{ github.event.issue.number }} --json baseRefName -q .baseRefName)" >> $GITHUB_OUTPUT'
                 }
             ]
         }),
