@@ -588,6 +588,9 @@ jobs:
       - name: Deploy Website
         working-directory: new-webiny-project
         run: yarn webiny deploy apps/website --env dev
+      - name: Instance Info
+        working-directory: new-webiny-project
+        run: yarn webiny info --env dev >> $GITHUB_STEP_SUMMARY
       - name: Create Cypress config
         run: yarn setup-cypress --projectFolder ../new-webiny-project
         working-directory: dev
@@ -795,6 +798,9 @@ jobs:
       - name: Deploy Website
         working-directory: new-webiny-project
         run: yarn webiny deploy apps/website --env dev
+      - name: Instance Info
+        working-directory: new-webiny-project
+        run: yarn webiny info --env dev >> $GITHUB_STEP_SUMMARY
       - name: Create Cypress config
         run: yarn setup-cypress --projectFolder ../new-webiny-project
         working-directory: dev
@@ -1007,6 +1013,9 @@ jobs:
       - name: Deploy Website
         working-directory: new-webiny-project
         run: yarn webiny deploy apps/website --env dev
+      - name: Instance Info
+        working-directory: new-webiny-project
+        run: yarn webiny info --env dev >> $GITHUB_STEP_SUMMARY
       - name: Create Cypress config
         run: yarn setup-cypress --projectFolder ../new-webiny-project
         working-directory: dev
