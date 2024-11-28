@@ -19,6 +19,11 @@ export const createDeployWebinySteps = ({ workingDirectory = "dev" } = {}) => {
             name: "Deploy Website",
             "working-directory": workingDirectory,
             run: "yarn webiny deploy apps/website --env dev"
+        },
+        {
+            name: "Instance Info",
+            "working-directory": workingDirectory,
+            run: "yarn webiny info --env dev >> $GITHUB_STEP_SUMMARY"
         }
     ];
 };
