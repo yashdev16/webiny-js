@@ -469,7 +469,7 @@ export const createStorageOperations = (
             }
 
             if (Array.isArray(slug_in)) {
-                return items.filter(item => slug_in.includes(item.id));
+                return items.filter(item => slug_in.includes(item.slug));
             }
             return items;
         },
