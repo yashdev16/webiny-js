@@ -5,7 +5,8 @@ import {
     createYarnCacheSteps,
     createInstallBuildSteps,
     createGlobalBuildCacheSteps,
-    createRunBuildCacheSteps
+    createRunBuildCacheSteps,
+    withCommonParams
 } from "./steps";
 import {
     NODE_OPTIONS,
@@ -153,30 +154,33 @@ const createCypressJobs = (dbSetup: string) => {
                 }
             },
             ...createDeployWebinySteps({ workingDirectory: DIR_TEST_PROJECT }),
-            {
-                name: "Deployment Summary",
-                "working-directory": DIR_WEBINY_JS,
-                run: `${runNodeScript(
-                    "printDeploymentSummary",
-                    `../${DIR_TEST_PROJECT}`
-                )} >> $GITHUB_STEP_SUMMARY`
-            },
-            {
-                name: "Create Cypress config",
-                "working-directory": DIR_WEBINY_JS,
-                run: `yarn setup-cypress --projectFolder ../${DIR_TEST_PROJECT}`
-            },
-            {
-                name: "Save Cypress config",
-                id: "save-cypress-config",
-                "working-directory": DIR_WEBINY_JS,
-                run: "echo \"cypress-config=$(cat cypress-tests/cypress.config.ts | tr -d '\\t\\n\\r')\" >> $GITHUB_OUTPUT"
-            },
-            {
-                name: "Cypress - run installation wizard test",
-                "working-directory": DIR_WEBINY_JS,
-                run: 'yarn cy:run --browser chrome --spec "cypress/e2e/adminInstallation/**/*.cy.js"'
-            }
+            ...withCommonParams(
+                [
+                    {
+                        name: "Deployment Summary",
+                        run: `${runNodeScript(
+                            "printDeploymentSummary",
+                            `../${DIR_TEST_PROJECT}`
+                        )} >> $GITHUB_STEP_SUMMARY`
+                    },
+                    {
+                        name: "Create Cypress config",
+                        run: `yarn setup-cypress --projectFolder ../${DIR_TEST_PROJECT}`
+                    },
+                    {
+                        name: "Save Cypress config",
+                        id: "save-cypress-config",
+                        run: "echo \"cypress-config=$(cat cypress-tests/cypress.config.ts | tr -d '\\t\\n\\r')\" >> $GITHUB_OUTPUT"
+                    },
+                    {
+                        name: "Cypress - run installation wizard test",
+                        run: 'yarn cy:run --browser chrome --spec "cypress/e2e/adminInstallation/**/*.cy.js"'
+                    }
+                ],
+                {
+                    "working-directory": DIR_WEBINY_JS
+                }
+            )
         ]
     });
 

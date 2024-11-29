@@ -13,13 +13,9 @@ import {
     createInstallBuildSteps,
     createRunBuildCacheSteps,
     createSetupVerdaccioSteps,
-    createYarnCacheSteps
+    createYarnCacheSteps,
+    withCommonParams
 } from "./steps";
-
-const withCommonParams = (
-    steps: NonNullable<NormalJob["steps"]>,
-    commonParams: Record<string, any>
-) => steps.map(step => ({ ...step, ...commonParams }));
 
 const createPushWorkflow = (branchName: string) => {
     const ucFirstBranchName = branchName.charAt(0).toUpperCase() + branchName.slice(1);
