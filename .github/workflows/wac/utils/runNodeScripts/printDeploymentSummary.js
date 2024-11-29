@@ -1,15 +1,19 @@
-// Since this script is always run after a project deployment, we can be sure
-// `getStackOutput` function is available and ready to use.
+// This script can only be run if we previously checked out the project and installed all dependencies.
 const { getStackOutput } = require("@webiny/cli-plugin-deploy-pulumi/utils");
+
+const args = process.argv.slice(2); // Removes the first two elements
+const [cwd] = args;
 
 const adminStackOutput = getStackOutput({
     folder: "apps/admin",
-    env: "dev"
+    env: "dev",
+    cwd
 });
 
 const websiteStackOutput = getStackOutput({
     folder: "apps/website",
-    env: "dev"
+    env: "dev",
+    cwd
 });
 
 console.log(`### Deployment Summary

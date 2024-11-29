@@ -3,7 +3,8 @@ import {
     AWS_REGION,
     BUILD_PACKAGES_RUNNER,
     listPackagesWithJestTests,
-    NODE_VERSION
+    NODE_VERSION,
+    runNodeScript
 } from "./utils";
 import { createJob } from "./jobs";
 import {
@@ -157,6 +158,13 @@ const createPushWorkflow = (branchName: string) => {
                 ...createDeployWebinySteps({ workingDirectory: DIR_TEST_PROJECT }),
                 ...withCommonParams(
                     [
+                        {
+                            name: "Deployment Summary",
+                            run: `${runNodeScript(
+                                "printDeploymentSummary",
+                                `../${DIR_TEST_PROJECT}`
+                            )} >> $GITHUB_STEP_SUMMARY`
+                        },
                         {
                             name: "Create Cypress config",
                             run: `yarn setup-cypress --projectFolder ../${DIR_TEST_PROJECT}`

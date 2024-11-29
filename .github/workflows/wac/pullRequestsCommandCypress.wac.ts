@@ -7,7 +7,13 @@ import {
     createGlobalBuildCacheSteps,
     createRunBuildCacheSteps
 } from "./steps";
-import { NODE_OPTIONS, NODE_VERSION, BUILD_PACKAGES_RUNNER, AWS_REGION } from "./utils";
+import {
+    NODE_OPTIONS,
+    NODE_VERSION,
+    BUILD_PACKAGES_RUNNER,
+    AWS_REGION,
+    runNodeScript
+} from "./utils";
 import { createJob, createValidateWorkflowsJob } from "./jobs";
 
 // Will print "next" or "dev". Important for caching (via actions/cache).
@@ -147,6 +153,14 @@ const createCypressJobs = (dbSetup: string) => {
                 }
             },
             ...createDeployWebinySteps({ workingDirectory: DIR_TEST_PROJECT }),
+            {
+                name: "Deployment Summary",
+                "working-directory": DIR_WEBINY_JS,
+                run: `${runNodeScript(
+                    "printDeploymentSummary",
+                    `../${DIR_TEST_PROJECT}`
+                )} >> $GITHUB_STEP_SUMMARY`
+            },
             {
                 name: "Create Cypress config",
                 "working-directory": DIR_WEBINY_JS,
