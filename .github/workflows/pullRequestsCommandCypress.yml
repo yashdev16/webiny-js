@@ -286,7 +286,10 @@ jobs:
         run: yarn webiny deploy apps/website --env dev
       - name: Instance Info
         working-directory: new-webiny-project
-        run: yarn webiny info --env dev >> $GITHUB_STEP_SUMMARY
+        run: >-
+          node
+          .github/workflows/wac/utils/runNodeScripts/printProjectSetupSummary.js
+          '' >> $GITHUB_STEP_SUMMARY"
       - name: Create Cypress config
         working-directory: ${{ needs.baseBranch.outputs.base-branch }}
         run: yarn setup-cypress --projectFolder ../new-webiny-project
@@ -518,7 +521,10 @@ jobs:
         run: yarn webiny deploy apps/website --env dev
       - name: Instance Info
         working-directory: new-webiny-project
-        run: yarn webiny info --env dev >> $GITHUB_STEP_SUMMARY
+        run: >-
+          node
+          .github/workflows/wac/utils/runNodeScripts/printProjectSetupSummary.js
+          '' >> $GITHUB_STEP_SUMMARY"
       - name: Create Cypress config
         working-directory: ${{ needs.baseBranch.outputs.base-branch }}
         run: yarn setup-cypress --projectFolder ../new-webiny-project
@@ -755,7 +761,10 @@ jobs:
         run: yarn webiny deploy apps/website --env dev
       - name: Instance Info
         working-directory: new-webiny-project
-        run: yarn webiny info --env dev >> $GITHUB_STEP_SUMMARY
+        run: >-
+          node
+          .github/workflows/wac/utils/runNodeScripts/printProjectSetupSummary.js
+          '' >> $GITHUB_STEP_SUMMARY"
       - name: Create Cypress config
         working-directory: ${{ needs.baseBranch.outputs.base-branch }}
         run: yarn setup-cypress --projectFolder ../new-webiny-project

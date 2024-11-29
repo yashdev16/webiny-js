@@ -1,3 +1,5 @@
+import { runNodeScript } from "../utils";
+
 export const createDeployWebinySteps = ({ workingDirectory = "dev" } = {}) => {
     return [
         {
@@ -23,7 +25,7 @@ export const createDeployWebinySteps = ({ workingDirectory = "dev" } = {}) => {
         {
             name: "Instance Info",
             "working-directory": workingDirectory,
-            run: "yarn webiny info --env dev >> $GITHUB_STEP_SUMMARY"
+            run: `${runNodeScript("printProjectSetupSummary")} >> $GITHUB_STEP_SUMMARY"`
         }
     ];
 };
