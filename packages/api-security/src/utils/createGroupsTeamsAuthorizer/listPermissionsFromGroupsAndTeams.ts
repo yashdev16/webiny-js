@@ -1,5 +1,5 @@
 import { getPermissionsFromSecurityGroupsForLocale } from "../getPermissionsFromSecurityGroupsForLocale";
-import { SecurityContext } from "~/types";
+import { SecurityContext, SecurityRole } from "~/types";
 import { Identity } from "@webiny/api-authentication/types";
 
 export type GroupSlug = string | undefined;
@@ -63,6 +63,24 @@ export const listPermissionsFromGroupsAndTeams = async <
         groupSlugs.push(...identity.groups);
     }
 
+    const filteredGroupSlugs = groupSlugs.filter(Boolean) as string[];
+    const dedupedGroupSlugs = Array.from(new Set(filteredGroupSlugs));
+
+    const loadedGroups: SecurityRole[] = [];
+
+    if (dedupedGroupSlugs.length > 0) {
+        // Load groups coming from teams.
+        const loadedGroupsBySlugs = await security.withoutAuthorization(() => {
+            return security.listGroups({
+                where: { slug_in: dedupedGroupSlugs }
+            });
+        });
+
+        if (loadedGroupsBySlugs.length > 0) {
+            loadedGroups.push(...loadedGroupsBySlugs);
+        }
+    }
+
     if (wcp.canUseTeams()) {
         // Load groups coming from teams.
         if (identity.team) {
@@ -83,25 +101,32 @@ export const listPermissionsFromGroupsAndTeams = async <
                 });
             });
 
-            const groupSlugsFromTeams = loadedTeams.map(team => team.groups).flat();
-            groupSlugs.push(...groupSlugsFromTeams);
+            // Upon returning group IDs from teams, we're also filtering out groups that were already loaded.
+            // Also note that `team.groups` contains group IDs, not slugs. Hence, we need to load groups by IDs.
+            const groupIdsFromTeams = loadedTeams
+                .map(team => team.groups)
+                .flat()
+                .filter(groupId => {
+                    const alreadyLoaded = loadedGroups.find(group => group.id === groupId);
+                    return !alreadyLoaded;
+                });
+
+            if (groupIdsFromTeams.length > 0) {
+                const loadedGroupsFromTeams = await security.withoutAuthorization(() => {
+                    return security.listGroups({
+                        where: { id_in: groupIdsFromTeams }
+                    });
+                });
+
+                if (loadedGroupsFromTeams.length > 0) {
+                    loadedGroups.push(...loadedGroupsFromTeams);
+                }
+            }
         }
     }
 
-    const filteredGroupSlugs = groupSlugs.filter(Boolean) as string[];
-    const dedupedGroupSlugs = Array.from(new Set(filteredGroupSlugs));
-
-    if (dedupedGroupSlugs.length > 0) {
-        // Load groups coming from teams.
-        const loadedGroups = await security.withoutAuthorization(() => {
-            return security.listGroups({
-                where: { slug_in: dedupedGroupSlugs }
-            });
-        });
-
-        if (loadedGroups.length > 0) {
-            return getPermissionsFromSecurityGroupsForLocale(loadedGroups, localeCode);
-        }
+    if (loadedGroups.length > 0) {
+        return getPermissionsFromSecurityGroupsForLocale(loadedGroups, localeCode);
     }
 
     return null;

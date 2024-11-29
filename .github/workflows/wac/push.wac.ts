@@ -3,7 +3,8 @@ import {
     AWS_REGION,
     BUILD_PACKAGES_RUNNER,
     listPackagesWithJestTests,
-    NODE_VERSION
+    NODE_VERSION,
+    runNodeScript
 } from "./utils";
 import { createJob } from "./jobs";
 import {
@@ -12,13 +13,9 @@ import {
     createInstallBuildSteps,
     createRunBuildCacheSteps,
     createSetupVerdaccioSteps,
-    createYarnCacheSteps
+    createYarnCacheSteps,
+    withCommonParams
 } from "./steps";
-
-const withCommonParams = (
-    steps: NonNullable<NormalJob["steps"]>,
-    commonParams: Record<string, any>
-) => steps.map(step => ({ ...step, ...commonParams }));
 
 const createPushWorkflow = (branchName: string) => {
     const ucFirstBranchName = branchName.charAt(0).toUpperCase() + branchName.slice(1);
@@ -157,6 +154,13 @@ const createPushWorkflow = (branchName: string) => {
                 ...createDeployWebinySteps({ workingDirectory: DIR_TEST_PROJECT }),
                 ...withCommonParams(
                     [
+                        {
+                            name: "Deployment Summary",
+                            run: `${runNodeScript(
+                                "printDeploymentSummary",
+                                `../${DIR_TEST_PROJECT}`
+                            )} >> $GITHUB_STEP_SUMMARY`
+                        },
                         {
                             name: "Create Cypress config",
                             run: `yarn setup-cypress --projectFolder ../${DIR_TEST_PROJECT}`
