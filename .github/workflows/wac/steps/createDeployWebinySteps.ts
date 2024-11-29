@@ -25,7 +25,7 @@ export const createDeployWebinySteps = ({ workingDirectory = "dev" } = {}) => {
         {
             name: "Instance Info",
             "working-directory": workingDirectory,
-            run: `${runNodeScript("printProjectSetupSummary")} >> $GITHUB_STEP_SUMMARY"`
+            run: `${runNodeScript("printProjectSetupSummary")} >> $GITHUB_STEP_SUMMARY`
         }
     ];
 };

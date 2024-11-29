@@ -592,7 +592,7 @@ jobs:
         run: >-
           node
           .github/workflows/wac/utils/runNodeScripts/printProjectSetupSummary.js
-          '' >> $GITHUB_STEP_SUMMARY"
+          '' >> $GITHUB_STEP_SUMMARY
       - name: Create Cypress config
         run: yarn setup-cypress --projectFolder ../new-webiny-project
         working-directory: next
@@ -805,7 +805,7 @@ jobs:
         run: >-
           node
           .github/workflows/wac/utils/runNodeScripts/printProjectSetupSummary.js
-          '' >> $GITHUB_STEP_SUMMARY"
+          '' >> $GITHUB_STEP_SUMMARY
       - name: Create Cypress config
         run: yarn setup-cypress --projectFolder ../new-webiny-project
         working-directory: next
@@ -1023,7 +1023,7 @@ jobs:
         run: >-
           node
           .github/workflows/wac/utils/runNodeScripts/printProjectSetupSummary.js
-          '' >> $GITHUB_STEP_SUMMARY"
+          '' >> $GITHUB_STEP_SUMMARY
       - name: Create Cypress config
         run: yarn setup-cypress --projectFolder ../new-webiny-project
         working-directory: next
