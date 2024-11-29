@@ -5,7 +5,7 @@ import {
     Config as CognitoConfig,
     TokenData
 } from "@webiny/api-cognito-authenticator";
-import { createGroupAuthorizer } from "~/createGroupAuthorizer";
+import { createGroupsTeamsAuthorizerHandler } from "@webiny/api-security";
 import { CoreContext } from "~/types";
 import { createAdminUsersHooks } from "./createAdminUsersHooks";
 import adminUsersGqlPlugins from "./graphql/user.gql";
@@ -24,7 +24,9 @@ interface GetPermissionsParams<TContext> {
 
 interface Config<TContext, TToken, TIdentity> extends CognitoConfig {
     identityType: string;
+
     getIdentity?(params: GetIdentityParams<TContext, TToken, TIdentity>): TIdentity;
+
     getPermissions?(params: GetPermissionsParams<TContext>): Promise<SecurityPermission[] | null>;
 }
 
@@ -33,8 +35,25 @@ export interface CognitoTokenData extends TokenData {
     family_name: string;
     email: string;
     "custom:id": string;
+
     [key: string]: any;
 }
+
+const mustAddGroupsTeamsAuthorizer = (identity: SecurityIdentity) => {
+    if ("group" in identity) {
+        return true;
+    }
+
+    if ("groups" in identity) {
+        return true;
+    }
+
+    if ("team" in identity) {
+        return true;
+    }
+
+    return "teams" in identity;
+};
 
 export const createCognito = <
     TContext extends CoreContext = CoreContext,
@@ -77,10 +96,9 @@ export const createCognito = <
                         context
                     });
 
-                    if (customIdentity.group) {
-                        context.security.addAuthorizer(
-                            createGroupAuthorizer(context, customIdentity.group)
-                        );
+                    if (mustAddGroupsTeamsAuthorizer(customIdentity)) {
+                        const authorizer = createGroupsTeamsAuthorizerHandler(config, context);
+                        context.security.addAuthorizer(authorizer);
                     }
 
                     return customIdentity;
