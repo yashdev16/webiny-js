@@ -39,7 +39,7 @@
     "react-dnd": "^16.0.1",
     "react-dom": "18.2.0",
     "react-hotkeyz": "^1.0.4",
-    "slugify": "^1.2.9",
+    "slugify": "^1.6.6",
     "store": "^2.0.12",
     "zod": "^3.23.8"
   },
@@ -49,7 +49,7 @@
     "@webiny/project-utils": "0.0.0",
     "apollo-client": "^2.6.10",
     "apollo-link": "^1.2.14",
-    "rimraf": "^5.0.5",
+    "rimraf": "^6.0.1",
     "ttypescript": "^1.5.12",
     "typescript": "4.9.5"
   },

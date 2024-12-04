@@ -17,7 +17,16 @@ const createHandleResponse = (app: FastifyInstance, resolve: Resolve): LightMyRe
         }
         if (app.__webiny_raw_result) {
             return resolve(app.__webiny_raw_result);
+        } else if (!result) {
+            const response: APIGatewayProxyResult = {
+                statusCode: 200,
+                body: "",
+                headers: {},
+                isBase64Encoded: false
+            };
+            return resolve(response);
         }
+
         const isBase64Encoded =
             !!result.headers[Base64EncodeHeader.encoded] ||
             !!result.headers[Base64EncodeHeader.binary];

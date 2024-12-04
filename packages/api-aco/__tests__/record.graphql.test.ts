@@ -196,8 +196,8 @@ describe("record graphql generator", () => {
             )
             .join("\n");
         expect(sdl).not.toBeNull();
-        const schema = prettier.format(sdl.trim(), { parser: "graphql" });
-        const snapshot = prettier.format(createDefaultAppsSchemaSnapshot().trim(), {
+        const schema = await prettier.format(sdl.trim(), { parser: "graphql" });
+        const snapshot = await prettier.format(createDefaultAppsSchemaSnapshot().trim(), {
             parser: "graphql"
         });
         expect(schema).toEqual(snapshot);
@@ -253,8 +253,8 @@ describe("record graphql generator", () => {
             )
             .join("\n");
         expect(sdl).not.toBeNull();
-        const schema = prettier.format(sdl.trim(), { parser: "graphql" });
-        const snapshot = prettier.format(createCustomAppsSchemaSnapshot().trim(), {
+        const schema = await prettier.format(sdl.trim(), { parser: "graphql" });
+        const snapshot = await prettier.format(createCustomAppsSchemaSnapshot().trim(), {
             parser: "graphql"
         });
         expect(schema).toEqual(snapshot);

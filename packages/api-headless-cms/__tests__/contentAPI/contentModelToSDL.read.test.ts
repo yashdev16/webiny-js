@@ -38,8 +38,8 @@ describe("READ - ContentModel to SDL", () => {
         const model = getModel("category");
 
         const sdl = createReadSDL({ models, model, fieldTypePlugins, sorterPlugins: [] });
-        const prettyGql = prettier.format(sdl.trim(), { parser: "graphql" });
-        const prettySnapshot = prettier.format(categorySDL.trim(), { parser: "graphql" });
+        const prettyGql = await prettier.format(sdl.trim(), { parser: "graphql" });
+        const prettySnapshot = await prettier.format(categorySDL.trim(), { parser: "graphql" });
         expect(prettyGql).toBe(prettySnapshot);
     });
 
@@ -47,8 +47,8 @@ describe("READ - ContentModel to SDL", () => {
         const model = getModel("product");
 
         const sdl = createReadSDL({ models, model, fieldTypePlugins, sorterPlugins: [] });
-        const prettyGql = prettier.format(sdl.trim(), { parser: "graphql" });
-        const prettySnapshot = prettier.format(productSDL.trim(), { parser: "graphql" });
+        const prettyGql = await prettier.format(sdl.trim(), { parser: "graphql" });
+        const prettySnapshot = await prettier.format(productSDL.trim(), { parser: "graphql" });
         expect(prettyGql).toBe(prettySnapshot);
     });
 
@@ -56,8 +56,8 @@ describe("READ - ContentModel to SDL", () => {
         const model = getModel("review");
 
         const sdl = createReadSDL({ models, model, fieldTypePlugins, sorterPlugins: [] });
-        const prettyGql = prettier.format(sdl.trim(), { parser: "graphql" });
-        const prettySnapshot = prettier.format(reviewSDL.trim(), { parser: "graphql" });
+        const prettyGql = await prettier.format(sdl.trim(), { parser: "graphql" });
+        const prettySnapshot = await prettier.format(reviewSDL.trim(), { parser: "graphql" });
         expect(prettyGql).toBe(prettySnapshot);
     });
 
@@ -68,8 +68,8 @@ describe("READ - ContentModel to SDL", () => {
             fieldTypePlugins,
             sorterPlugins: []
         });
-        const prettyGql = prettier.format(sdl.trim(), { parser: "graphql" });
-        const prettySnapshot = prettier.format(pageSDL.trim(), { parser: "graphql" });
+        const prettyGql = await prettier.format(sdl.trim(), { parser: "graphql" });
+        const prettySnapshot = await prettier.format(pageSDL.trim(), { parser: "graphql" });
         expect(prettyGql).toBe(prettySnapshot);
     });
 });

@@ -11,5 +11,5 @@ const { getUserInput } = require("./getUserInput");
 module.exports = {
     updatePackages,
     getUserInput,
-    presets
+    presets: presets.sort((a, b) => a.name.localeCompare(b.name))
 };

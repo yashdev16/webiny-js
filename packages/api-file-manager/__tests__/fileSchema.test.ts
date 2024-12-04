@@ -57,8 +57,8 @@ describe("File Model Modifier test", () => {
             plugins: fieldPlugins
         });
 
-        const prettySnapshot = prettier.format(fileSdlSnapshot.trim(), { parser: "graphql" });
-        const fileSdl = prettier.format(schema.trim(), { parser: "graphql" });
+        const prettySnapshot = await prettier.format(fileSdlSnapshot.trim(), { parser: "graphql" });
+        const fileSdl = await prettier.format(schema.trim(), { parser: "graphql" });
 
         expect(fileSdl).toEqual(prettySnapshot);
     });

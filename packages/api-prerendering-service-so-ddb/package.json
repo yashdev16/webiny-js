@@ -28,9 +28,9 @@
     "@webiny/db-dynamodb": "0.0.0",
     "@webiny/handler-aws": "0.0.0",
     "@webiny/project-utils": "0.0.0",
-    "jest-dynalite": "^3.3.1",
-    "prettier": "^2.8.3",
-    "rimraf": "^5.0.5",
+    "jest-dynalite": "^3.6.1",
+    "prettier": "^2.8.8",
+    "rimraf": "^6.0.1",
     "ttypescript": "^1.5.12",
     "typescript": "4.9.5"
   },

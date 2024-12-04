@@ -22,24 +22,24 @@ describe("MANAGE - ContentModel to SDL", () => {
     test("Category SDL", async () => {
         const model = contentModels.find(c => c.modelId === "category") as CmsModel;
         const sdl = createManageSDL({ models, model, fieldTypePlugins, sorterPlugins: [] });
-        const prettyGql = prettier.format(sdl.trim(), { parser: "graphql" });
-        const prettySnapshot = prettier.format(categoryManage.trim(), { parser: "graphql" });
+        const prettyGql = await prettier.format(sdl.trim(), { parser: "graphql" });
+        const prettySnapshot = await prettier.format(categoryManage.trim(), { parser: "graphql" });
         expect(prettyGql).toBe(prettySnapshot);
     });
 
     test("Product SDL", async () => {
         const model = contentModels.find(c => c.modelId === "product") as CmsModel;
         const sdl = createManageSDL({ models, model, fieldTypePlugins, sorterPlugins: [] });
-        const prettyGql = prettier.format(sdl.trim(), { parser: "graphql" });
-        const prettySnapshot = prettier.format(productManage.trim(), { parser: "graphql" });
+        const prettyGql = await prettier.format(sdl.trim(), { parser: "graphql" });
+        const prettySnapshot = await prettier.format(productManage.trim(), { parser: "graphql" });
         expect(prettyGql).toBe(prettySnapshot);
     });
 
     test("Review SDL", async () => {
         const model = contentModels.find(c => c.modelId === "review") as CmsModel;
         const sdl = createManageSDL({ models, model, fieldTypePlugins, sorterPlugins: [] });
-        const prettyGql = prettier.format(sdl.trim(), { parser: "graphql" });
-        const prettySnapshot = prettier.format(reviewManage.trim(), { parser: "graphql" });
+        const prettyGql = await prettier.format(sdl.trim(), { parser: "graphql" });
+        const prettySnapshot = await prettier.format(reviewManage.trim(), { parser: "graphql" });
         expect(prettyGql).toBe(prettySnapshot);
     });
 
@@ -50,8 +50,8 @@ describe("MANAGE - ContentModel to SDL", () => {
             fieldTypePlugins,
             sorterPlugins: []
         });
-        const prettyGql = prettier.format(sdl.trim(), { parser: "graphql" });
-        const prettySnapshot = prettier.format(pageManage.trim(), { parser: "graphql" });
+        const prettyGql = await prettier.format(sdl.trim(), { parser: "graphql" });
+        const prettySnapshot = await prettier.format(pageManage.trim(), { parser: "graphql" });
         expect(prettyGql).toBe(prettySnapshot);
     });
 });

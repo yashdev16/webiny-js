@@ -28,7 +28,7 @@
     "tslib": "^2.4.0"
   },
   "devDependencies": {
-    "cross-env": "^5.0.2"
+    "cross-env": "^5.2.1"
   },
   "scripts": {
     "analyze": "source-map-explorer build/static/js/main.*",
