@@ -103,7 +103,8 @@ export class Files extends React.Component<Props> {
                     type: "unsupportedFileType"
                 });
             } else if (maxSize) {
-                if (file.size > bytes(maxSize)) {
+                const sizeAsBytes = bytes(maxSize);
+                if (sizeAsBytes && file.size > sizeAsBytes) {
                     errors.push({
                         id: generateId(),
                         index,
@@ -119,12 +120,14 @@ export class Files extends React.Component<Props> {
         }
 
         if (multiple) {
-            if (multipleMaxSize && multipleFileSize > bytes(multipleMaxSize)) {
+            const maxMultipleMaxSize = bytes(multipleMaxSize);
+
+            if (maxMultipleMaxSize && multipleMaxSize && multipleFileSize > maxMultipleMaxSize) {
                 errors.push({
                     id: generateId(),
                     type: "multipleMaxSizeExceeded",
                     multipleFileSize,
-                    multipleMaxSize: bytes(multipleMaxSize)
+                    multipleMaxSize: maxMultipleMaxSize
                 });
             }
 

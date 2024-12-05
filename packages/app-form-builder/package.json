@@ -60,7 +60,7 @@
   },
   "devDependencies": {
     "@emotion/babel-plugin": "^11.11.0",
-    "@types/gtag.js": "^0.0.12",
+    "@types/gtag.js": "^0.0.20",
     "@types/json2csv": "^4.5.1",
     "@types/react-google-recaptcha": "^1.1.2",
     "@webiny/cli": "0.0.0",

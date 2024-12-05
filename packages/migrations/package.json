@@ -22,14 +22,13 @@
     "lodash": "^4.17.21",
     "pino-pretty": "^9.4.0",
     "pluralize": "^8.0.0",
-    "yargs": "^17.4.0"
+    "yargs": "^17.7.2"
   },
   "publishConfig": {
     "access": "public",
     "directory": "dist"
   },
   "devDependencies": {
-    "@types/execa": "^2.0.0",
     "@webiny/api-headless-cms": "0.0.0",
     "@webiny/api-headless-cms-ddb-es": "0.0.0",
     "@webiny/cli": "0.0.0",

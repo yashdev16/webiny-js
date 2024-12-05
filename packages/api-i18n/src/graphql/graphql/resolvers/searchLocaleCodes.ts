@@ -1,7 +1,3 @@
-/**
- * Package i18n-locales does not have types.
- */
-// @ts-expect-error
 import localesList from "i18n-locales";
 
 interface SearchLocaleCodesArgs {

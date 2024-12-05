@@ -28,14 +28,14 @@ import { createMultipartUploadHandlerAddResult } from "./MultipartUploadHandlerA
  * Minimum we can send into the S3 is 5MB.
  * We can modify to have this value bigger if required.
  */
-const MIN_BUFFER_SIZE = bytes.parse("5MB");
+const MIN_BUFFER_SIZE = bytes.parse("5MB") as number;
 
 const getMinBufferSize = (minBufferSize?: IMultipartUploadHandlerParamsMinBufferSize): number => {
     if (!minBufferSize) {
         return MIN_BUFFER_SIZE;
     }
     const size = typeof minBufferSize === "number" ? minBufferSize : bytes.parse(minBufferSize);
-    if (size >= MIN_BUFFER_SIZE) {
+    if (size && size >= MIN_BUFFER_SIZE) {
         return size;
     }
     return MIN_BUFFER_SIZE;

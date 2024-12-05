@@ -37,7 +37,7 @@
     "load-json-file": "^6.2.0",
     "lodash": "^4.17.21",
     "node-fetch": "2.6.7",
-    "stream": "^0.0.2",
+    "stream": "^0.0.3",
     "uniqid": "^5.4.0",
     "yauzl": "^2.10.0"
   },

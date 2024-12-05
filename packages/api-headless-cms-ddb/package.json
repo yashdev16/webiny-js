@@ -35,7 +35,7 @@
     "lodash": "^4.17.21"
   },
   "devDependencies": {
-    "@types/jsonpack": "^1.1.0",
+    "@types/jsonpack": "^1.1.6",
     "@webiny/cli": "0.0.0",
     "@webiny/plugins": "0.0.0",
     "@webiny/project-utils": "0.0.0",

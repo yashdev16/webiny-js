@@ -17,7 +17,7 @@
     "fecha": "^2.3.3",
     "lodash": "^4.17.21",
     "short-hash": "^1.0.0",
-    "yargs": "^17.6.2"
+    "yargs": "^17.7.2"
   },
   "peerDependencies": {
     "react": "18.2.0"
@@ -25,7 +25,7 @@
   "devDependencies": {
     "@babel/register": "^7.25.9",
     "@types/accounting": "^0.4.2",
-    "@types/lodash": "^4.14.190",
+    "@types/lodash": "^4.17.13",
     "@webiny/cli": "0.0.0",
     "@webiny/project-utils": "0.0.0",
     "glob": "^7.1.2",

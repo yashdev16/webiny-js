@@ -15,7 +15,7 @@
     "write-json-file": "^4.3.0"
   },
   "devDependencies": {
-    "ts-node": "^10.5.0",
-    "type-fest": "^3.10.0"
+    "ts-node": "^10.9.2",
+    "type-fest": "^3.13.1"
   }
 }

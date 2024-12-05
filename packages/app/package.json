@@ -44,7 +44,7 @@
     "warning": "^4.0.2"
   },
   "devDependencies": {
-    "@types/lodash": "^4.14.191",
+    "@types/lodash": "^4.17.13",
     "@types/warning": "^3.0.0",
     "@webiny/cli": "0.0.0",
     "@webiny/project-utils": "0.0.0",

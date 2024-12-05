@@ -11,6 +11,9 @@ export const createSizeSegments = (
 ): ISegment[] => {
     const segmentSize =
         typeof segmentSizeInput === "number" ? segmentSizeInput : bytes.parse(segmentSizeInput);
+    if (!segmentSize) {
+        return [];
+    }
 
     const segments: ISegment[] = [];
     let segmentIndex = 0;

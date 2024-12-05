@@ -21,7 +21,7 @@
     "@webiny/plugins": "0.0.0",
     "@webiny/pubsub": "0.0.0",
     "accept-language-parser": "^1.5.0",
-    "i18n-locales": "^0.0.2"
+    "i18n-locales": "^0.0.5"
   },
   "devDependencies": {
     "@types/accept-language-parser": "^1.5.3",
