@@ -104,6 +104,7 @@ export class FormPresenter<T extends GenericFormData = GenericFormData> {
     setFieldValue(name: string, value: unknown) {
         const field = this.formFields.get(name);
         if (!field) {
+            this.commitValueToData(name, value);
             return;
         }
 
