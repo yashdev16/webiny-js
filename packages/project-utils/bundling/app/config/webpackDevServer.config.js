@@ -3,6 +3,15 @@
 const fs = require("fs");
 
 module.exports = function ({ host, port, https, allowedHost, proxy, paths }) {
+    let server = {};
+    if (https) {
+        server = {
+            type: "https",
+            options: {
+                requestCert: false
+            }
+        };
+    }
     return {
         host,
         port,
@@ -43,7 +52,7 @@ module.exports = function ({ host, port, https, allowedHost, proxy, paths }) {
             publicPath: "/"
         },
         // Enable HTTPS if the HTTPS environment variable is set to 'true'
-        https,
+        ...server,
         client: {
             overlay: true,
             // Silence WebpackDevServer's own logs since they're generally not useful.
