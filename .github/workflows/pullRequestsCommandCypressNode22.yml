@@ -9,7 +9,7 @@ env:
   AWS_REGION: eu-central-1
 jobs:
   checkComment:
-    name: Check comment for /cypress-node-22
+    name: Check comment for /cypress_node_22
     if: ${{ github.event.issue.pull_request }}
     steps:
       - uses: actions/setup-node@v4
@@ -20,7 +20,7 @@ jobs:
         uses: xt0rted/slash-command-action@v2
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          command: cypress-node-22
+          command: cypress_node_22
           reaction: 'true'
           reaction-type: eyes
           allow-edits: 'false'
