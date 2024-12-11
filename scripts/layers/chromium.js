@@ -74,7 +74,7 @@ async function createBucketIfNotExists(region) {
                     "--content",
                     `S3Bucket=${bucketName},S3Key=${LAYER_ZIP_KEY}`,
                     "--compatible-runtimes",
-                    "nodejs20.x",
+                    "nodejs22.x",
                     "--region",
                     region,
                     "--cli-read-timeout",

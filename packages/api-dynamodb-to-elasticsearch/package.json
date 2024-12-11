@@ -19,7 +19,6 @@
     "p-retry": "^4.6.2"
   },
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.131",
     "@webiny/cli": "0.0.0",
     "@webiny/plugins": "0.0.0",
     "@webiny/project-utils": "0.0.0",

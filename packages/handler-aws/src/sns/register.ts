@@ -1,4 +1,4 @@
-import type { SNSEvent } from "aws-lambda";
+import type { SNSEvent } from "@webiny/aws-sdk/types";
 import { registry } from "~/registry";
 import { createHandler, HandlerParams } from "./index";
 import { createSourceHandler } from "~/sourceHandler";

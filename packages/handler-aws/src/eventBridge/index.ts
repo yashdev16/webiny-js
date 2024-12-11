@@ -5,8 +5,12 @@ import {
     EventBridgeEventHandlerCallableParams
 } from "~/eventBridge/plugins/EventBridgeEventHandler";
 import { execute } from "~/execute";
-import { HandlerFactoryParams } from "~/types";
-import type { APIGatewayProxyResult, Context as LambdaContext, EventBridgeEvent } from "aws-lambda";
+import type { HandlerFactoryParams } from "~/types";
+import type {
+    APIGatewayProxyResult,
+    Context as LambdaContext,
+    EventBridgeEvent
+} from "@webiny/aws-sdk/types";
 /**
  * We need a class, not an interface exported from types.
  */

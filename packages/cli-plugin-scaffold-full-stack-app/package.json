@@ -20,7 +20,7 @@
     "@webiny/cli-plugin-scaffold": "0.0.0",
     "@webiny/cli-plugin-scaffold-graphql-api": "0.0.0",
     "case": "^1.6.3",
-    "chalk": "^4.1.0",
+    "chalk": "^4.1.2",
     "ncp": "^2.0.0",
     "replace-in-path": "^1.1.0",
     "terminal-link": "^2.1.1"

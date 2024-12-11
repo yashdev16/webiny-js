@@ -1,6 +1,6 @@
-import { FastifyInstance } from "@webiny/handler/types";
-import { APIGatewayProxyResult } from "aws-lambda/trigger/api-gateway-proxy";
-import { LightMyRequestCallback } from "fastify";
+import type { FastifyInstance } from "@webiny/handler/types";
+import type { APIGatewayProxyResult } from "@webiny/aws-sdk/types";
+import type { LightMyRequestCallback } from "fastify";
 import { Base64EncodeHeader } from "~/types";
 
 interface Resolve {

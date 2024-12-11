@@ -9,7 +9,7 @@
   "author": "Webiny Ltd.",
   "license": "MIT",
   "dependencies": {
-    "@emotion/react": "^11.10.6",
+    "@emotion/react": "11.10.8",
     "@webiny/app": "0.0.0",
     "@webiny/app-aco": "0.0.0",
     "@webiny/app-admin": "0.0.0",
@@ -49,7 +49,7 @@
     "@webiny/project-utils": "0.0.0",
     "babel-plugin-named-asset-import": "^1.0.0-next.3e165448",
     "rimraf": "^6.0.1",
-    "ttypescript": "^1.5.12",
+    "ttypescript": "^1.5.15",
     "typescript": "4.9.5"
   },
   "publishConfig": {

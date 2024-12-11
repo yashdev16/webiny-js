@@ -27,7 +27,7 @@ const LAYER_NAME = "sharp";
                     "--zip-file",
                     "fileb://" + path.join(__dirname, "sharp-x64.zip"),
                     "--compatible-runtimes",
-                    "nodejs20.x",
+                    "nodejs22.x",
                     "--region",
                     region,
                     "--cli-read-timeout",

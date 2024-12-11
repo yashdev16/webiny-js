@@ -23,11 +23,11 @@
     "@webiny/cli-plugin-scaffold": "0.0.0",
     "@webiny/plugins": "0.0.0",
     "@webiny/validation": "0.0.0",
-    "chalk": "^4.1.0",
+    "chalk": "^4.1.2",
     "inquirer": "8.2.6",
     "js-base64": "^3.7.7",
     "octokit": "^3.1.2",
-    "open": "^8.0.6",
+    "open": "^8.4.2",
     "terminal-link": "^2.1.1",
     "validate-npm-package-name": "^3.0.0"
   },

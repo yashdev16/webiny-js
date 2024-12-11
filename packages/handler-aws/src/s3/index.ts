@@ -2,14 +2,17 @@ import { createHandler as createBaseHandler } from "@webiny/handler";
 import { registerDefaultPlugins } from "~/plugins";
 import { S3EventHandler, S3EventHandlerCallableParams } from "~/s3/plugins/S3EventHandler";
 import { execute } from "~/execute";
-import { HandlerFactoryParams } from "~/types";
+import type { HandlerFactoryParams } from "~/types";
 /**
  * We need a class, not an interface exported from types.
  */
 // @ts-expect-error
 import Reply from "fastify/lib/reply";
-import type { APIGatewayProxyResult, S3Event } from "aws-lambda";
-import { Context as LambdaContext } from "aws-lambda/handler";
+import type {
+    APIGatewayProxyResult,
+    Context as LambdaContext,
+    S3Event
+} from "@webiny/aws-sdk/types";
 import { createComposedHandler } from "~/utils/composedHandler";
 
 export * from "./plugins/S3EventHandler";

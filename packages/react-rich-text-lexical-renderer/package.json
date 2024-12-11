@@ -16,7 +16,7 @@
     "react": "18.2.0"
   },
   "devDependencies": {
-    "@emotion/react": "^11.10.6",
+    "@emotion/react": "11.10.8",
     "@testing-library/react": "^15.0.7",
     "@webiny/app-theme": "0.0.0",
     "@webiny/cli": "0.0.0",

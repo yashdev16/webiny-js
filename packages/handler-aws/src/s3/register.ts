@@ -1,4 +1,4 @@
-import type { S3Event } from "aws-lambda";
+import type { S3Event } from "@webiny/aws-sdk/types";
 import { registry } from "~/registry";
 import { HandlerFactoryParams } from "~/types";
 import { createSourceHandler } from "~/sourceHandler";

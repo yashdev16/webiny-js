@@ -1,5 +1,8 @@
-import type { APIGatewayProxyResult, SQSEvent } from "aws-lambda";
-import type { Context as LambdaContext } from "aws-lambda/handler";
+import type {
+    APIGatewayProxyResult,
+    SQSEvent,
+    Context as LambdaContext
+} from "@webiny/aws-sdk/types";
 import { createHandler as createBaseHandler } from "@webiny/handler";
 import { registerDefaultPlugins } from "~/plugins";
 import { SQSEventHandler, SQSEventHandlerCallableParams } from "~/sqs/plugins/SQSEventHandler";

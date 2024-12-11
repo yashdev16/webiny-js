@@ -22,7 +22,8 @@ export default {
                     import("@webiny/cli-plugin-scaffold-admin-app-module"),
                     import("@webiny/cli-plugin-scaffold-extensions"),
                     import("@webiny/cli-plugin-scaffold-workspaces"),
-                    import("@webiny/cli-plugin-scaffold-ci")
+                    import("@webiny/cli-plugin-scaffold-ci"),
+                    import("@webiny/cli-plugin-sync-dependencies")
                 ]);
 
                 return modules

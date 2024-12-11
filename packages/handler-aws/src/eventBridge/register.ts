@@ -1,4 +1,4 @@
-import type { EventBridgeEvent } from "aws-lambda";
+import type { EventBridgeEvent } from "@webiny/aws-sdk/types";
 import { registry } from "~/registry";
 import { HandlerFactoryParams } from "~/types";
 import { createSourceHandler } from "~/sourceHandler";

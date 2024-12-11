@@ -1,10 +1,9 @@
 /**
  * Rename file to types.ts when switching the package to Typescript.
  */
+export type GenericRecord<K extends PropertyKey = PropertyKey, V = any> = Record<K, V>;
 
-export type GenericRecordKey = string | number | symbol;
-
-export type GenericRecord<K extends GenericRecordKey = GenericRecordKey, V = any> = Record<K, V>;
+export type NonEmptyArray<T> = [T, ...T[]];
 
 /**
  * A simplified plugins container interface, used specifically within the Webiny CLI.

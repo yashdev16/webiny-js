@@ -1,6 +1,6 @@
-import { Context } from "aws-lambda";
+import { Context as LambdaContext } from "@webiny/aws-sdk/types";
 
-export const createLambdaContext = (): Context => {
+export const createLambdaContext = (): LambdaContext => {
     return {
         awsRequestId: "abc",
         callbackWaitsForEmptyEventLoop: false,

@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@emotion/react": "^11.10.6",
+    "@emotion/react": "11.10.8",
     "@types/react": "18.2.79",
     "@webiny/app": "latest",
     "@webiny/app-form-builder": "latest",
@@ -17,15 +17,15 @@
     "apollo-link": "^1.2.14",
     "core-js": "^3.0.1",
     "cross-fetch": "^3.0.4",
-    "graphql": "^15.7.2",
+    "graphql": "^15.9.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "regenerator-runtime": "^0.13.5",
-    "theme": "^0.1.0"
+    "theme": "^1.0.0"
   },
   "devDependencies": {
-    "@types/react-helmet": "^6.1.0",
-    "cross-env": "^5.0.2"
+    "@types/react-helmet": "^6.1.11",
+    "cross-env": "^5.2.1"
   },
   "scripts": {
     "analyze": "source-map-explorer build/static/js/main.*",

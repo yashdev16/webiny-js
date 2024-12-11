@@ -1,4 +1,4 @@
-import type { SQSEvent } from "aws-lambda";
+import type { SQSEvent } from "@webiny/aws-sdk/types";
 import { registry } from "~/registry";
 import { createHandler, HandlerParams } from "./index";
 import { createSourceHandler } from "~/sourceHandler";

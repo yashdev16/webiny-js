@@ -14,6 +14,7 @@ import {
     GetFormRevisionsQueryVariables
 } from "~/admin/graphql";
 import { useFormEditor } from "~/admin/components/FormEditor";
+
 const t = i18n.namespace("FormEditor.RevisionsMenu");
 
 const buttonStyle = css({
@@ -48,7 +49,7 @@ const Revisions = () => {
     );
 
     const revisions =
-        getRevisions.loading || !getRevisions.data
+        getRevisions.loading || !getRevisions.data?.formBuilder?.revisions?.data
             ? []
             : getRevisions.data.formBuilder.revisions.data;
 
@@ -57,7 +58,7 @@ const Revisions = () => {
             className={menuList}
             onSelect={evt => {
                 history.push(
-                    `/form-builder/forms/${encodeURIComponent(revisions[evt.detail.index].id)}`
+                    `/form-builder/forms/${encodeURIComponent(revisions[evt.detail.index]?.id)}`
                 );
             }}
             handle={

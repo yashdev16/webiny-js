@@ -1,9 +1,9 @@
-import { HandlerFactoryParams } from "@webiny/handler-aws/types";
-import { IWebsocketsEventValidator } from "~/validator";
-import { IWebsocketsResponse } from "~/response";
-import { APIGatewayProxyResult, Context as LambdaContext } from "aws-lambda";
-import { GenericRecord } from "@webiny/api/types";
-import { PartialDeep } from "type-fest";
+import type { HandlerFactoryParams } from "@webiny/handler-aws/types";
+import type { IWebsocketsEventValidator } from "~/validator";
+import type { IWebsocketsResponse } from "~/response";
+import type { APIGatewayProxyResult, Context as LambdaContext } from "@webiny/aws-sdk/types";
+import type { GenericRecord } from "@webiny/api/types";
+import type { PartialDeep } from "type-fest";
 
 export interface HandlerCallable {
     (event: IWebsocketsIncomingEvent, context: LambdaContext): Promise<APIGatewayProxyResult>;

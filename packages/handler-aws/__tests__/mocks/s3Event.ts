@@ -1,5 +1,4 @@
-import { S3Event } from "aws-lambda";
-import { S3EventRecord } from "aws-lambda/trigger/s3";
+import { S3Event, S3EventRecord } from "@webiny/aws-sdk/types";
 
 const defaultRecord: S3EventRecord = {
     awsRegion: "us-east-1",

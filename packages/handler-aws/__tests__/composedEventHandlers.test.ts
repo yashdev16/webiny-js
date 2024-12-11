@@ -1,4 +1,4 @@
-import {
+import type {
     DynamoDBStreamEvent,
     EventBridgeEvent,
     S3Event,
@@ -6,7 +6,7 @@ import {
     SNSEvent,
     SQSEvent,
     SQSRecord
-} from "aws-lambda";
+} from "@webiny/aws-sdk/types";
 import { createHandler } from "~/createHandler";
 import {
     createDynamoDBEventHandler,

@@ -9,9 +9,9 @@
   "author": "Webiny Ltd",
   "license": "MIT",
   "dependencies": {
-    "@editorjs/editorjs": "^2.20.1",
+    "@editorjs/editorjs": "2.26.5",
     "@types/react": "18.2.79",
-    "classnames": "^2.3.1",
+    "classnames": "^2.5.1",
     "react": "18.2.0",
     "sanitize-html": "2.12.1"
   },

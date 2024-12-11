@@ -1,4 +1,4 @@
-import type { Context as LambdaContext, EventBridgeEvent } from "aws-lambda";
+import type { Context as LambdaContext, EventBridgeEvent } from "@webiny/aws-sdk/types";
 import { Plugin } from "@webiny/plugins/Plugin";
 import { Context, Reply, Request } from "@webiny/handler/types";
 

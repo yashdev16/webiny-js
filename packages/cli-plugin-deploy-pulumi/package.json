@@ -18,7 +18,7 @@
     "@webiny/pulumi-sdk": "0.0.0",
     "@webiny/utils": "0.0.0",
     "body-parser": "1.20.3",
-    "chalk": "4.1.2",
+    "chalk": "^4.1.2",
     "execa": "^5.1.1",
     "exit-hook": "^4.0.0",
     "express": "^4.21.1",

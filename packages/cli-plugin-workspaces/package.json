@@ -12,10 +12,10 @@
   "dependencies": {
     "@webiny/project-utils": "0.0.0",
     "archy": "1.0.0",
-    "chalk": "4.1.2",
+    "chalk": "^4.1.2",
     "color": "^4.2.3",
     "execa": "^5.1.1",
-    "graphlib": "2.1.8",
+    "graphlib": "^2.1.8",
     "multimatch": "5.0.0",
     "p-map": "^4.0.0"
   },

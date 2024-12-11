@@ -14,7 +14,7 @@ const ERROR_FIELDS = `
     data
 `;
 
-const BASE_FORM_FIELDS = `  
+const BASE_FORM_FIELDS = `
     id
     name
     version
@@ -43,7 +43,7 @@ stats {
 export interface ListFormsQueryResponse {
     formBuilder: {
         listForms: {
-            data: FbFormModel[];
+            data: FbFormModel[] | null;
             error: FbErrorResponse | null;
         };
     };
@@ -52,7 +52,7 @@ export const LIST_FORMS = gql`
     query FbListForms {
         formBuilder {
             listForms {
-                data {  
+                data {
                     ${BASE_FORM_FIELDS}
                 }
                 error {
@@ -137,7 +137,7 @@ export const GET_FORM = gql`
 export interface GetFormRevisionsQueryResponse {
     formBuilder: {
         revisions: {
-            data: FbRevisionModel[];
+            data: FbRevisionModel[] | null;
             error: FbErrorResponse | null;
         };
     };

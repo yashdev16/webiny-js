@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, useState, useMemo } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import { TimeAgo } from "@webiny/ui/TimeAgo";
 import { css } from "emotion";
 import styled from "@emotion/styled";
@@ -9,24 +9,24 @@ import { Typography } from "@webiny/ui/Typography";
 import { ConfirmationDialog } from "@webiny/ui/ConfirmationDialog";
 import { DeleteIcon, EditIcon } from "@webiny/ui/List/DataList/icons";
 import {
-    DELETE_FORM,
     CREATE_REVISION_FROM,
     CreateRevisionFromMutationResponse,
-    CreateRevisionFromMutationVariables
+    CreateRevisionFromMutationVariables,
+    DELETE_FORM
 } from "../../graphql";
 import { useApolloClient } from "@apollo/react-hooks";
 import { useSnackbar } from "@webiny/app-admin/hooks/useSnackbar";
 import {
     DataList,
+    DataListModalOverlay,
+    DataListModalOverlayAction,
     List,
+    ListActions,
     ListItem,
+    ListItemMeta,
     ListItemText,
     ListItemTextSecondary,
-    ListItemMeta,
-    ListActions,
-    ListSelectBox,
-    DataListModalOverlayAction,
-    DataListModalOverlay
+    ListSelectBox
 } from "@webiny/ui/List";
 import { i18n } from "@webiny/app/i18n";
 import { removeFormFromListCache, updateLatestRevisionInListCache } from "../cache";
@@ -225,7 +225,9 @@ const FormsDataList = (props: FormsDataListProps) => {
     const query = new URLSearchParams(location.search);
 
     const listFormsData =
-        listQuery.loading || !listQuery.data ? [] : listQuery.data.formBuilder.listForms.data;
+        listQuery.loading || !listQuery.data?.formBuilder
+            ? []
+            : listQuery.data.formBuilder.listForms?.data || [];
 
     const filteredData = filter === "" ? listFormsData : listFormsData.filter(filterData);
     const forms = sortData(filteredData);

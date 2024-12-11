@@ -15,7 +15,7 @@
   "dependencies": {
     "@webiny/telemetry": "0.0.0",
     "@webiny/wcp": "0.0.0",
-    "boolean": "^3.1.4",
+    "boolean": "^3.2.0",
     "camelcase": "^6.3.0",
     "chalk": "^4.1.2",
     "dotenv": "^8.2.0",
@@ -27,7 +27,7 @@
     "inquirer": "8.2.6",
     "is-ci": "^3.0.1",
     "ncp": "2.0.0",
-    "open": "^8.0.6",
+    "open": "^8.4.2",
     "pirates": "^4.0.6",
     "semver": "^7.6.3",
     "ts-morph": "^11.0.0",

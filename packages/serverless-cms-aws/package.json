@@ -13,7 +13,7 @@
     "directory": "dist"
   },
   "dependencies": {
-    "@pulumi/aws": "^6.62.2",
+    "@pulumi/aws": "^6.64.0",
     "@pulumi/pulumi": "^3.142.0",
     "@webiny/api-aco": "0.0.0",
     "@webiny/api-apw": "0.0.0",
@@ -57,7 +57,7 @@
     "@webiny/pulumi": "0.0.0",
     "@webiny/pulumi-aws": "0.0.0",
     "@webiny/wcp": "0.0.0",
-    "chalk": "^4.1.0",
+    "chalk": "^4.1.2",
     "fast-glob": "^3.2.7",
     "find-up": "^5.0.0",
     "invariant": "^2.2.4",
@@ -69,7 +69,7 @@
     "@webiny/cli": "0.0.0",
     "@webiny/migrations": "0.0.0",
     "@webiny/project-utils": "0.0.0",
-    "ttypescript": "^1.5.12",
+    "ttypescript": "^1.5.15",
     "typescript": "4.9.5"
   },
   "scripts": {

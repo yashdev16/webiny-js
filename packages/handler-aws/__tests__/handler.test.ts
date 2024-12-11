@@ -6,7 +6,7 @@ import {
     SNSEvent,
     SQSEvent,
     SQSRecord
-} from "aws-lambda";
+} from "@webiny/aws-sdk/types";
 import {
     createDynamoDBEventHandler,
     createEventBridgeEventHandler,
@@ -15,7 +15,7 @@ import {
     createSNSEventHandler,
     createSQSEventHandler
 } from "~/index";
-import { LambdaContext } from "~/types";
+import type { LambdaContext } from "~/types";
 
 describe("main handler", () => {
     const context = {} as LambdaContext;

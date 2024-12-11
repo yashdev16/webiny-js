@@ -2,8 +2,8 @@ import type {
     APIGatewayProxyResult,
     Context as LambdaContext,
     DynamoDBStreamEvent
-} from "aws-lambda";
-import { HandlerFactoryParams } from "~/types";
+} from "@webiny/aws-sdk/types";
+import type { HandlerFactoryParams } from "~/types";
 import { createHandler as createBaseHandler } from "@webiny/handler";
 import { registerDefaultPlugins } from "~/plugins";
 import {

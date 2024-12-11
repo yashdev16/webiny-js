@@ -1,4 +1,4 @@
-import type { APIGatewayEvent } from "aws-lambda";
+import type { APIGatewayEvent } from "@webiny/aws-sdk/types";
 import { registry } from "~/registry";
 import { createSourceHandler } from "~/sourceHandler";
 import { createHandler, HandlerParams } from "./index";

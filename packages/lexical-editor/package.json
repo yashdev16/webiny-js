@@ -7,7 +7,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@emotion/react": "^11.10.6",
+    "@emotion/react": "11.10.8",
     "@lexical/code": "^0.16.1",
     "@lexical/history": "^0.16.1",
     "@lexical/react": "^0.16.1",
@@ -19,7 +19,7 @@
     "@webiny/lexical-theme": "0.0.0",
     "@webiny/react-composition": "0.0.0",
     "@webiny/react-properties": "0.0.0",
-    "emotion": "^10.0.17",
+    "emotion": "10.0.27",
     "lexical": "^0.16.1",
     "lodash": "4.17.21",
     "react": "18.2.0",

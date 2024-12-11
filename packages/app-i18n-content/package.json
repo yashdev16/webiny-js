@@ -16,7 +16,7 @@
     "@webiny/form": "0.0.0",
     "@webiny/plugins": "0.0.0",
     "@webiny/ui": "0.0.0",
-    "emotion": "^10.0.17",
+    "emotion": "10.0.27",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },

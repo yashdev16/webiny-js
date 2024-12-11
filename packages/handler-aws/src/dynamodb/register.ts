@@ -1,5 +1,5 @@
 import { registry } from "~/registry";
-import type { DynamoDBStreamEvent } from "aws-lambda";
+import type { DynamoDBStreamEvent } from "@webiny/aws-sdk/types";
 import { createSourceHandler } from "~/sourceHandler";
 import { createHandler, HandlerParams } from "~/dynamodb/index";
 

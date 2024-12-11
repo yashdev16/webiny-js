@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { useLazyQuery, useQuery } from "@apollo/react-hooks";
 import get from "lodash/get";
-import { Grid, Cell } from "@webiny/ui/Grid";
+import { Cell, Grid } from "@webiny/ui/Grid";
 import { Alert } from "@webiny/ui/Alert";
 import { AutoComplete } from "@webiny/ui/AutoComplete";
 import styled from "@emotion/styled";
@@ -9,14 +9,14 @@ import { validation } from "@webiny/validation";
 import Accordion from "@webiny/app-page-builder/editor/plugins/elementSettings/components/Accordion";
 import {
     ButtonContainer,
-    SimpleButton,
-    classes
+    classes,
+    SimpleButton
 } from "@webiny/app-page-builder/editor/plugins/elementSettings/components/StyledComponents";
 import {
-    LIST_FORMS,
     GET_FORM_REVISIONS,
     GetFormRevisionsQueryResponse,
     GetFormRevisionsQueryVariables,
+    LIST_FORMS,
     ListFormsQueryResponse
 } from "./graphql";
 import { BindComponent, FormOnSubmit } from "@webiny/form";
@@ -26,10 +26,19 @@ const FormOptionsWrapper = styled("div")({
     minHeight: 250
 });
 
+interface FormElementAdvancedSettingsPropsData {
+    settings: {
+        form: {
+            parent: string;
+            revision?: string;
+        };
+    };
+}
+
 interface FormElementAdvancedSettingsProps {
     Bind: BindComponent;
     submit: FormOnSubmit;
-    data: Record<string, string>;
+    data: FormElementAdvancedSettingsPropsData;
 }
 interface RevisionsOutputOption {
     name: string;
@@ -44,8 +53,8 @@ const FormElementAdvancedSettings = ({ Bind, submit, data }: FormElementAdvanced
 
     const selectedForm = useMemo(() => {
         return {
-            parent: get(data, "settings.form.parent"),
-            revision: get(data, "settings.form.revision")
+            parent: data.settings?.form?.parent,
+            revision: data.settings?.form?.revision
         };
     }, [data]);
 
@@ -64,11 +73,7 @@ const FormElementAdvancedSettings = ({ Bind, submit, data }: FormElementAdvanced
             value: null
         };
         if (listQuery.data) {
-            const latestFormRevisionsList =
-                (get(
-                    listQuery,
-                    "data.formBuilder.listForms.data"
-                ) as unknown as FbRevisionModel[]) || [];
+            const latestFormRevisionsList = listQuery.data.formBuilder?.listForms?.data || [];
 
             output.options = latestFormRevisionsList.map(({ id, name }) => ({ id, name }));
             output.value =

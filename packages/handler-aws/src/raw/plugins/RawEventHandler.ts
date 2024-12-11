@@ -1,4 +1,4 @@
-import type { Context as LambdaContext } from "aws-lambda";
+import type { Context as LambdaContext } from "@webiny/aws-sdk/types";
 import { Context as BaseContext, Reply } from "@webiny/handler/types";
 import { EventPlugin, EventPluginCallableParams } from "@webiny/handler";
 

@@ -1,6 +1,6 @@
-import { ITimer } from "./abstractions/ITimer";
+import type { ITimer } from "./abstractions/ITimer";
 import { CustomTimer } from "./CustomTimer";
-import { Context as LambdaContext } from "aws-lambda/handler";
+import type { Context as LambdaContext } from "@webiny/aws-sdk/types";
 import { Timer } from "./Timer";
 
 export type ITimerFactoryParams = Pick<LambdaContext, "getRemainingTimeInMillis">;
