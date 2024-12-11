@@ -24,3 +24,5 @@ export interface IRegistry {
     getItem<T = unknown>(cb: (item: IRegistryItem<T>) => boolean): IRegistryItem<T> | null;
     getItems<T = unknown>(cb: (item: IRegistryItem<T>) => boolean): IRegistryItem<T>[];
 }
+
+export * from "./store/types";

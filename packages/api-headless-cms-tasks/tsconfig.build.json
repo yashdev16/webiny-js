@@ -2,8 +2,16 @@
   "extends": "../../tsconfig.build.json",
   "include": ["src"],
   "references": [
+    { "path": "../api/tsconfig.build.json" },
+    { "path": "../db/tsconfig.build.json" },
+    { "path": "../api-aco/tsconfig.build.json" },
+    { "path": "../api-headless-cms/tsconfig.build.json" },
     { "path": "../api-headless-cms-bulk-actions/tsconfig.build.json" },
-    { "path": "../api-headless-cms-import-export/tsconfig.build.json" }
+    { "path": "../api-headless-cms-import-export/tsconfig.build.json" },
+    { "path": "../error/tsconfig.build.json" },
+    { "path": "../handler-graphql/tsconfig.build.json" },
+    { "path": "../tasks/tsconfig.build.json" },
+    { "path": "../utils/tsconfig.build.json" }
   ],
   "compilerOptions": {
     "rootDir": "./src",

@@ -463,10 +463,13 @@ export interface ITaskDefinition<
     /**
      * Create a validation schema for the task input.
      * This will be used to validate the input before the task is triggered.
+     *
+     * By default, the input validation validates the input against the fields defined in the task definition.
+     * But it also passes through any fields which might not be defined in the task validation.
      */
     createInputValidation?: (
         params: ITaskCreateInputValidationParams<C>
-    ) => GenericRecord<keyof I, zod.Schema>;
+    ) => GenericRecord<keyof I, zod.Schema> | zod.Schema;
     /**
      * Custom input fields and layout for the task input.
      */

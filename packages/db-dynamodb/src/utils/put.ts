@@ -1,15 +1,17 @@
 import { Entity } from "~/toolbox";
 
-interface Params {
+export type IPutItem<T extends Record<string, any>> = {
+    PK: string;
+    SK: string;
+    [key: string]: any;
+} & T;
+
+export interface IPutParams<T extends Record<string, any>> {
     entity: Entity;
-    item: {
-        PK: string;
-        SK: string;
-        [key: string]: any;
-    };
+    item: IPutItem<T>;
 }
 
-export const put = async (params: Params) => {
+export const put = async <T extends Record<string, any>>(params: IPutParams<T>) => {
     const { entity, item } = params;
 
     return await entity.put(item, {

@@ -13,7 +13,8 @@
     "directory": "dist"
   },
   "dependencies": {
-    "@webiny/api": "0.0.0"
+    "@webiny/api": "0.0.0",
+    "type-fest": "^3.13.1"
   },
   "devDependencies": {
     "@webiny/cli": "0.0.0",

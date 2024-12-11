@@ -214,6 +214,10 @@ export interface CmsModelUpdateInput {
      */
     layout: string[][];
     /**
+     * Tags for the content model.
+     */
+    tags?: string[];
+    /**
      * Fields fieldId which are picked to represent the CMS entry.
      */
     titleFieldId?: string | null;

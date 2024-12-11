@@ -1,4 +1,3 @@
-module.exports = {
-    tables: [],
-    basePort: 8000
-};
+const { createDynaliteTables } = require("../../jest.config.base");
+
+module.exports = createDynaliteTables();

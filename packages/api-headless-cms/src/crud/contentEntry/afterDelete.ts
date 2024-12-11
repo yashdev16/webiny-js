@@ -1,5 +1,9 @@
+/**
+ * TODO: possibly remove this subscription.
+ * It creates problems when doing mass deletes on DDB only systems with a lot of entries.
+ */
 import { Topic } from "@webiny/pubsub/types";
-import { OnEntryAfterDeleteTopicParams, CmsContext } from "~/types";
+import { CmsContext, OnEntryAfterDeleteTopicParams } from "~/types";
 import { markUnlockedFields } from "./markLockedFields";
 
 interface AssignAfterEntryDeleteParams {
@@ -11,9 +15,12 @@ export const assignAfterEntryDelete = (params: AssignAfterEntryDeleteParams) => 
 
     onEntryAfterDelete.subscribe(async params => {
         const { entry, model, permanent } = params;
+        if (model.isPlugin) {
+            return;
+        }
 
         // If the entry is being moved to the trash, we keep the model fields locked because the entry can be restored.
-        if (!permanent) {
+        if (!permanent || !model.isPlugin) {
             return;
         }
         const { items } = await context.cms.storageOperations.entries.list(model, {

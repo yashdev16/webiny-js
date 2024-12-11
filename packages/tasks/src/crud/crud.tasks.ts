@@ -28,6 +28,7 @@ import { createTopic } from "@webiny/pubsub";
 import { remapWhere } from "./where";
 import { createZodError, parseIdentifier } from "@webiny/utils";
 import zod from "zod";
+import { GenericRecord } from "@webiny/api/types";
 
 const createRevisionId = (id: string) => {
     const { id: entryId } = parseIdentifier(id);
@@ -77,6 +78,17 @@ interface IValidateParams {
     context: Context;
 }
 
+const getZodSchema = (schema: GenericRecord<string, zod.Schema> | zod.Schema) => {
+    if (!schema) {
+        return zod.object({}).passthrough();
+    } else if (schema instanceof zod.ZodObject) {
+        return schema.passthrough();
+    } else if (schema instanceof zod.Schema) {
+        return schema;
+    }
+    return zod.object(schema).passthrough();
+};
+
 const validateTaskInput = async (params: IValidateParams) => {
     const { definition, data, context } = params;
     if (!definition.createInputValidation) {
@@ -86,7 +98,11 @@ const validateTaskInput = async (params: IValidateParams) => {
         context,
         validator: zod
     });
-    const validate = zod.object(schema);
+    /**
+     * If the schema is not an object, we need to wrap it with the `object` function.
+     */
+    const validate = getZodSchema(schema);
+
     const result = await validate.safeParseAsync(data.input);
     if (result.success) {
         return;

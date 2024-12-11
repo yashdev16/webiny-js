@@ -24,7 +24,7 @@ export const onPageRevisionAfterUpdateHook = (context: AuditLogsContext) => {
         try {
             const createAuditLog = getAuditConfig(AUDIT.PAGE_BUILDER.PAGE_REVISION.UPDATE);
 
-            await await createAuditLog(
+            await createAuditLog(
                 "Page revision updated",
                 { before: original, after: page },
                 page.id,

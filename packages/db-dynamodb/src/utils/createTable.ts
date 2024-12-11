@@ -1,13 +1,15 @@
 import { DynamoDBDocument } from "@webiny/aws-sdk/client-dynamodb";
-import { Table } from "~/toolbox";
+import { Table as BaseTable } from "~/toolbox";
 
 export interface CreateTableParams {
     name?: string;
     documentClient: DynamoDBDocument;
 }
 
-export const createTable = ({ name, documentClient }: CreateTableParams) => {
-    return new Table({
+export type Table = BaseTable<string, "PK", "SK">;
+
+export const createTable = ({ name, documentClient }: CreateTableParams): Table => {
+    return new BaseTable({
         name: name || String(process.env.DB_TABLE),
         partitionKey: "PK",
         sortKey: "SK",

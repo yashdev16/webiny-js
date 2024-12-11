@@ -1,5 +1,5 @@
 import WebinyError from "@webiny/error";
-import { CmsEntry, CmsContext, CmsModelLockedFieldPlugin, LockedField, CmsModel } from "~/types";
+import { CmsContext, CmsEntry, CmsModel, CmsModelLockedFieldPlugin, LockedField } from "~/types";
 import { CmsModelPlugin } from "~/plugins/CmsModelPlugin";
 import { getBaseFieldType } from "~/utils/getBaseFieldType";
 
@@ -106,7 +106,7 @@ export const markUnlockedFields = async (params: MarkFieldsUnlockedParams) => {
             model: {
                 ...model,
                 lockedFields: []
-            } as CmsModel
+            }
         });
         model.lockedFields = [];
     } catch (ex) {
