@@ -17676,14 +17676,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.6.0":
-  version: 1.6.8
-  resolution: "axios@npm:1.6.8"
+"axios@npm:^1.6.0, axios@npm:^1.7.9":
+  version: 1.7.9
+  resolution: "axios@npm:1.7.9"
   dependencies:
     follow-redirects: "npm:^1.15.6"
     form-data: "npm:^4.0.0"
     proxy-from-env: "npm:^1.1.0"
-  checksum: 10/3f9a79eaf1d159544fca9576261ff867cbbff64ed30017848e4210e49f3b01e97cf416390150e6fdf6633f336cd43dc1151f890bbd09c3c01ad60bb0891eee63
+  checksum: 10/b7a5f660ea53ba9c2a745bf5ad77ad8bf4f1338e13ccc3f9f09f810267d6c638c03dac88b55dae8dc98b79c57d2d6835be651d58d2af97c174f43d289a9fd007
   languageName: node
   linkType: hard
 
@@ -34869,6 +34869,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": "npm:^5.5.0"
     "@typescript-eslint/parser": "npm:^5.5.0"
     adio: "npm:^1.0.1"
+    axios: "npm:^1.7.9"
     babel-jest: "npm:29.7.0"
     babel-loader: "npm:^9.2.1"
     babel-plugin-dynamic-import-node: "npm:2.3.3"

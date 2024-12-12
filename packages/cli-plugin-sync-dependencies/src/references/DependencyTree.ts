@@ -126,10 +126,6 @@ export class DependencyTree implements IDependencyTree {
         const existing = this.references.find(item => {
             return item.name === ref.name;
         });
-        // if (ref.name !== "graphql") {
-        //     return;
-        // }
-        // console.log("Caught graphql", JSON.stringify(ref, null, 2));
         const types = [ref.type];
         if (!existing) {
             this.references.push({

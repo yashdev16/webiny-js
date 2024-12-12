@@ -62,6 +62,7 @@
     "@typescript-eslint/eslint-plugin": "^5.5.0",
     "@typescript-eslint/parser": "^5.5.0",
     "adio": "^1.0.1",
+    "axios": "^1.7.9",
     "babel-jest": "29.7.0",
     "babel-loader": "^9.2.1",
     "babel-plugin-dynamic-import-node": "2.3.3",
