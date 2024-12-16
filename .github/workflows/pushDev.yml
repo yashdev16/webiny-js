@@ -99,6 +99,9 @@ jobs:
       - name: ESLint
         run: yarn eslint
         working-directory: dev
+      - name: Sync Dependencies Verification
+        run: yarn webiny verify-dependencies
+        working-directory: dev
     runs-on: ubuntu-latest
     env:
       NODE_OPTIONS: '--max_old_space_size=4096'

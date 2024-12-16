@@ -267,7 +267,11 @@ export const pullRequests = createWorkflow({
                         { name: "Check code formatting", run: "yarn prettier:check" },
                         { name: "Check dependencies", run: "yarn adio" },
                         { name: "Check TS configs", run: "yarn check-ts-configs" },
-                        { name: "ESLint", run: "yarn eslint" }
+                        { name: "ESLint", run: "yarn eslint" },
+                        {
+                            name: "Sync Dependencies Verification",
+                            run: "yarn webiny verify-dependencies"
+                        }
                     ],
                     { "working-directory": DIR_WEBINY_JS }
                 )

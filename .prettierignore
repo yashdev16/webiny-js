@@ -10,3 +10,4 @@ packages/ui/src/RichTextEditor/editorjs/**
 packages/cli-plugin-deploy-pulumi/commands/newWatch/handler/mqtt.js
 lerna.json
 coverage/**
+packages/cli/files/**/*.json

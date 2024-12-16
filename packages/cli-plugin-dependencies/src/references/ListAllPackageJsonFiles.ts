@@ -8,7 +8,7 @@ export interface IListAllPackageJsonFilesListParams {
 }
 
 export class ListAllPackageJsonFiles {
-    public async list(params: IListAllPackageJsonFilesListParams): Promise<string[]> {
+    public list(params: IListAllPackageJsonFilesListParams): string[] {
         const targets = params.targets;
         const ignore = defaultIgnore.concat(params.ignore || []);
 

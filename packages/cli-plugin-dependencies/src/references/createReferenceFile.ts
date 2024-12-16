@@ -10,7 +10,7 @@ export interface ICreateReferenceFileParams {
     target?: string;
 }
 
-export const createReferenceFile = async (params: ICreateReferenceFileParams): Promise<void> => {
+export const createReferenceFile = (params: ICreateReferenceFileParams): void => {
     const { context, dirname, tree, target } = params;
 
     const referencesPath = path.join(dirname, target || "", "references.json");

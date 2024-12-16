@@ -1,30 +1,15 @@
 import { QuestionCollection } from "inquirer";
-import { CliContext, GenericRecord } from "@webiny/cli/types";
+import {
+    CliContext,
+    GenericRecord,
+    CliCommandPlugin,
+    CliCommandPluginArgs
+} from "@webiny/cli/types";
 import { Plugin } from "@webiny/plugins/types";
 import { Ora } from "ora";
 import inquirer from "inquirer";
 
-/**
- * Arguments for CliPlugin.create
- *
- * @category Cli
- */
-export interface CliCommandPluginArgs {
-    yargs: any;
-    context: CliContext;
-}
-
-/**
- * A plugin defining cli-command type.
- *
- * @category Plugin
- * @category Cli
- */
-export interface CliCommandPlugin extends Plugin {
-    type: "cli-command";
-    name: string;
-    create: (args: CliCommandPluginArgs) => void;
-}
+export { CliCommandPlugin, CliCommandPluginArgs };
 
 /**
  * Arguments for the CliCommandScaffoldQuestionsCallable.

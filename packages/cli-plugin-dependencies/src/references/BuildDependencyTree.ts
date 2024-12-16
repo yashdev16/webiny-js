@@ -3,13 +3,13 @@ import { DependencyTree } from "./DependencyTree";
 import { PackageJson } from "type-fest";
 import loadJsonFile from "load-json-file";
 
-export interface IListAllDependenciesListParams {
+export interface IBuildDependencyTreeParams {
     basePath: string;
     files: string[];
     ignore?: RegExp;
 }
-export class ListAllDependencies {
-    public async list(params: IListAllDependenciesListParams): Promise<IDependencyTree> {
+export class BuildDependencyTree {
+    public build(params: IBuildDependencyTreeParams): IDependencyTree {
         const { basePath, files, ignore } = params;
         const tree = new DependencyTree();
         for (const file of files) {

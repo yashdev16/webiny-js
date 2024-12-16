@@ -3,33 +3,31 @@ import { CliContext } from "@webiny/cli/types";
 import { IDependencyTree } from "~/types";
 import { ListAllPackages } from "~/references/ListAllPackages";
 import { ListAllPackageJsonFiles } from "./ListAllPackageJsonFiles";
-import { ListAllDependencies } from "./ListAllDependencies";
+import { BuildDependencyTree } from "./BuildDependencyTree";
 
 export interface IListAllReferencesParams {
     context: CliContext;
     dirname: string;
 }
 
-export const listAllReferences = async (
-    params: IListAllReferencesParams
-): Promise<IDependencyTree> => {
+export const createDependencyTree = (params: IListAllReferencesParams): IDependencyTree => {
     const { context } = params;
     const basePath = context.project.root;
     const target = path.join(basePath, "packages");
 
     const listAllPackages = new ListAllPackages();
     const listAllPackageJsonFiles = new ListAllPackageJsonFiles();
-    const listAllDependencies = new ListAllDependencies();
+    const buildDependencyTree = new BuildDependencyTree();
 
-    const allPackages = await listAllPackages.list(target);
+    const allPackages = listAllPackages.list(target);
 
-    const allPackageJsonFiles = await listAllPackageJsonFiles.list({
+    const allPackageJsonFiles = listAllPackageJsonFiles.list({
         targets: allPackages
     });
 
     const files = [path.join(basePath, "package.json"), ...allPackageJsonFiles];
 
-    return await listAllDependencies.list({
+    return buildDependencyTree.build({
         basePath,
         files,
         ignore: /^@webiny\//

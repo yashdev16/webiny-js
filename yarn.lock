@@ -14735,6 +14735,26 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@webiny/cli-plugin-dependencies@workspace:packages/cli-plugin-dependencies":
+  version: 0.0.0-use.local
+  resolution: "@webiny/cli-plugin-dependencies@workspace:packages/cli-plugin-dependencies"
+  dependencies:
+    "@babel/runtime": "npm:^7.26.0"
+    "@webiny/cli": "npm:0.0.0"
+    "@webiny/project-utils": "npm:0.0.0"
+    execa: "npm:^5.1.1"
+    get-yarn-workspaces: "npm:^1.0.2"
+    glob: "npm:^7.2.3"
+    load-json-file: "npm:^6.2.0"
+    prettier: "npm:^2.8.8"
+    rimraf: "npm:^6.0.1"
+    semver: "npm:^7.6.3"
+    type-fest: "npm:^3.13.1"
+    typescript: "npm:4.9.5"
+    write-json-file: "npm:^4.3.0"
+  languageName: unknown
+  linkType: soft
+
 "@webiny/cli-plugin-deploy-pulumi@npm:0.0.0, @webiny/cli-plugin-deploy-pulumi@workspace:packages/cli-plugin-deploy-pulumi":
   version: 0.0.0-use.local
   resolution: "@webiny/cli-plugin-deploy-pulumi@workspace:packages/cli-plugin-deploy-pulumi"
@@ -15035,27 +15055,6 @@ __metadata:
     prettier: "npm:^2.8.8"
     rimraf: "npm:^6.0.1"
     ts-morph: "npm:^11.0.0"
-    typescript: "npm:4.9.5"
-    write-json-file: "npm:^4.3.0"
-  languageName: unknown
-  linkType: soft
-
-"@webiny/cli-plugin-sync-dependencies@workspace:packages/cli-plugin-sync-dependencies":
-  version: 0.0.0-use.local
-  resolution: "@webiny/cli-plugin-sync-dependencies@workspace:packages/cli-plugin-sync-dependencies"
-  dependencies:
-    "@babel/runtime": "npm:^7.26.0"
-    "@webiny/cli": "npm:0.0.0"
-    "@webiny/cli-plugin-scaffold": "npm:0.0.0"
-    "@webiny/project-utils": "npm:0.0.0"
-    execa: "npm:^5.1.1"
-    get-yarn-workspaces: "npm:^1.0.2"
-    glob: "npm:^7.2.3"
-    load-json-file: "npm:^6.2.0"
-    prettier: "npm:^2.8.8"
-    rimraf: "npm:^6.0.1"
-    semver: "npm:^7.6.3"
-    type-fest: "npm:^3.13.1"
     typescript: "npm:4.9.5"
     write-json-file: "npm:^4.3.0"
   languageName: unknown

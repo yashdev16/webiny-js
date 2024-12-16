@@ -170,3 +170,25 @@ export interface CliContext {
         get: (key: string) => any;
     };
 }
+
+/**
+ * Arguments for CliPlugin.create
+ *
+ * @category Cli
+ */
+export interface CliCommandPluginArgs {
+    yargs: any;
+    context: CliContext;
+}
+
+/**
+ * A plugin defining cli-command type.
+ *
+ * @category Plugin
+ * @category Cli
+ */
+export interface CliCommandPlugin extends Plugin {
+    type: "cli-command";
+    name: string;
+    create: (args: CliCommandPluginArgs) => void;
+}
