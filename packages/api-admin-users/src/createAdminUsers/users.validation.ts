@@ -13,7 +13,7 @@ const createUserDataValidation = zod.object({
     email: zod.string(),
     firstName: zod.string().min(1).optional(),
     lastName: zod.string().min(1).optional(),
-    avatar: zod.object({}).passthrough()
+    avatar: zod.object({}).passthrough().optional()
 });
 
 const updateUserDataValidation = zod.object({
@@ -34,6 +34,7 @@ export const attachUserValidation = (
         if (validation.success) {
             return;
         }
+        console.log(JSON.stringify(validation.error, null, 2));
         throw createZodError(validation.error);
     });
 
