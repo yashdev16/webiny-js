@@ -18,7 +18,7 @@ const FormWrapper = styled("div")({
     overflow: "auto"
 });
 
-export interface ContentEntryFormProps {
+export interface ContentEntryFormProps extends React.HTMLAttributes<HTMLDivElement> {
     entry: Partial<CmsContentEntry>;
     /**
      * This callback is executed when an entry, or a revision, are created.
@@ -45,7 +45,8 @@ export const ContentEntryForm = makeDecoratable(
         persistEntry,
         onAfterCreate,
         setSaveEntry,
-        header = true
+        header = true,
+        ...props
     }: ContentEntryFormProps) => {
         const formElementRef = useRef<HTMLDivElement>(null);
         const { model } = useModel();
@@ -78,7 +79,7 @@ export const ContentEntryForm = makeDecoratable(
             >
                 <ModelProvider model={model}>
                     {header ? header : null}
-                    <FormWrapper data-testid={"cms-content-form"} ref={formElementRef}>
+                    <FormWrapper {...props} data-testid={"cms-content-form"} ref={formElementRef}>
                         {formRenderer ? (
                             <CustomLayout model={model} formRenderer={formRenderer} />
                         ) : (

@@ -33,6 +33,9 @@ import { ShowConfirmationOnDelete } from "~/admin/components/Decorators/ShowConf
 import { ShowConfirmationOnPublish } from "~/admin/components/Decorators/ShowConfirmationOnPublish";
 import { ShowConfirmationOnUnpublish } from "~/admin/components/Decorators/ShowConfirmationOnUnpublish";
 import { ShowConfirmationOnDeleteRevision } from "~/admin/components/Decorators/ShowConfirmationOnDeleteRevision";
+import { FullScreenContentEntry } from "~/admin/views/contentEntries/ContentEntry/FullScreenContentEntry";
+import { ShowRevisionList } from "~/admin/components/ContentEntryForm/Header/ShowRevisionsList";
+import { featureFlags } from "@webiny/feature-flags";
 
 const { Browser } = ContentEntryListConfig;
 const { Actions } = ContentEntryEditorConfig;
@@ -111,7 +114,17 @@ export const ContentEntriesModule = () => {
                 <Actions.ButtonAction name={"save"} element={<SaveContentButton />} />
                 <Actions.ButtonAction name={"publish"} element={<SaveAndPublishButton />} />
                 <Actions.MenuItemAction name={"delete"} element={<DeleteEntryMenuItem />} />
+                {/*
+                    The following Menu Action registration is needed
+                    only when the 'allowCmsFullScreenEditor' feature is enabled.
+                */}
+                <Actions.MenuItemAction
+                    name={"showRevisionsList"}
+                    element={<ShowRevisionList />}
+                    remove={!featureFlags.allowCmsFullScreenEditor}
+                />
             </ContentEntryEditorConfig>
+            <FullScreenContentEntry />
         </>
     );
 };

@@ -1,9 +1,9 @@
-import React, { createContext, PropsWithChildren, useMemo, useState } from "react";
+import React, { createContext, useMemo, useState } from "react";
 import classNames from "classnames";
 import { TabBar, Tab as RmwcTab } from "@rmwc/tabs";
 import { TabProps } from "./Tab";
 
-export type TabsProps = PropsWithChildren<{
+export interface TabsProps extends React.HTMLAttributes<HTMLDivElement> {
     /**
      * Append a class name.
      */
@@ -23,7 +23,7 @@ export type TabsProps = PropsWithChildren<{
      * Tab ID for the testing.
      */
     "data-testid"?: string;
-}>;
+}
 
 const disabledStyles: Record<string, string | number> = {
     opacity: 0.5,
@@ -44,11 +44,11 @@ export const TabsContext = createContext<TabsContext | undefined>(undefined);
 /**
  * Use Tabs component to display a list of choices, once the handler is triggered.
  */
-export const Tabs = (props: TabsProps) => {
+export const Tabs = ({ children, value, onActivate, className, ...props }: TabsProps) => {
     const [activeTabIndex, setActiveIndex] = useState(0);
     const [tabs, setTabs] = useState<TabItem[]>([]);
 
-    const activeIndex = props.value !== undefined ? props.value : activeTabIndex;
+    const activeIndex = value !== undefined ? value : activeTabIndex;
 
     /* We need to generate a key like this to trigger a proper component re-render when child tabs change. */
     const tabBar = (
@@ -58,7 +58,7 @@ export const Tabs = (props: TabsProps) => {
             activeTabIndex={activeIndex}
             onActivate={evt => {
                 setActiveIndex(evt.detail.index);
-                props.onActivate && props.onActivate(evt.detail.index);
+                onActivate && onActivate(evt.detail.index);
             }}
         >
             {tabs.map(item => {
@@ -121,10 +121,10 @@ export const Tabs = (props: TabsProps) => {
     );
 
     return (
-        <div className={classNames("webiny-ui-tabs", props.className)}>
+        <div id={props.id} className={classNames("webiny-ui-tabs", className)}>
             {tabBar}
             <div className={"webiny-ui-tabs__content mdc-tab-content"}>{content}</div>
-            <TabsContext.Provider value={context}>{props.children}</TabsContext.Provider>
+            <TabsContext.Provider value={context}>{children}</TabsContext.Provider>
         </div>
     );
 };

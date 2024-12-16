@@ -1,5 +1,5 @@
 import React from "react";
-import { Buttons } from "@webiny/app-admin";
+import { Buttons, makeDecoratable } from "@webiny/app-admin";
 
 import { useContentEntryEditorConfig } from "~/admin/config/contentEntries";
 
@@ -20,11 +20,11 @@ const Actions = styled.div`
     align-items: center;
 `;
 
-export const Header = () => {
+export const Header = makeDecoratable("ContentEntryFormHeader", () => {
     const { buttonActions } = useContentEntryEditorConfig();
 
     return (
-        <ToolbarGrid>
+        <ToolbarGrid id="headerToolbarGrid">
             <div>
                 <RevisionSelector />
             </div>
@@ -34,4 +34,4 @@ export const Header = () => {
             </Actions>
         </ToolbarGrid>
     );
-};
+});

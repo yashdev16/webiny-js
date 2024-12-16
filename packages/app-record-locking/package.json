@@ -30,7 +30,6 @@
     "apollo-client": "^2.6.10",
     "apollo-link": "^1.2.14",
     "crypto-hash": "^3.0.0",
-    "emotion": "10.0.27",
     "graphql-tag": "^2.12.6",
     "react": "18.2.0",
     "react-dom": "18.2.0"

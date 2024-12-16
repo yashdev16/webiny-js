@@ -14306,7 +14306,6 @@ __metadata:
     apollo-client: "npm:^2.6.10"
     apollo-link: "npm:^1.2.14"
     crypto-hash: "npm:^3.0.0"
-    emotion: "npm:10.0.27"
     graphql-tag: "npm:^2.12.6"
     react: "npm:18.2.0"
     react-dom: "npm:18.2.0"

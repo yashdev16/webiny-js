@@ -51,7 +51,7 @@ export const ContentEntry = makeDecoratable("ContentEntry", () => {
     return (
         <DetailsContainer>
             <test-id data-testid="cms-content-details">
-                <Tabs value={activeTab} onActivate={setActiveTab}>
+                <Tabs id={"cms-content-details-tabs"} value={activeTab} onActivate={setActiveTab}>
                     <Tab
                         label={"Content"}
                         disabled={loading}
