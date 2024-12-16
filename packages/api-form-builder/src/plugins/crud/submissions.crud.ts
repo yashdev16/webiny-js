@@ -1,32 +1,35 @@
 import fetch from "node-fetch";
 import pick from "lodash/pick";
 import WebinyError from "@webiny/error";
-import * as models from "~/plugins/crud/forms.models";
 import {
     FbForm,
+    FbFormFieldValidatorPlugin,
     FbFormTriggerHandlerPlugin,
     FbSubmission,
     FormBuilder,
     FormBuilderContext,
     FormBuilderStorageOperationsListSubmissionsParams,
-    SubmissionsCRUD,
-    FbFormFieldValidatorPlugin,
-    OnFormSubmissionBeforeCreate,
     OnFormSubmissionAfterCreate,
-    OnFormSubmissionBeforeUpdate,
-    OnFormSubmissionAfterUpdate,
-    OnFormSubmissionBeforeDelete,
     OnFormSubmissionAfterDelete,
+    OnFormSubmissionAfterUpdate,
+    OnFormSubmissionBeforeCreate,
+    OnFormSubmissionBeforeDelete,
+    OnFormSubmissionBeforeUpdate,
+    OnFormSubmissionsAfterExport,
     OnFormSubmissionsBeforeExport,
-    OnFormSubmissionsAfterExport
+    SubmissionsCRUD
 } from "~/types";
 import { NotFoundError } from "@webiny/handler-graphql";
 import { NotAuthorizedError } from "@webiny/api-security";
 import { createTopic } from "@webiny/pubsub";
 import { sanitizeFormSubmissionData } from "~/plugins/crud/utils/sanitizeFormSubmissionData";
-import { mdbid } from "@webiny/utils";
+import { createZodError, mdbid } from "@webiny/utils";
 import { FormsPermissions } from "~/plugins/crud/permissions/FormsPermissions";
 import { isRecaptchaEnabled } from "~/plugins/crud/utils/isRecaptchaEnabled";
+import {
+    FormSubmissionCreateDataModel,
+    FormSubmissionUpdateDataModel
+} from "~/plugins/crud/forms.models";
 
 interface CreateSubmissionsCrudParams {
     context: FormBuilderContext;
@@ -274,7 +277,7 @@ export const createSubmissionsCrud = (params: CreateSubmissionsCrudParams): Subm
              * Use model for data validation and default values.
              */
             const formFormId = form.formId || form.id.split("#").pop();
-            const submissionModel = new models.FormSubmissionCreateDataModel().populate({
+            const submissionInput = {
                 data,
                 meta,
                 form: {
@@ -285,15 +288,18 @@ export const createSubmissionsCrud = (params: CreateSubmissionsCrudParams): Subm
                     fields: form.fields,
                     steps: form.steps
                 }
-            });
-
-            await submissionModel.validate();
-
-            const modelData: Pick<FbSubmission, "data" | "meta" | "form"> =
-                await submissionModel.toJSON();
+            };
+            const validation = FormSubmissionCreateDataModel.safeParse(submissionInput);
+            if (!validation.success) {
+                throw createZodError(validation.error);
+            }
 
             const submission: FbSubmission = {
-                ...modelData,
+                ...validation.data,
+                form: {
+                    layout: [],
+                    ...validation.data.form
+                },
                 createdOn: new Date().toISOString(),
                 savedOn: new Date().toISOString(),
                 id: mdbid(),
@@ -310,7 +316,7 @@ export const createSubmissionsCrud = (params: CreateSubmissionsCrudParams): Subm
                     submission
                 });
                 await this.storageOperations.createSubmission({
-                    input: modelData,
+                    input: validation.data,
                     form,
                     submission
                 });
@@ -324,7 +330,7 @@ export const createSubmissionsCrud = (params: CreateSubmissionsCrudParams): Subm
                     ex.code || "CREATE_FORM_SUBMISSION_ERROR",
                     {
                         ...(ex.data || {}),
-                        input: modelData,
+                        input: validation.data,
                         form,
                         submission
                     }
@@ -380,10 +386,10 @@ export const createSubmissionsCrud = (params: CreateSubmissionsCrudParams): Subm
             return submission;
         },
         async updateSubmission(this: FormBuilder, formId, input) {
-            const data = await new models.FormSubmissionUpdateDataModel().populate(input);
-            data.validate();
-
-            const updatedData = data.toJSON();
+            const validation = FormSubmissionUpdateDataModel.safeParse(input);
+            if (!validation.success) {
+                throw createZodError(validation.error);
+            }
 
             const submissionId = input.id;
 
@@ -402,7 +408,7 @@ export const createSubmissionsCrud = (params: CreateSubmissionsCrudParams): Subm
             const submission: FbSubmission = {
                 ...original,
                 tenant: form.tenant,
-                logs: updatedData.logs,
+                logs: validation.data.logs,
                 webinyVersion: context.WEBINY_VERSION
             };
 
@@ -413,7 +419,7 @@ export const createSubmissionsCrud = (params: CreateSubmissionsCrudParams): Subm
                     submission
                 });
                 await this.storageOperations.updateSubmission({
-                    input: updatedData,
+                    input: validation.data,
                     form,
                     original,
                     submission
@@ -429,7 +435,7 @@ export const createSubmissionsCrud = (params: CreateSubmissionsCrudParams): Subm
                     ex.message || "Could not update form submission.",
                     ex.code || "UPDATE_SUBMISSION_ERROR",
                     {
-                        input: updatedData,
+                        input: validation.data,
                         original,
                         submission,
                         form: formId

@@ -1,10 +1,4 @@
-/**
- * Package @commodo/fields does not have types.
- */
-// @ts-expect-error
-import { string, withFields } from "@commodo/fields";
-import { validation } from "@webiny/validation";
-import { mdbid } from "@webiny/utils";
+import { createZodError, mdbid } from "@webiny/utils";
 import {
     ApwContentTypes,
     ApwScheduleAction,
@@ -13,7 +7,8 @@ import {
     ApwScheduleActionTypes,
     CreateScheduleActionParams
 } from "~/scheduler/types";
-
+import zod from "zod";
+/*
 const CreateDataModel = withFields((instance: any) => {
     return {
         datetime: string({
@@ -46,6 +41,29 @@ const CreateDataModel = withFields((instance: any) => {
         })
     };
 })();
+*/
+
+const createDataModelValidation = zod
+    .object({
+        datetime: zod.string(),
+        type: zod.enum([ApwContentTypes.PAGE, ApwContentTypes.CMS_ENTRY]),
+        action: zod.enum([ApwScheduleActionTypes.PUBLISH, ApwScheduleActionTypes.UNPUBLISH]),
+        entryId: zod.string(),
+        modelId: zod.string().optional()
+    })
+    .refine(
+        data => {
+            if (data.type !== ApwContentTypes.CMS_ENTRY) {
+                return true;
+            } else if (!!data.modelId) {
+                return true;
+            }
+            return false;
+        },
+        {
+            message: `There is no modelId defined when type is "${ApwContentTypes.CMS_ENTRY}"`
+        }
+    );
 
 interface GetTenantAndLocaleResult {
     tenant: string;
@@ -85,13 +103,13 @@ export function createScheduleActionMethods({
             });
         },
         async create(input) {
-            const createDataModel = new CreateDataModel().populate(input);
+            const validation = createDataModelValidation.safeParse(input);
+            if (!validation.success) {
+                throw createZodError(validation.error);
+            }
+            const data: ApwScheduleActionData = validation.data;
 
-            await createDataModel.validate();
-
-            const id: string = mdbid();
-
-            const data: ApwScheduleActionData = await createDataModel.toJSON();
+            const id = mdbid();
 
             const currentDateTime = new Date();
             const currentIdentity = getIdentity();
@@ -121,10 +139,12 @@ export function createScheduleActionMethods({
                 input
             });
         },
-        async update(id, data) {
-            const updateDataModel = new CreateDataModel().populate(data);
-
-            await updateDataModel.validate();
+        async update(id, input) {
+            const validation = createDataModelValidation.safeParse(input);
+            if (!validation.success) {
+                throw createZodError(validation.error);
+            }
+            const data: ApwScheduleActionData = validation.data;
 
             const original = await this.get(id);
 

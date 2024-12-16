@@ -76,6 +76,36 @@ describe("Files settings test", () => {
                 }
             }
         });
+        const [updateInvalidMaxFileSize] = await updateSettings({
+            data: {
+                uploadMaxFileSize: 10737418241
+            }
+        });
+        expect(updateInvalidMaxFileSize).toEqual({
+            data: {
+                fileManager: {
+                    updateSettings: {
+                        data: null,
+                        error: {
+                            code: "VALIDATION_FAILED_INVALID_FIELDS",
+                            message: "Validation failed.",
+                            data: {
+                                invalidFields: {
+                                    uploadMaxFileSize: {
+                                        code: "too_big",
+                                        data: {
+                                            path: ["uploadMaxFileSize"]
+                                        },
+                                        message:
+                                            "Value needs to be lesser than or equal to 10737418240."
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
 
         const [updateInvalidMinFileSize] = await updateSettings({
             data: { uploadMinFileSize: -1111 }
@@ -91,8 +121,10 @@ describe("Files settings test", () => {
                             data: {
                                 invalidFields: {
                                     uploadMinFileSize: {
-                                        code: "VALIDATION_FAILED_INVALID_FIELD",
-                                        data: null,
+                                        code: "too_small",
+                                        data: {
+                                            path: ["uploadMinFileSize"]
+                                        },
                                         message: "Value needs to be greater than or equal to 0."
                                     }
                                 }

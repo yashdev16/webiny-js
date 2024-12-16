@@ -1,18 +1,17 @@
-import get from "lodash/get";
 import set from "lodash/set";
 import {
-    ApwWorkflowApplications,
-    ApwOnPageBeforeCreateTopicParams,
+    AdvancedPublishingWorkflow,
     ApwOnPageBeforeCreateFromTopicParams,
+    ApwOnPageBeforeCreateTopicParams,
     ApwOnPageBeforeUpdateTopicParams,
-    AdvancedPublishingWorkflow
+    ApwWorkflowApplications
 } from "~/types";
 import {
+    assignWorkflowToPage,
     getPagesDiff,
     hasPages,
-    updatePageSettings,
     shouldUpdatePages,
-    assignWorkflowToPage
+    updatePageSettings
 } from "./utils";
 import { PageBuilderContextObject } from "@webiny/api-page-builder/graphql/types";
 
@@ -34,7 +33,7 @@ export const linkWorkflowToPage = (params: LinkWorkflowToPageParams) => {
              * If the previous revision(original) already had the "contentReviewId",
              * we need to unlink it so that new "contentReview" can be request for the new revision.
              */
-            const previousContentReviewId = get(original, "settings.apw.contentReviewId");
+            const previousContentReviewId = original.settings.apw?.contentReviewId;
             if (previousContentReviewId) {
                 page.settings.apw.contentReviewId = null;
             }
@@ -43,7 +42,7 @@ export const linkWorkflowToPage = (params: LinkWorkflowToPageParams) => {
              * If the previous revision(original) already had the "workflowId",
              * we don't need to do anything we'll just let it be copied over.
              */
-            const previousWorkflowId = get(original, "settings.apw.workflowId");
+            const previousWorkflowId = original.settings.apw?.workflowId;
             if (previousWorkflowId) {
                 return;
             }
@@ -55,8 +54,8 @@ export const linkWorkflowToPage = (params: LinkWorkflowToPageParams) => {
     );
     pageBuilder.onPageBeforeUpdate.subscribe<ApwOnPageBeforeUpdateTopicParams>(async params => {
         const { page, original } = params;
-        const prevApwWorkflowId = get(original, "settings.apw");
-        const currentApwWorkflowId = get(page, "settings.apw");
+        const prevApwWorkflowId = original.settings?.apw;
+        const currentApwWorkflowId = page.settings?.apw;
         /**
          * Make sure the apw property doesn't get lost between updates.
          * It can happen because we run modal validation in "onBeforePageUpdate" event,
@@ -69,9 +68,9 @@ export const linkWorkflowToPage = (params: LinkWorkflowToPageParams) => {
          * If there is a linked "contentReview" for this page and the page "title" has changed.
          * Let's update the "title" field in "contentReview".
          */
-        const linkedContentReviewId = get(page, "settings.apw.contentReviewId");
-        const prevTitle = get(original, "title");
-        const newTitle = get(page, "title");
+        const linkedContentReviewId = page.settings.apw?.contentReviewId;
+        const prevTitle = original.title;
+        const newTitle = page.title;
 
         if (linkedContentReviewId && prevTitle !== newTitle) {
             await apw.contentReview.update(linkedContentReviewId, { title: newTitle });
@@ -91,7 +90,7 @@ export const linkWorkflowToPage = (params: LinkWorkflowToPageParams) => {
         if (hasPages(workflow) === false) {
             return;
         }
-        const pages = get(scope, "data.pages") as unknown as string[];
+        const pages = scope.data?.pages || [];
 
         for (const pid of pages) {
             await updatePageSettings({
@@ -121,8 +120,8 @@ export const linkWorkflowToPage = (params: LinkWorkflowToPageParams) => {
             return;
         }
 
-        const previousPages = get(prevScope, "data.pages", []);
-        const currentPages = get(scope, "data.pages", []);
+        const previousPages = prevScope.data?.pages || [];
+        const currentPages = scope.data?.pages || [];
 
         const { removedPages, addedPages } = getPagesDiff(currentPages, previousPages);
         for (const pid of addedPages) {

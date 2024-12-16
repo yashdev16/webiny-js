@@ -9,11 +9,6 @@ import {
 } from "~/plugins/cms/utils";
 import { HeadlessCms } from "@webiny/api-headless-cms/types";
 
-interface Value {
-    id: string;
-    modelId: string;
-}
-
 interface LinkWorkflowToEntryParams {
     apw: AdvancedPublishingWorkflow;
     cms: HeadlessCms;
@@ -107,8 +102,8 @@ export const linkWorkflowToEntry = (params: LinkWorkflowToEntryParams) => {
 
         const models = await cms.listModels();
 
-        const values: Value[] | undefined = scope.data?.entries;
-        if (!values || Array.isArray(values) === false || values.length === 0) {
+        const values = scope.data?.entries;
+        if (!values?.length) {
             return;
         }
 

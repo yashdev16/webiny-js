@@ -307,18 +307,42 @@ describe('Form Builder "Form" Test', () => {
     });
 
     test("should create, list and export submissions to file", async () => {
-        const [create] = await createForm({ data: { name: "contact-us" } });
+        const formName = "contact-us";
+        const [create] = await createForm({
+            data: {
+                name: formName
+            }
+        });
         const { id } = create.data.formBuilder.createForm.data;
 
         // Add fields definitions
         await updateRevision({
             revision: id,
-            data: { fields, steps: [{ title: "Test Step", layout: [] }] }
+            data: {
+                fields,
+                steps: [
+                    {
+                        title: "Test Step",
+                        layout: []
+                    }
+                ]
+            }
         });
 
-        await publishRevision({ revision: id });
-
-        await new Promise(res => setTimeout(res, 2000));
+        const [publishedForm] = await publishRevision({ revision: id });
+        expect(publishedForm).toMatchObject({
+            data: {
+                formBuilder: {
+                    publishRevision: {
+                        data: {
+                            name: formName,
+                            status: "published"
+                        },
+                        error: null
+                    }
+                }
+            }
+        });
 
         // Create form submissions
         const [createSubmission1Response] = await createFormSubmission({
@@ -337,8 +361,6 @@ describe('Form Builder "Form" Test', () => {
                 }
             }
         });
-
-        await new Promise(res => setTimeout(res, 2000));
 
         const [createSubmission2Response] = await createFormSubmission({
             revision: id,

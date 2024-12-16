@@ -114,7 +114,6 @@ export interface SystemCRUD {
 
 export interface FileManagerSettings {
     tenant: string;
-    key: string;
     uploadMinFileSize: number;
     uploadMaxFileSize: number;
     srcPrefix: string;

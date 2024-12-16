@@ -1,6 +1,5 @@
 import slugify from "slugify";
 import { NotFoundError } from "@webiny/handler-graphql";
-import * as models from "./forms.models";
 import {
     FbForm,
     FbFormStats,
@@ -11,25 +10,26 @@ import {
     OnFormAfterCreateTopicParams,
     OnFormAfterDeleteTopicParams,
     OnFormAfterPublishTopicParams,
-    OnFormRevisionAfterCreateTopicParams,
-    OnFormRevisionAfterDeleteTopicParams,
     OnFormAfterUnpublishTopicParams,
     OnFormAfterUpdateTopicParams,
     OnFormBeforeCreateTopicParams,
     OnFormBeforeDeleteTopicParams,
     OnFormBeforePublishTopicParams,
-    OnFormRevisionBeforeCreateTopicParams,
-    OnFormRevisionBeforeDeleteTopicParams,
     OnFormBeforeUnpublishTopicParams,
-    OnFormBeforeUpdateTopicParams
+    OnFormBeforeUpdateTopicParams,
+    OnFormRevisionAfterCreateTopicParams,
+    OnFormRevisionAfterDeleteTopicParams,
+    OnFormRevisionBeforeCreateTopicParams,
+    OnFormRevisionBeforeDeleteTopicParams
 } from "~/types";
 import WebinyError from "@webiny/error";
 import { Tenant } from "@webiny/api-tenancy/types";
 import { I18NLocale } from "@webiny/api-i18n/types";
-import { createIdentifier, mdbid } from "@webiny/utils";
+import { createIdentifier, createZodError, mdbid } from "@webiny/utils";
 import { createTopic } from "@webiny/pubsub";
 import { getStatus } from "./utils";
 import { FormsPermissions } from "~/plugins/crud/permissions/FormsPermissions";
+import { FormCreateDataModel, FormSettingsModel, FormUpdateDataModel } from "./forms.models";
 
 export interface CreateFormsCrudParams {
     getTenant: () => Tenant;
@@ -298,10 +298,17 @@ export const createFormsCrud = (params: CreateFormsCrudParams): FormsCRUD => {
         async createForm(this: FormBuilder, input) {
             await formsPermissions.ensure({ rwd: "w" });
             const identity = context.security.getIdentity();
-            const dataModel = new models.FormCreateDataModel().populate(input);
-            await dataModel.validate();
 
-            const data = await dataModel.toJSON();
+            const validation = FormCreateDataModel.safeParse(input);
+            if (!validation.success) {
+                throw createZodError(validation.error);
+            }
+            const data = validation.data;
+
+            const settings = FormSettingsModel.safeParse({});
+            if (!settings.success) {
+                throw createZodError(settings.error);
+            }
 
             /**
              * Forms are identified by a common parent ID + Revision number
@@ -358,7 +365,7 @@ export const createFormsCrud = (params: CreateFormsCrudParams): FormsCRUD => {
                         layout: []
                     }
                 ],
-                settings: await new models.FormSettingsModel().toJSON(),
+                settings: settings.data,
                 triggers: null,
                 webinyVersion: context.WEBINY_VERSION
             };
@@ -387,9 +394,10 @@ export const createFormsCrud = (params: CreateFormsCrudParams): FormsCRUD => {
         },
         async updateForm(this: FormBuilder, id, input) {
             await formsPermissions.ensure({ rwd: "w" });
-            const updateData = new models.FormUpdateDataModel().populate(input);
-            await updateData.validate();
-            const data = await updateData.toJSON({ onlyDirty: true });
+            const validation = FormUpdateDataModel.safeParse(input);
+            if (!validation.success) {
+                throw createZodError(validation.error);
+            }
 
             const original = await this.storageOperations.getForm({
                 where: {
@@ -407,11 +415,22 @@ export const createFormsCrud = (params: CreateFormsCrudParams): FormsCRUD => {
                 });
             }
 
+            const newFormData: Partial<FbForm> = {};
+            for (const key in validation.data) {
+                // @ts-expect-error
+                const value = validation.data[key];
+                if (value === undefined) {
+                    continue;
+                }
+                // @ts-expect-error
+                newFormData[key] = value;
+            }
+
             await formsPermissions.ensure({ owns: original.ownedBy });
 
             const form: FbForm = {
                 ...original,
-                ...data,
+                ...newFormData,
                 savedOn: new Date().toISOString(),
                 tenant: getTenant().id,
                 webinyVersion: context.WEBINY_VERSION
@@ -423,7 +442,7 @@ export const createFormsCrud = (params: CreateFormsCrudParams): FormsCRUD => {
                     original
                 });
                 const result = await this.storageOperations.updateForm({
-                    input: data,
+                    input: newFormData,
                     form,
                     original
                 });
@@ -437,7 +456,7 @@ export const createFormsCrud = (params: CreateFormsCrudParams): FormsCRUD => {
                     ex.message || "Could not update form.",
                     ex.code || "UPDATE_FORM_ERROR",
                     {
-                        input: data,
+                        input: newFormData,
                         form,
                         original
                     }

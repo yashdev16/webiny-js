@@ -1,15 +1,14 @@
-import * as models from "./settings.models";
 import {
-    Settings,
-    FormBuilderContext,
-    SettingsCRUD,
     FormBuilder,
-    OnSettingsBeforeCreate,
+    FormBuilderContext,
     OnSettingsAfterCreate,
-    OnSettingsBeforeUpdate,
+    OnSettingsAfterDelete,
     OnSettingsAfterUpdate,
+    OnSettingsBeforeCreate,
     OnSettingsBeforeDelete,
-    OnSettingsAfterDelete
+    OnSettingsBeforeUpdate,
+    Settings,
+    SettingsCRUD
 } from "~/types";
 import WebinyError from "@webiny/error";
 import { Tenant } from "@webiny/api-tenancy/types";
@@ -17,6 +16,8 @@ import { I18NLocale } from "@webiny/api-i18n/types";
 import { NotFoundError } from "@webiny/handler-graphql";
 import { createTopic } from "@webiny/pubsub";
 import { SettingsPermissions } from "./permissions/SettingsPermissions";
+import { createSettingsValidation, updateSettingsValidation } from "~/plugins/crud/settings.models";
+import { createZodError } from "@webiny/utils";
 
 export interface CreateSettingsCrudParams {
     getTenant: () => Tenant;
@@ -84,10 +85,12 @@ export const createSettingsCrud = (params: CreateSettingsCrudParams): SettingsCR
             return settings;
         },
         async createSettings(this: FormBuilder, input) {
-            const formBuilderSettings = new models.CreateDataModel().populate(input);
-            await formBuilderSettings.validate();
+            const validation = createSettingsValidation.safeParse(input);
+            if (!validation.success) {
+                throw createZodError(validation.error);
+            }
 
-            const data = await formBuilderSettings.toJSON();
+            const data = validation.data;
 
             const original = await this.getSettings({ auth: false });
             if (original) {
@@ -130,34 +133,37 @@ export const createSettingsCrud = (params: CreateSettingsCrudParams): SettingsCR
                 );
             }
         },
-        async updateSettings(this: FormBuilder, data) {
+        async updateSettings(this: FormBuilder, input) {
             await settingsPermissions.ensure();
 
-            const updatedData = new models.UpdateDataModel().populate(data);
-            await updatedData.validate();
+            const validation = updateSettingsValidation.safeParse(input);
+            if (!validation.success) {
+                throw createZodError(validation.error);
+            }
 
-            const newSettings = await updatedData.toJSON({ onlyDirty: true });
             const original = await this.getSettings();
             if (!original) {
                 throw new NotFoundError(`"Form Builder" settings not found!`);
             }
-
+            const data = validation.data;
             /**
              * Assign specific properties, just to be sure nothing else gets in the record.
              */
-            const settings = Object.keys(newSettings).reduce(
+            const settings = Object.keys(data).reduce<Settings>(
                 (collection, key) => {
-                    if (newSettings[key] === undefined) {
+                    // @ts-expect-error
+                    if (data[key] === undefined) {
                         return collection;
                     }
-                    collection[key as keyof Settings] = newSettings[key];
+                    // @ts-expect-error
+                    collection[key] = data[key];
                     return collection;
                 },
                 {
                     ...original,
                     tenant: getTenant().id,
                     locale: getLocale().code
-                } as Settings
+                }
             );
             try {
                 await onSettingsBeforeUpdate.publish({

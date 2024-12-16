@@ -1,28 +1,26 @@
 import crypto from "crypto";
-/**
- * Package @commodo/fields does not have types.
- */
-// @ts-expect-error
-import { withFields, string } from "@commodo/fields";
-/**
- * Package commodo-fields-object does not have types.
- */
-// @ts-expect-error
-import { object } from "commodo-fields-object";
-import { validation } from "@webiny/validation";
 import { createTopic } from "@webiny/pubsub";
-import { mdbid } from "@webiny/utils";
+import { createZodError, mdbid } from "@webiny/utils";
 import { NotAuthorizedError } from "~/index";
 import { NotFoundError } from "@webiny/handler-graphql";
 import WebinyError from "@webiny/error";
-import { ApiKey, ApiKeyInput, ApiKeyPermission, Security } from "~/types";
-import { SecurityConfig } from "~/types";
+import { ApiKey, ApiKeyInput, ApiKeyPermission, Security, SecurityConfig } from "~/types";
+import zod from "zod";
 
-const APIKeyModel = withFields({
-    name: string({ validation: validation.create("required") }),
-    description: string({ validation: validation.create("required") }),
-    permissions: object({ list: true, value: [] })
-})();
+const apiKeyModelValidation = zod.object({
+    name: zod.string(),
+    description: zod.string(),
+    permissions: zod
+        .array(
+            zod
+                .object({
+                    name: zod.string()
+                })
+                .passthrough()
+        )
+        .optional()
+        .default([])
+});
 
 const generateToken = (tokenLength = 48): string => {
     const token = crypto.randomBytes(Math.ceil(tokenLength / 2)).toString("hex");
@@ -128,7 +126,10 @@ export const createApiKeysMethods = ({
                 throw new NotAuthorizedError();
             }
 
-            await new APIKeyModel().populate(data).validate();
+            const validation = apiKeyModelValidation.safeParse(data);
+            if (!validation.success) {
+                throw createZodError(validation.error);
+            }
 
             const apiKey: ApiKey = {
                 id: mdbid(),
@@ -141,7 +142,7 @@ export const createApiKeysMethods = ({
                 },
                 createdOn: new Date().toISOString(),
                 webinyVersion: process.env.WEBINY_VERSION,
-                ...data
+                ...validation.data
             };
 
             try {
@@ -170,9 +171,10 @@ export const createApiKeysMethods = ({
                 throw new NotAuthorizedError();
             }
 
-            const model = await new APIKeyModel().populate(data);
-            await model.validate();
-            const changedData = await model.toJSON({ onlyDirty: true });
+            const validation = apiKeyModelValidation.safeParse(data);
+            if (!validation.success) {
+                throw createZodError(validation.error);
+            }
 
             const original = await this.getApiKey(id);
             if (!original) {
@@ -180,9 +182,17 @@ export const createApiKeysMethods = ({
             }
 
             const apiKey: ApiKey = {
-                ...original,
-                ...changedData
+                ...original
             };
+            for (const key in apiKey) {
+                // @ts-expect-error
+                const value = validation.data[key];
+                if (value === undefined) {
+                    continue;
+                }
+                // @ts-expect-error
+                apiKey[key] = value;
+            }
             try {
                 await this.onApiKeyBeforeUpdate.publish({ original, apiKey });
                 const result = await storageOperations.updateApiKey({

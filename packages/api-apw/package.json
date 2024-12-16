@@ -14,7 +14,6 @@
   "author": "Webiny Ltd",
   "license": "MIT",
   "dependencies": {
-    "@commodo/fields": "1.1.2-beta.20",
     "@webiny/api": "0.0.0",
     "@webiny/api-admin-settings": "0.0.0",
     "@webiny/api-headless-cms": "0.0.0",
@@ -35,9 +34,9 @@
     "@webiny/plugins": "0.0.0",
     "@webiny/pubsub": "0.0.0",
     "@webiny/utils": "0.0.0",
-    "@webiny/validation": "0.0.0",
     "dayjs": "^1.11.13",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@webiny/cli": "0.0.0",

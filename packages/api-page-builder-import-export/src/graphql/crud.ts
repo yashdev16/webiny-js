@@ -10,5 +10,5 @@ export default (params: ImportExportPluginsParams) => [
     forms,
     pages,
     templates,
-    importExportTask(params as ImportExportPluginsParams)
+    importExportTask(params)
 ];

@@ -1,4 +1,3 @@
-import get from "lodash/get";
 import { createTopic } from "@webiny/pubsub";
 import Error from "@webiny/error";
 import {
@@ -524,7 +523,7 @@ export function createContentReviewMethods(
         },
         async deleteScheduledAction(id) {
             const contentReview = await this.get(id);
-            const scheduledActionId = get(contentReview, "content.scheduledActionId");
+            const scheduledActionId = contentReview.content?.scheduledActionId;
 
             /**
              * Check if there is any action scheduled for this "content review".

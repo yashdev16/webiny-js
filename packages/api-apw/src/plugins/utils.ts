@@ -1,4 +1,3 @@
-import get from "lodash/get";
 import { CmsModelField } from "@webiny/api-headless-cms/types";
 import { SecurityIdentity } from "@webiny/api-security/types";
 import {
@@ -41,7 +40,10 @@ export const hasReviewer = async (params: HasReviewersParams): Promise<boolean> 
 };
 
 export const getValue = (object: Record<string, any>, key: string) => {
-    return get(object, `values.${key}`);
+    if (!object.values) {
+        return undefined;
+    }
+    return object.values[key];
 };
 
 export const getContentReviewStepInitialStatus = (
@@ -189,8 +191,8 @@ export const workflowByPrecedenceDesc = (a: ApwWorkflow, b: ApwWorkflow) => {
 };
 
 export const workflowByCreatedOnDesc = (a: ApwWorkflow, b: ApwWorkflow) => {
-    const createdOnA = get(a, "createdOn");
-    const createdOnB = get(b, "createdOn");
+    const createdOnA = a.createdOn;
+    const createdOnB = b.createdOn;
     /**
      * In descending order of workflow createdOn i.e. the most recent one first.
      */

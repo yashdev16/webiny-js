@@ -3,56 +3,56 @@
  */
 // @ts-expect-error
 import deepEqual from "deep-equal";
-/**
- * Package commodo-fields-object does not have types.
- */
-// @ts-expect-error
-import { object } from "commodo-fields-object";
-/**
- * Package @commodo/fields does not have types.
- */
-// @ts-expect-error
-import { withFields, string } from "@commodo/fields";
 import { createTopic } from "@webiny/pubsub";
-import { validation } from "@webiny/validation";
-import { mdbid } from "@webiny/utils";
+import { createZodError, mdbid } from "@webiny/utils";
 import WebinyError from "@webiny/error";
 import { NotFoundError } from "@webiny/handler-graphql";
 import {
     GetGroupParams,
     Group,
     GroupInput,
-    PermissionsTenantLink,
     ListGroupsParams,
-    Security
+    PermissionsTenantLink,
+    Security,
+    SecurityConfig
 } from "~/types";
 import NotAuthorizedError from "../NotAuthorizedError";
-import { SecurityConfig } from "~/types";
 import {
-    listGroupsFromProvider as baseListGroupsFromPlugins,
-    type ListGroupsFromPluginsParams
+    type ListGroupsFromPluginsParams,
+    listGroupsFromProvider as baseListGroupsFromPlugins
 } from "./groupsTeamsPlugins/listGroupsFromProvider";
 import {
-    getGroupFromProvider as baseGetGroupFromPlugins,
-    type GetGroupFromPluginsParams
+    type GetGroupFromPluginsParams,
+    getGroupFromProvider as baseGetGroupFromPlugins
 } from "./groupsTeamsPlugins/getGroupFromProvider";
+import zod from "zod";
 
-const CreateDataModel = withFields({
-    tenant: string({ validation: validation.create("required") }),
-    name: string({ validation: validation.create("required,minLength:3") }),
-    slug: string({ validation: validation.create("required,minLength:3") }),
-    description: string({ validation: validation.create("maxLength:500") }),
-    permissions: object({
-        list: true,
-        validation: validation.create("required")
-    })
-})();
+const createGroupValidation = zod.object({
+    name: zod.string().min(3),
+    slug: zod.string().min(3),
+    description: zod.string().max(500).optional().default(""),
+    permissions: zod.array(
+        zod
+            .object({
+                name: zod.string()
+            })
+            .passthrough()
+    )
+});
 
-const UpdateDataModel = withFields({
-    name: string({ validation: validation.create("minLength:3") }),
-    description: string({ validation: validation.create("maxLength:500") }),
-    permissions: object({ list: true })
-})();
+const updateGroupValidation = zod.object({
+    name: zod.string().min(3).optional(),
+    description: zod.string().max(500).optional(),
+    permissions: zod
+        .array(
+            zod
+                .object({
+                    name: zod.string()
+                })
+                .passthrough()
+        )
+        .optional()
+});
 
 async function checkPermission(security: Security): Promise<void> {
     const permission = await security.getPermission("security.group");
@@ -253,7 +253,10 @@ export const createGroupsMethods = ({
             const identity = this.getIdentity();
             const currentTenant = getTenant();
 
-            await new CreateDataModel().populate({ ...input, tenant: currentTenant }).validate();
+            const validation = createGroupValidation.safeParse(input);
+            if (!validation.success) {
+                throw createZodError(validation.error);
+            }
 
             const existing = await storageOperations.getGroup({
                 where: {
@@ -272,7 +275,7 @@ export const createGroupsMethods = ({
             const group: Group = {
                 id: mdbid(),
                 tenant: currentTenant,
-                ...input,
+                ...validation.data,
                 system: input.system === true,
                 webinyVersion: process.env.WEBINY_VERSION as string,
                 createdOn: new Date().toISOString(),
@@ -305,8 +308,10 @@ export const createGroupsMethods = ({
         async updateGroup(this: Security, id: string, input: Record<string, any>): Promise<Group> {
             await checkPermission(this);
 
-            const model = await new UpdateDataModel().populate(input);
-            await model.validate();
+            const validation = updateGroupValidation.safeParse(input);
+            if (!validation.success) {
+                throw createZodError(validation.error);
+            }
 
             const original = await this.getGroup({
                 where: { tenant: getTenant(), id }
@@ -332,14 +337,21 @@ export const createGroupsMethods = ({
                 );
             }
 
-            const data = await model.toJSON({ onlyDirty: true });
-
-            const permissionsChanged = !deepEqual(data.permissions, original.permissions);
-
             const group: Group = {
-                ...original,
-                ...data
+                ...original
             };
+            for (const key in group) {
+                // @ts-expect-error
+                const value = validation.data[key];
+                if (value === undefined) {
+                    continue;
+                }
+                // @ts-expect-error
+                group[key] = value;
+            }
+
+            const permissionsChanged = !deepEqual(group.permissions, original.permissions);
+
             try {
                 await this.onGroupBeforeUpdate.publish({ original, group });
                 const result = await storageOperations.updateGroup({ original, group });

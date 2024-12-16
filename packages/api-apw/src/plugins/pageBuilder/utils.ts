@@ -1,4 +1,3 @@
-import get from "lodash/get";
 import WebinyError from "@webiny/error";
 import {
     ApwWorkflow,
@@ -22,13 +21,13 @@ const isWorkflowApplicable = (page: PageWithWorkflow, workflow: ApwWorkflow) => 
     if (scopeType === WorkflowScopeTypes.DEFAULT) {
         return true;
     } else if (scopeType === WorkflowScopeTypes.CUSTOM) {
-        const categories = get(workflow, "scope.data.categories");
+        const categories = workflow.scope.data?.categories;
 
         if (Array.isArray(categories) && categories.includes(page.category)) {
             return true;
         }
 
-        const pages = get(workflow, "scope.data.pages");
+        const pages = workflow.scope.data?.pages;
         if (Array.isArray(pages) && pages.includes(page.pid)) {
             return true;
         }
@@ -105,8 +104,8 @@ export const shouldUpdatePages = (
     if (prevScope.type !== WorkflowScopeTypes.CUSTOM) {
         return true;
     }
-    const prevScopePages: string[] = get(prevScope, "data.pages") as unknown as string[];
-    const currentScopePages: string[] = get(scope, "data.pages") as unknown as string[];
+    const prevScopePages = prevScope.data.pages || [];
+    const currentScopePages = scope.data.pages || [];
     /**
      * Bail out early if there were no pages assigned previously.
      */

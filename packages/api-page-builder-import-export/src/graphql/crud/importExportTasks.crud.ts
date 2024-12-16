@@ -1,15 +1,5 @@
-import { mdbid } from "@webiny/utils";
-/**
- * Package @commodo/fields does not have types.
- */
-// @ts-expect-error
-import { string, withFields } from "@commodo/fields";
-/**
- * Package commodo-fields-object does not have types.
- */
-// @ts-expect-error
-import { object } from "commodo-fields-object";
-import { validation } from "@webiny/validation";
+import zod from "zod";
+import { createZodError, mdbid } from "@webiny/utils";
 import { ContextPlugin } from "@webiny/api";
 import { NotFoundError } from "@webiny/handler-graphql";
 import {
@@ -23,27 +13,50 @@ import WebinyError from "@webiny/error";
 import { PageElementStorageOperationsListParams } from "@webiny/api-page-builder/types";
 import { PagesPermissions } from "@webiny/api-page-builder/graphql/crud/permissions/PagesPermissions";
 
-const validStatus = `${ImportExportTaskStatus.PENDING}:${ImportExportTaskStatus.PROCESSING}:${ImportExportTaskStatus.COMPLETED}:${ImportExportTaskStatus.FAILED}`;
+const dataModelStats = zod
+    .object({
+        [ImportExportTaskStatus.PENDING]: zod.number().optional().default(0),
+        [ImportExportTaskStatus.PROCESSING]: zod.number().optional().default(0),
+        [ImportExportTaskStatus.COMPLETED]: zod.number().optional().default(0),
+        [ImportExportTaskStatus.FAILED]: zod.number().optional().default(0),
+        total: zod.number().optional().default(0)
+    })
+    .optional()
+    .default({
+        [ImportExportTaskStatus.PENDING]: 0,
+        [ImportExportTaskStatus.PROCESSING]: 0,
+        [ImportExportTaskStatus.COMPLETED]: 0,
+        [ImportExportTaskStatus.FAILED]: 0,
+        total: 0
+    });
 
-const CreateDataModel = withFields({
-    status: string({
-        validation: validation.create(`required,in:${validStatus}`)
-    }),
-    data: object(),
-    input: object(),
-    stats: object(),
-    error: object()
-})();
+const CreateDataModel = zod.object({
+    status: zod.enum([
+        ImportExportTaskStatus.PENDING,
+        ImportExportTaskStatus.PROCESSING,
+        ImportExportTaskStatus.COMPLETED,
+        ImportExportTaskStatus.FAILED
+    ]),
+    data: zod.object({}).passthrough().default({}),
+    input: zod.object({}).passthrough().default({}),
+    error: zod.object({}).passthrough().default({}),
+    stats: dataModelStats
+});
 
-const UpdateDataModel = withFields({
-    status: string({
-        validation: validation.create(`in:${validStatus}`)
-    }),
-    data: object(),
-    input: object(),
-    stats: object(),
-    error: object()
-})();
+const UpdateDataModel = zod.object({
+    status: zod
+        .enum([
+            ImportExportTaskStatus.PENDING,
+            ImportExportTaskStatus.PROCESSING,
+            ImportExportTaskStatus.COMPLETED,
+            ImportExportTaskStatus.FAILED
+        ])
+        .optional(),
+    data: zod.object({}).passthrough().default({}),
+    input: zod.object({}).passthrough().default({}),
+    error: zod.object({}).passthrough().default({}),
+    stats: dataModelStats
+});
 
 export default ({ storageOperations }: ImportExportPluginsParams) =>
     new ContextPlugin<PbImportExportContext>(async context => {
@@ -153,16 +166,17 @@ export default ({ storageOperations }: ImportExportPluginsParams) =>
             async createTask(input) {
                 await pagesPermissions.ensure({ rwd: "w" });
 
-                const createDataModel = new CreateDataModel().populate(input);
-                await createDataModel.validate();
+                const validation = CreateDataModel.safeParse(input);
+                if (!validation.success) {
+                    throw createZodError(validation.error);
+                }
 
                 const id: string = mdbid();
                 const identity = context.security.getIdentity();
 
-                const data: ImportExportTask = await createDataModel.toJSON();
-
                 const importExportTask: ImportExportTask = {
-                    ...data,
+                    ...validation.data,
+                    parent: "",
                     tenant: context.tenancy.getCurrentTenant().id,
                     locale: getLocale().code,
                     id,
@@ -176,7 +190,7 @@ export default ({ storageOperations }: ImportExportPluginsParams) =>
 
                 try {
                     return await storageOperations.createTask({
-                        input: data,
+                        input: validation.data,
                         task: importExportTask
                     });
                 } catch (ex) {
@@ -201,19 +215,28 @@ export default ({ storageOperations }: ImportExportPluginsParams) =>
 
                 await pagesPermissions.ensure({ owns: original.createdBy });
 
-                const updateDataModel = new UpdateDataModel().populate(input);
-                await updateDataModel.validate();
+                const validation = UpdateDataModel.safeParse(input);
+                if (!validation.success) {
+                    throw createZodError(validation.error);
+                }
 
-                const data = await updateDataModel.toJSON({ onlyDirty: true });
-
-                const importExportTask: ImportExportTask = {
-                    ...original,
-                    ...data
+                const importExportTask = {
+                    ...original
                 };
+
+                for (const key in validation.data) {
+                    // @ts-expect-error
+                    const value = validation.data[key];
+                    if (value === undefined) {
+                        continue;
+                    }
+                    // @ts-expect-error
+                    importExportTask[key] = value;
+                }
 
                 try {
                     return await storageOperations.updateTask({
-                        input: data,
+                        input: validation.data,
                         original,
                         task: importExportTask
                     });
@@ -286,19 +309,19 @@ export default ({ storageOperations }: ImportExportPluginsParams) =>
             async createSubTask(parent, id, input) {
                 await pagesPermissions.ensure({ rwd: "w" });
 
-                const createDataModel = new CreateDataModel().populate(input);
-                await createDataModel.validate();
+                const validation = CreateDataModel.safeParse(input);
+                if (!validation.success) {
+                    throw createZodError(validation.error);
+                }
 
                 const identity = context.security.getIdentity();
 
-                const data = await createDataModel.toJSON();
-
                 const importExportSubTask: ImportExportTask = {
-                    ...data,
+                    ...validation.data,
                     tenant: context.tenancy.getCurrentTenant().id,
                     locale: getLocale().code,
-                    id: id,
-                    parent: parent,
+                    id,
+                    parent,
                     createdOn: new Date().toISOString(),
                     createdBy: {
                         id: identity.id,
@@ -309,7 +332,7 @@ export default ({ storageOperations }: ImportExportPluginsParams) =>
 
                 try {
                     return await storageOperations.createSubTask({
-                        input: data,
+                        input: validation.data,
                         subTask: importExportSubTask
                     });
                 } catch (ex) {
@@ -339,19 +362,27 @@ export default ({ storageOperations }: ImportExportPluginsParams) =>
 
                 await pagesPermissions.ensure({ owns: original.createdBy });
 
-                const updateDataModel = new UpdateDataModel().populate(input);
-                await updateDataModel.validate();
+                const validation = UpdateDataModel.safeParse(input);
+                if (!validation.success) {
+                    throw createZodError(validation.error);
+                }
 
-                const data = await updateDataModel.toJSON({ onlyDirty: true });
-                // TODO: Merge recursively
-                const importExportSubTask: ImportExportTask = {
-                    ...original,
-                    ...data
+                const importExportSubTask = {
+                    ...original
                 };
+                for (const key in validation.data) {
+                    // @ts-expect-error
+                    const value = validation.data[key];
+                    if (value === undefined) {
+                        continue;
+                    }
+                    // @ts-expect-error
+                    importExportSubTask[key] = value;
+                }
 
                 try {
                     return await storageOperations.updateSubTask({
-                        input: data,
+                        input: validation.data,
                         original,
                         subTask: importExportSubTask
                     });

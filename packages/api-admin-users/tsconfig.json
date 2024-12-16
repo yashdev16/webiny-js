@@ -9,7 +9,6 @@
     { "path": "../handler-graphql" },
     { "path": "../pubsub" },
     { "path": "../utils" },
-    { "path": "../validation" },
     { "path": "../api-i18n" },
     { "path": "../api-wcp" }
   ],
@@ -34,8 +33,6 @@
       "@webiny/pubsub": ["../pubsub/src"],
       "@webiny/utils/*": ["../utils/src/*"],
       "@webiny/utils": ["../utils/src"],
-      "@webiny/validation/*": ["../validation/src/*"],
-      "@webiny/validation": ["../validation/src"],
       "@webiny/api-i18n/*": ["../api-i18n/src/*"],
       "@webiny/api-i18n": ["../api-i18n/src"],
       "@webiny/api-wcp/*": ["../api-wcp/src/*"],

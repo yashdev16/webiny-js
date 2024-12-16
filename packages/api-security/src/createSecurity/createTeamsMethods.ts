@@ -1,54 +1,45 @@
-import { mdbid } from "@webiny/utils";
+import { createZodError, mdbid } from "@webiny/utils";
 
 /**
  * Package deep-equal does not have types.
  */
 // @ts-expect-error
 import deepEqual from "deep-equal";
-/**
- * Package @commodo/fields does not have types.
- */
-// @ts-expect-error
-import { withFields, string } from "@commodo/fields";
 import { createTopic } from "@webiny/pubsub";
-import { validation } from "@webiny/validation";
 import WebinyError from "@webiny/error";
 import { NotFoundError } from "@webiny/handler-graphql";
 import {
     GetTeamParams,
-    Team,
-    TeamInput,
+    ListTeamsParams,
     PermissionsTenantLink,
     Security,
-    ListTeamsParams
+    SecurityConfig,
+    Team,
+    TeamInput
 } from "~/types";
 import NotAuthorizedError from "../NotAuthorizedError";
-import { SecurityConfig } from "~/types";
 import {
-    listTeamsFromProvider as baseListTeamsFromPlugins,
-    type ListTeamsFromPluginsParams
+    type ListTeamsFromPluginsParams,
+    listTeamsFromProvider as baseListTeamsFromPlugins
 } from "./groupsTeamsPlugins/listTeamsFromProvider";
 import {
-    getTeamFromProvider as baseGetTeamFromPlugins,
-    type GetTeamFromPluginsParams
+    type GetTeamFromPluginsParams,
+    getTeamFromProvider as baseGetTeamFromPlugins
 } from "./groupsTeamsPlugins/getTeamFromProvider";
+import zod from "zod";
 
-const CreateDataModel = withFields({
-    tenant: string({ validation: validation.create("required") }),
-    name: string({ validation: validation.create("required,minLength:3") }),
-    slug: string({ validation: validation.create("required,minLength:3") }),
-    description: string({ validation: validation.create("maxLength:500") }),
-    groups: string({
-        list: true,
-        validation: validation.create("required")
-    })
-})();
+const createDataModelValidation = zod.object({
+    name: zod.string().min(3),
+    slug: zod.string().min(3),
+    description: zod.string().max(500).optional().default(""),
+    groups: zod.array(zod.string())
+});
 
-const UpdateDataModel = withFields({
-    name: string({ validation: validation.create("minLength:3") }),
-    description: string({ validation: validation.create("maxLength:500") }),
-    groups: string({ list: true })
-})();
+const updateDataModelValidation = zod.object({
+    name: zod.string().min(3).optional(),
+    description: zod.string().max(500).optional(),
+    groups: zod.array(zod.string()).optional()
+});
 
 async function checkPermission(security: Security): Promise<void> {
     const permission = await security.getPermission("security.team");
@@ -213,7 +204,13 @@ export const createTeamsMethods = ({
             const identity = this.getIdentity();
             const currentTenant = getTenant();
 
-            await new CreateDataModel().populate({ ...input, tenant: currentTenant }).validate();
+            const validation = createDataModelValidation.safeParse({
+                ...input,
+                tenant: currentTenant
+            });
+            if (!validation.success) {
+                throw createZodError(validation.error);
+            }
 
             const existing = await storageOperations.getTeam({
                 where: {
@@ -232,7 +229,7 @@ export const createTeamsMethods = ({
             const team: Team = {
                 id: mdbid(),
                 tenant: currentTenant,
-                ...input,
+                ...validation.data,
                 system: input.system === true,
                 webinyVersion: process.env.WEBINY_VERSION as string,
                 createdOn: new Date().toISOString(),
@@ -265,8 +262,10 @@ export const createTeamsMethods = ({
         async updateTeam(this: Security, id: string, input: Record<string, any>): Promise<Team> {
             await checkPermission(this);
 
-            const model = await new UpdateDataModel().populate(input);
-            await model.validate();
+            const validation = updateDataModelValidation.safeParse(input);
+            if (!validation.success) {
+                throw createZodError(validation.error);
+            }
 
             const original = await this.getTeam({
                 where: { tenant: getTenant(), id }
@@ -290,14 +289,21 @@ export const createTeamsMethods = ({
                 );
             }
 
-            const data = await model.toJSON({ onlyDirty: true });
-
-            const groupsChanged = !deepEqual(data.groups, original.groups);
-
             const team: Team = {
-                ...original,
-                ...data
+                ...original
             };
+            for (const key in validation.data) {
+                // @ts-expect-error
+                const value = validation.data[key];
+                if (value === undefined) {
+                    continue;
+                }
+                // @ts-expect-error
+                team[key] = value;
+            }
+
+            const groupsChanged = !deepEqual(team.groups, original.groups);
+
             try {
                 await this.onTeamBeforeUpdate.publish({ original, team });
                 const result = await storageOperations.updateTeam({ original, team });

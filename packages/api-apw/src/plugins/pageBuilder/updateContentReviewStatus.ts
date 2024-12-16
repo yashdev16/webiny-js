@@ -1,4 +1,3 @@
-import get from "lodash/get";
 import {
     AdvancedPublishingWorkflow,
     ApwContentReviewStatus,
@@ -19,7 +18,7 @@ export const updateContentReviewStatus = (params: UpdateContentReviewStatusParam
 
     pageBuilder.onPageAfterPublish.subscribe<ApwOnPageBeforePublishTopicParams>(
         async ({ page }) => {
-            const contentReviewId = get(page, "settings.apw.contentReviewId");
+            const contentReviewId = page.settings.apw?.contentReviewId;
             /**
              * Bail out if there is no "content review" linked.
              */
@@ -46,7 +45,7 @@ export const updateContentReviewStatus = (params: UpdateContentReviewStatusParam
     );
     pageBuilder.onPageAfterUnpublish.subscribe<ApwOnPageBeforePublishTopicParams>(
         async ({ page }) => {
-            const contentReviewId = get(page, "settings.apw.contentReviewId");
+            const contentReviewId = page.settings.apw?.contentReviewId;
             /**
              * Bail out if there is no "content review" linked.
              */

@@ -1,4 +1,3 @@
-import get from "lodash/get";
 import Error from "@webiny/error";
 import {
     AdvancedPublishingWorkflow,
@@ -17,7 +16,7 @@ export const triggerContentReview = (params: TriggerContentReviewParams) => {
 
     pageBuilder.onPageBeforePublish.subscribe<ApwOnPageBeforePublishTopicParams>(
         async ({ page }) => {
-            const contentReviewId = get(page, "settings.apw.contentReviewId");
+            const contentReviewId = page.settings.apw?.contentReviewId;
             if (contentReviewId) {
                 const contentReview = await apw.contentReview.get(contentReviewId);
 
@@ -34,7 +33,7 @@ export const triggerContentReview = (params: TriggerContentReviewParams) => {
                 return;
             }
 
-            const workflowId = get(page, "settings.apw.workflowId");
+            const workflowId = page.settings.apw?.workflowId;
 
             if (workflowId) {
                 throw new Error(
