@@ -6,18 +6,31 @@ const { cli } = require("@webiny/cli");
 // let's intercept those and make sure messages are just forwarded
 // to the main thread.
 const types = ["log", "error", "warn"];
+
+// Suppress punycode warnings. This is a known issue which we can't fix.
+const filterOutPunycodeWarnings = message => {
+    if (typeof message === "string" && message.includes("punycode")) {
+        return false;
+    }
+
+    return true;
+};
+
 for (let i = 0; i < types.length; i++) {
     const type = types[i];
     console[type] = (...message) => {
         parentPort.postMessage(
             JSON.stringify({
                 type,
-                message: message.filter(Boolean).map(m => {
-                    if (m instanceof Error) {
-                        return m.message;
-                    }
-                    return m;
-                })
+                message: message
+                    .filter(Boolean)
+                    .filter(filterOutPunycodeWarnings)
+                    .map(m => {
+                        if (m instanceof Error) {
+                            return m.message;
+                        }
+                        return m;
+                    })
             })
         );
     };
