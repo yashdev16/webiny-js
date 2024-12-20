@@ -1,4 +1,4 @@
-import {createWorkflow, NormalJob} from "github-actions-wac";
+import { createWorkflow, NormalJob } from "github-actions-wac";
 import {
     createGlobalBuildCacheSteps,
     createInstallBuildSteps,
@@ -13,15 +13,15 @@ import {
     NODE_OPTIONS,
     NODE_VERSION
 } from "./utils";
-import {createJob, createValidateWorkflowsJob} from "./jobs";
+import { createJob, createValidateWorkflowsJob } from "./jobs";
 
 // Will print "next" or "dev". Important for caching (via actions/cache).
 const DIR_WEBINY_JS = "${{ needs.baseBranch.outputs.base-branch }}";
 
-const installBuildSteps = createInstallBuildSteps({workingDirectory: DIR_WEBINY_JS});
-const yarnCacheSteps = createYarnCacheSteps({workingDirectory: DIR_WEBINY_JS});
-const globalBuildCacheSteps = createGlobalBuildCacheSteps({workingDirectory: DIR_WEBINY_JS});
-const runBuildCacheSteps = createRunBuildCacheSteps({workingDirectory: DIR_WEBINY_JS});
+const installBuildSteps = createInstallBuildSteps({ workingDirectory: DIR_WEBINY_JS });
+const yarnCacheSteps = createYarnCacheSteps({ workingDirectory: DIR_WEBINY_JS });
+const globalBuildCacheSteps = createGlobalBuildCacheSteps({ workingDirectory: DIR_WEBINY_JS });
+const runBuildCacheSteps = createRunBuildCacheSteps({ workingDirectory: DIR_WEBINY_JS });
 
 const createCheckoutPrSteps = () =>
     [
@@ -29,12 +29,12 @@ const createCheckoutPrSteps = () =>
             name: "Checkout Pull Request",
             "working-directory": DIR_WEBINY_JS,
             run: "gh pr checkout ${{ github.event.issue.number }}",
-            env: {GITHUB_TOKEN: "${{ secrets.GH_TOKEN }}"}
+            env: { GITHUB_TOKEN: "${{ secrets.GH_TOKEN }}" }
         }
     ] as NonNullable<NormalJob["steps"]>;
 
 const createJestTestsJob = (storage: string | null) => {
-    const env: Record<string, string> = {AWS_REGION};
+    const env: Record<string, string> = { AWS_REGION };
 
     if (storage) {
         if (storage === "ddb-es") {
@@ -50,7 +50,7 @@ const createJestTestsJob = (storage: string | null) => {
         }
     }
 
-    const packages = listPackagesWithJestTests({storage});
+    const packages = listPackagesWithJestTests({ storage });
 
     return createJob({
         needs: ["constants", "build"],
@@ -66,14 +66,14 @@ const createJestTestsJob = (storage: string | null) => {
         "runs-on": "${{ matrix.os }}",
         env,
         awsAuth: storage === "ddb-es" || storage === "ddb-os",
-        checkout: {path: DIR_WEBINY_JS},
+        checkout: { path: DIR_WEBINY_JS },
         steps: [
             ...yarnCacheSteps,
             ...runBuildCacheSteps,
             ...installBuildSteps,
             ...withCommonParams(
-                [{name: "Run tests", run: "yarn test ${{ matrix.package.cmd }}"}],
-                {"working-directory": DIR_WEBINY_JS}
+                [{ name: "Run tests", run: "yarn test ${{ matrix.package.cmd }}" }],
+                { "working-directory": DIR_WEBINY_JS }
             )
         ]
     });
@@ -115,7 +115,7 @@ export const pullRequestsCommandJest = createWorkflow({
                 }
             ]
         }),
-        validateWorkflows: createValidateWorkflowsJob({needs: "checkComment"}),
+        validateWorkflows: createValidateWorkflowsJob({ needs: "checkComment" }),
         baseBranch: createJob({
             needs: "checkComment",
             name: "Get base branch",
@@ -126,7 +126,7 @@ export const pullRequestsCommandJest = createWorkflow({
                 {
                     name: "Get base branch",
                     id: "base-branch",
-                    env: {GITHUB_TOKEN: "${{ secrets.GH_TOKEN }}"},
+                    env: { GITHUB_TOKEN: "${{ secrets.GH_TOKEN }}" },
                     run: 'echo "base-branch=$(gh pr view ${{ github.event.issue.number }} --json baseRefName -q .baseRefName)" >> $GITHUB_OUTPUT'
                 }
             ]
@@ -155,7 +155,7 @@ export const pullRequestsCommandJest = createWorkflow({
         build: createJob({
             name: "Build",
             needs: ["baseBranch", "constants"],
-            checkout: {path: DIR_WEBINY_JS},
+            checkout: { path: DIR_WEBINY_JS },
             "runs-on": BUILD_PACKAGES_RUNNER,
             steps: [
                 ...createCheckoutPrSteps(),
